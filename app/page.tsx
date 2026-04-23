@@ -27,14 +27,22 @@ const aspects = [1.3, 0.7, 1.0, 1.5, 0.75, 1.2, 0.8, 0.65, 1.35, 1.1, 0.9, 1.4, 
 const photosWithAspect = photos.map((p, i) => ({ ...p, aspect: aspects[i] as number }));
 const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
  
-function buildColumns(items: typeof photosWithAspect, numCols: number) {
-  const cols = Array.from({ length: numCols }, () => []);
+function buildColumns(
+  items: (typeof photosWithAspect)[number][],
+  numCols: number
+) {
+  const cols: (typeof photosWithAspect)[number][][] = Array.from(
+    { length: numCols },
+    () => []
+  );
   const heights = Array(numCols).fill(0);
+
   items.forEach((item) => {
     const shortest = heights.indexOf(Math.min(...heights));
     cols[shortest].push(item);
     heights[shortest] += item.aspect;
   });
+
   return cols;
 }
  
@@ -56,7 +64,7 @@ function useNumCols() {
 export default function Home() {
   const [search, setSearch] = useState("");
   const [activeTag, setActiveTag] = useState(null);
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<typeof photos[0] | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const numCols = useNumCols();
@@ -77,7 +85,7 @@ export default function Home() {
  
   const columns = buildColumns(filtered, numCols);
  
-  const handleTagClick = (tag) => {
+const handleTagClick = (tag: string) => {
     setActiveTag(activeTag === tag ? null : tag);
     setSearch("");
   };
