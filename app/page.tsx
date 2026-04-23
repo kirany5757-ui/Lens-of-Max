@@ -24,10 +24,10 @@ const photos = [
 ];
  
 const aspects = [1.3, 0.7, 1.0, 1.5, 0.75, 1.2, 0.8, 0.65, 1.35, 1.1, 0.9, 1.4, 0.6, 1.0, 1.6, 0.72, 1.25, 0.85];
-const photosWithAspect = photos.map((p, i) => ({ ...p, aspect: aspects[i] }));
+const photosWithAspect = photos.map((p, i) => ({ ...p, aspect: aspects[i] as number }));
 const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
  
-function buildColumns(items, numCols) {
+function buildColumns(items: typeof photosWithAspect, numCols: number) {
   const cols = Array.from({ length: numCols }, () => []);
   const heights = Array(numCols).fill(0);
   items.forEach((item) => {
