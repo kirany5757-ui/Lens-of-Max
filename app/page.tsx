@@ -1,7 +1,7 @@
 "use client";
- 
+
 import { useState, useEffect } from "react";
- 
+
 const photos = [
   { id: 1, image: "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800", story: "I noticed this car while walking. Something about it felt calm.", tags: ["car", "street"] },
   { id: 2, image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800", story: "Work day. People moving fast but I felt still.", tags: ["work", "people", "indoor"] },
@@ -22,31 +22,31 @@ const photos = [
   { id: 17, image: "https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800", story: "Minimal calm moment.", tags: ["minimal", "calm"] },
   { id: 18, image: "https://images.unsplash.com/photo-1444080748397-f442aa95c3e5?w=800", story: "Stars above. Everything else quiet.", tags: ["sky", "night"] },
 ];
- 
-const aspects = [1.3, 0.7, 1.0, 1.5, 0.75, 1.2, 0.8, 0.65, 1.35, 1.1, 0.9, 1.4, 0.6, 1.0, 1.6, 0.72, 1.25, 0.85];
-const photosWithAspect = photos.map((p, i) => ({ ...p, aspect: aspects[i] as number }));
-const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
- 
-function buildColumns(
-  items: (typeof photosWithAspect)[number][],
-  numCols: number
-) {
-  const cols: (typeof photosWithAspect)[number][][] = Array.from(
-    { length: numCols },
-    () => []
-  );
-  const heights = Array(numCols).fill(0);
 
+type Photo = {
+  id: number;
+  image: string;
+  story: string;
+  tags: string[];
+  aspect: number;
+};
+
+const aspects = [1.3, 0.7, 1.0, 1.5, 0.75, 1.2, 0.8, 0.65, 1.35, 1.1, 0.9, 1.4, 0.6, 1.0, 1.6, 0.72, 1.25, 0.85];
+const photosWithAspect: Photo[] = photos.map((p, i) => ({ ...p, aspect: aspects[i] }));
+const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
+
+function buildColumns(items: Photo[], numCols: number): Photo[][] {
+  const cols: Photo[][] = Array.from({ length: numCols }, () => []);
+  const heights = Array(numCols).fill(0);
   items.forEach((item) => {
     const shortest = heights.indexOf(Math.min(...heights));
     cols[shortest].push(item);
     heights[shortest] += item.aspect;
   });
-
   return cols;
 }
- 
-function useNumCols() {
+
+function useNumCols(): number {
   const [cols, setCols] = useState(3);
   useEffect(() => {
     const update = () => {
@@ -60,41 +60,41 @@ function useNumCols() {
   }, []);
   return cols;
 }
- 
+
 export default function Home() {
   const [search, setSearch] = useState("");
-  const [activeTag, setActiveTag] = useState(null);
-  const [selectedPhoto, setSelectedPhoto] = useState<typeof photos[0] | null>(null);
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const numCols = useNumCols();
- 
+
   useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
- 
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
- 
+
   const filtered = photosWithAspect.filter((photo) => {
     const matchSearch = search === "" || photo.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
     const matchTag = !activeTag || photo.tags.includes(activeTag);
     return matchSearch && matchTag;
   });
- 
+
   const columns = buildColumns(filtered, numCols);
- 
-const handleTagClick = (tag: string) => {
+
+  const handleTagClick = (tag: string) => {
     setActiveTag(activeTag === tag ? null : tag);
     setSearch("");
   };
- 
+
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inconsolata:wght@300;400&display=swap');
- 
+
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body {
@@ -103,11 +103,10 @@ const handleTagClick = (tag: string) => {
           font-family: 'Inconsolata', monospace;
           min-height: 100vh;
         }
- 
+
         .page { opacity: 0; transition: opacity 0.8s ease; }
         .page.visible { opacity: 1; }
- 
-        /* ── STICKY HEADER — transforms on scroll ── */
+
         .site-header {
           position: fixed;
           top: 0; left: 0; right: 0;
@@ -117,10 +116,10 @@ const handleTagClick = (tag: string) => {
           align-items: center;
           justify-content: center;
           background: transparent;
-          transition: background 0.5s ease, backdrop-filter 0.5s ease, border-color 0.5s ease, padding 0.5s ease, min-height 0.5s ease;
+          transition: background 0.5s ease, backdrop-filter 0.5s ease, border-color 0.5s ease;
           border-bottom: 1px solid transparent;
           padding: 0 24px;
-          pointer-events: none; /* hero is not interactive in default state */
+          pointer-events: none;
         }
         .site-header.scrolled {
           background: rgba(10,10,9,0.94);
@@ -128,8 +127,7 @@ const handleTagClick = (tag: string) => {
           border-color: #1a1a1a;
           pointer-events: all;
         }
- 
-        /* Hero content — big, centered, full screen */
+
         .hero-content {
           display: flex;
           flex-direction: column;
@@ -148,8 +146,7 @@ const handleTagClick = (tag: string) => {
           justify-content: space-between;
           gap: 24px;
         }
- 
-        /* Title */
+
         .hero-title {
           font-family: 'Cormorant Garamond', serif;
           font-size: clamp(80px, 18vw, 180px);
@@ -165,8 +162,7 @@ const handleTagClick = (tag: string) => {
           margin-bottom: 0;
           letter-spacing: 0.02em;
         }
- 
-        /* Eyebrow + subtitle — hide when scrolled */
+
         .hero-eyebrow {
           font-size: 10px;
           letter-spacing: 0.35em;
@@ -177,11 +173,8 @@ const handleTagClick = (tag: string) => {
           overflow: hidden;
           max-height: 40px;
         }
-        .site-header.scrolled .hero-eyebrow {
-          opacity: 0;
-          max-height: 0;
-          margin: 0;
-        }
+        .site-header.scrolled .hero-eyebrow { opacity: 0; max-height: 0; margin: 0; }
+
         .hero-subtitle {
           font-family: 'Cormorant Garamond', serif;
           font-style: italic;
@@ -192,13 +185,8 @@ const handleTagClick = (tag: string) => {
           overflow: hidden;
           max-height: 40px;
         }
-        .site-header.scrolled .hero-subtitle {
-          opacity: 0;
-          max-height: 0;
-          margin: 0;
-        }
- 
-        /* Search bar — shrinks inline */
+        .site-header.scrolled .hero-subtitle { opacity: 0; max-height: 0; margin: 0; }
+
         .search-wrap {
           position: relative;
           width: 100%;
@@ -207,10 +195,8 @@ const handleTagClick = (tag: string) => {
           transition: max-width 0.5s ease, margin 0.5s ease;
           flex-shrink: 0;
         }
-        .site-header.scrolled .search-wrap {
-          max-width: 220px;
-          margin-bottom: 0;
-        }
+        .site-header.scrolled .search-wrap { max-width: 220px; margin-bottom: 0; }
+
         .search-label {
           position: absolute;
           left: 0; top: 50%;
@@ -223,6 +209,7 @@ const handleTagClick = (tag: string) => {
           transition: opacity 0.3s ease;
         }
         .site-header.scrolled .search-label { opacity: 0; }
+
         .search-input {
           background: transparent;
           border: none;
@@ -235,14 +222,10 @@ const handleTagClick = (tag: string) => {
           outline: none;
           transition: font-size 0.4s ease, padding 0.4s ease, border-color 0.2s ease;
         }
-        .site-header.scrolled .search-input {
-          font-size: 12px;
-          padding: 6px 0 6px 0;
-        }
+        .site-header.scrolled .search-input { font-size: 12px; padding: 6px 0; }
         .search-input:focus { border-color: #555; }
         .search-input::placeholder { color: #2e2e2e; }
- 
-        /* Tags — hide when scrolled */
+
         .hero-tags {
           display: flex;
           flex-wrap: wrap;
@@ -253,11 +236,8 @@ const handleTagClick = (tag: string) => {
           max-height: 200px;
           overflow: hidden;
         }
-        .site-header.scrolled .hero-tags {
-          opacity: 0;
-          max-height: 0;
-          pointer-events: none;
-        }
+        .site-header.scrolled .hero-tags { opacity: 0; max-height: 0; pointer-events: none; }
+
         .tag-btn {
           background: transparent;
           border: 1px solid #1e1e1e;
@@ -271,8 +251,7 @@ const handleTagClick = (tag: string) => {
         }
         .tag-btn:hover { border-color: #444; color: #999; }
         .tag-btn.active { border-color: #e8e4dc; color: #e8e4dc; }
- 
-        /* Scroll hint */
+
         .scroll-hint {
           position: fixed;
           bottom: 28px; left: 50%;
@@ -288,12 +267,10 @@ const handleTagClick = (tag: string) => {
         }
         .scroll-hint.hidden { opacity: 0; }
         @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.8} }
- 
-        /* ── GALLERY ── */
+
         .gallery-section {
           max-width: 1400px;
           margin: 0 auto;
-          /* push content below the fixed full-screen hero */
           padding: 100vh 12px 120px;
         }
         .counter {
@@ -304,12 +281,10 @@ const handleTagClick = (tag: string) => {
           margin-bottom: 40px;
           text-transform: uppercase;
         }
- 
-        /* TRUE PINTEREST MASONRY */
+
         .masonry { display: flex; gap: 10px; align-items: flex-start; }
         .masonry-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
- 
-        /* ── CARD ── */
+
         .card { cursor: pointer; position: relative; overflow: hidden; border-radius: 3px; display: block; }
         .card img {
           width: 100%; display: block; object-fit: cover;
@@ -339,8 +314,7 @@ const handleTagClick = (tag: string) => {
         .card:hover .card-tags { transform: translateY(0); }
         .card-tag { font-size: 9px; letter-spacing: 0.15em; color: #888; text-transform: uppercase; }
         .card-tag::before { content: "#"; }
- 
-        /* ── MODAL ── */
+
         .modal-backdrop {
           position: fixed; inset: 0;
           background: rgba(5,5,4,0.97);
@@ -379,23 +353,22 @@ const handleTagClick = (tag: string) => {
           cursor: pointer; text-transform: uppercase; transition: color 0.2s; text-align: left;
         }
         .modal-close:hover { color: #e8e4dc; }
- 
+
         .empty { text-align: center; padding: 80px 0; color: #333; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
- 
+
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: #0a0a09; }
         ::-webkit-scrollbar-thumb { background: #1e1e1e; }
       `}</style>
- 
+
       <div className={`page ${loaded ? "visible" : ""}`}>
- 
-        {/* ── HEADER — fixed, transforms on scroll ── */}
+
         <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
           <div className="hero-content">
             <p className="hero-eyebrow">Visual journal</p>
             <h1 className="hero-title">Stills</h1>
             <p className="hero-subtitle">Moments caught before they disappear</p>
- 
+
             <div className="search-wrap">
               <span className="search-label">Search</span>
               <input
@@ -406,7 +379,7 @@ const handleTagClick = (tag: string) => {
                 onChange={(e) => { setSearch(e.target.value); setActiveTag(null); }}
               />
             </div>
- 
+
             <div className="hero-tags">
               {allTags.map((tag) => (
                 <button
@@ -420,14 +393,12 @@ const handleTagClick = (tag: string) => {
             </div>
           </div>
         </header>
- 
-        {/* Scroll hint */}
+
         <p className={`scroll-hint ${scrolled ? "hidden" : ""}`}>scroll to explore</p>
- 
-        {/* ── GALLERY ── */}
+
         <section className="gallery-section">
           <p className="counter">{filtered.length} / {photos.length} moments</p>
- 
+
           {filtered.length === 0 ? (
             <div className="empty">No moments found</div>
           ) : (
@@ -440,7 +411,8 @@ const handleTagClick = (tag: string) => {
                         src={photo.image}
                         alt={photo.story}
                         loading="lazy"
-                       />
+                        style={{ aspectRatio: `1 / ${photo.aspect}` }}
+                      />
                       <div className="card-overlay">
                         <p className="card-story">{photo.story}</p>
                         <div className="card-tags">
@@ -455,8 +427,7 @@ const handleTagClick = (tag: string) => {
           )}
         </section>
       </div>
- 
-      {/* ── MODAL ── */}
+
       {selectedPhoto && (
         <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
