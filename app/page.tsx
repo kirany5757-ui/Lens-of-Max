@@ -377,7 +377,7 @@ export default function Home() {
         <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
           <div className="hero-content">
             <p className="hero-eyebrow">Visual journal</p>
-            <h1 className="hero-title">Stills</h1>
+            <h1 className="hero-title">Lens of Max</h1>
             <p className="hero-subtitle">Moments caught before they disappear</p>
 
             <div className="search-wrap">
