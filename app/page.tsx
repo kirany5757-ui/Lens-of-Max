@@ -176,14 +176,45 @@ export default function Home() {
         }
 
         .hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(80px, 18vw, 180px);
+  font-weight: 300;
+  line-height: 0.9;
+  letter-spacing: 0.08em;
+  color: #e8e4dc;
+  margin: 20px 0;
+  position: relative;
+
+  /* glow belongs here */
+  text-shadow: 0 0 12px rgba(255, 200, 120, 0.12);
+}
+
+.hero-title::before,
+.hero-title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: #2a2a2a;
+}
+
+.hero-title::before {
+  top: -14px;
+}
+
+.hero-title::after {
+  bottom: -14px;
+}
           font-family: 'Cormorant Garamond', serif;
           font-size: clamp(80px, 18vw, 180px);
           font-weight: 300;
-          line-height: 0.88;
-          letter-spacing: -0.03em;
+          line-height: 0.9;
+          letter-spacing: 0.08em; /*more like signage*/
           color: #e8e4dc;
-          transition: font-size 0.5s ease, margin 0.5s ease;
-          margin-bottom: 20px;
+          margin: 20px 0;
+          psoition: relative;
         }
         .site-header.scrolled .hero-title {
           font-size: 22px;
