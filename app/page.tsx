@@ -498,8 +498,7 @@ export default function Home() {
                   {col.map((photo) => (
 <div
   key={photo.id}
-  className={`card ${getGroupCount(photo.group) > 1 ? "has-group" : ""}`}
-  onClick={() => setSelectedPhoto(photo)}
+className="card"  onClick={() => setSelectedPhoto(photo)}
 >
                         <img
                         src={photo.image}
