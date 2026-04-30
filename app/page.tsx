@@ -184,8 +184,6 @@ export default function Home() {
   color: #e8e4dc;
   margin: 20px 0;
   position: relative;
-
-  /* glow belongs here */
   text-shadow: 0 0 12px rgba(255, 200, 120, 0.12);
 }
 
@@ -200,27 +198,21 @@ export default function Home() {
   background: #2a2a2a;
 }
 
-.hero-title::before {
-  top: -14px;
+.hero-title::before { top: -14px; }
+.hero-title::after  { bottom: -14px; }
+
+        .site-header.scrolled .hero-title {
+  font-size: 18px;
+  margin: 0;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.hero-title::after {
-  bottom: -14px;
+.site-header.scrolled .hero-title::before,
+.site-header.scrolled .hero-title::after {
+  display: none;
 }
-          font-family: 'Cormorant Garamond', serif;
-          font-size: clamp(80px, 18vw, 180px);
-          font-weight: 300;
-          line-height: 0.9;
-          letter-spacing: 0.08em; /*more like signage*/
-          color: #e8e4dc;
-          margin: 20px 0;
-          psoition: relative;
-        }
-        .site-header.scrolled .hero-title {
-          font-size: 22px;
-          margin-bottom: 0;
-          letter-spacing: 0.02em;
-        }
 
         .hero-eyebrow {
           font-size: 10px;
