@@ -460,7 +460,7 @@ export default function Home() {
               {getRelatedPhotos(selectedPhoto).length > 0 && (
                 <div style={{ marginTop: "20px" }}>
                   <p style={{ fontSize: "10px", letterSpacing: "0.2em", color: "#444", marginBottom: "10px" }}>
-                    MORE LIKE THIS
+                    looks same, but different
                   </p>
                   <div style={{
   display: "flex",
