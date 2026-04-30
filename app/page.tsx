@@ -462,15 +462,27 @@ export default function Home() {
                   <p style={{ fontSize: "10px", letterSpacing: "0.2em", color: "#444", marginBottom: "10px" }}>
                     MORE LIKE THIS
                   </p>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "6px" }}>
+                  <div style={{
+  display: "flex",
+  gap: "10px",
+  overflowX: "auto",
+  paddingBottom: "6px"
+}}>
                     {getRelatedPhotos(selectedPhoto).map((photo) => (
                       <img
-                        key={photo.id}
-                        src={photo.image}
-                        alt={photo.story}
-                        style={{ width: "100%", cursor: "pointer" }}
-                        onClick={() => setSelectedPhoto(photo)}
-                      />
+  key={photo.id}
+  src={photo.image}
+  alt={photo.story}
+  style={{
+    width: "120px",
+    height: "160px",
+    objectFit: "cover",
+    flexShrink: 0,
+    cursor: "pointer",
+    borderRadius: "4px"
+  }}
+  onClick={() => setSelectedPhoto(photo)}
+/>
                     ))}
                   </div>
                 </div>
