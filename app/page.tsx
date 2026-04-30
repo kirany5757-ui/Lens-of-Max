@@ -313,8 +313,13 @@ export default function Home() {
         .masonry { display: flex; gap: 10px; align-items: flex-start; }
         .masonry-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
 
-        .card { cursor: pointer; position: relative; overflow: hidden; border-radius: 3px; display: block; }
-        .card img {
+.card {
+  cursor: pointer;
+  position: relative;
+  overflow: visible; /* important */
+  border-radius: 3px;
+  display: block;
+}        .card img {
           width: 100%; display: block; object-fit: cover;
           filter: grayscale(20%) brightness(0.88);
           transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s ease;
@@ -422,6 +427,40 @@ export default function Home() {
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: #0a0a09; }
         ::-webkit-scrollbar-thumb { background: #1e1e1e; }
+
+/* Subtle stack effect for grouped photos */
+
+.card.has-group::before,
+
+.card.has-group::after {
+
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  border-radius: 3px;
+
+  pointer-events: none;
+
+}
+
+.card.has-group::before {
+
+  transform: translate(6px, 6px);
+
+  background: rgba(255,255,255,0.03);
+
+}
+
+.card.has-group::after {
+
+  transform: translate(12px, 12px);
+
+  background: rgba(255,255,255,0.015);
+
+}
       `}</style>
 
       <div className={`page ${loaded ? "visible" : ""}`}>
@@ -470,8 +509,12 @@ export default function Home() {
               {columns.map((col, ci) => (
                 <div key={ci} className="masonry-col">
                   {col.map((photo) => (
-                    <div key={photo.id} className="card" onClick={() => setSelectedPhoto(photo)}>
-                      <img
+<div
+  key={photo.id}
+  className={`card ${getGroupCount(photo.group) > 1 ? "has-group" : ""}`}
+  onClick={() => setSelectedPhoto(photo)}
+>
+                        <img
                         src={photo.image}
                         alt={photo.story}
                         loading="lazy"
