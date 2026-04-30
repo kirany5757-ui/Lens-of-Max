@@ -1,26 +1,36 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+
+// Groups that actually make sense:
+// "coffee"    → photos 3 & 7 (both coffee moments)
+// "street"    → photos 1, 4 & 9 (car, late night street, crosswalk)
+// "sky"       → photos 6 & 18 (clouds, stars)
+// "water"     → photos 8 & 14 (waves, water wide)
+// "city"      → photos 15 & 16 (building, city lights)
+// "indoor"    → photos 2 & 11 (work, books)
+// "travel"    → photos 12 & 13 (road, horizon)
+// solo        → photos 5, 7(coffee), 10, 17 have unique groups
 
 const photos = [
-  { id: 1, image: "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800", story: "I noticed this car while walking. Something about it felt calm.", tags: ["car", "street"], group: "g1", isMain: true },
-  { id: 2, image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800", story: "Work day. People moving fast but I felt still.", tags: ["work", "people", "indoor"], group: "g2", isMain: true },
-  { id: 3, image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800", story: "Coffee moment. Quiet, warm, and slow.", tags: ["coffee", "latte"], group: "g3", isMain: true },
-  { id: 4, image: "https://images.unsplash.com/photo-1492724441997-5dc865305da7?w=800", story: "Late night street. Lights felt softer than usual.", tags: ["night", "street"], group: "g4", isMain: true },
-  { id: 5, image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800", story: "Train window reflections. Everything moving, but I felt still.", tags: ["train", "reflection"], group: "g5", isMain: true },
-  { id: 6, image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800", story: "Clouds rolling in. Quiet before the rain.", tags: ["sky", "weather"], group: "g6", isMain: true },
-  { id: 7, image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800", story: "Cold morning. Coffee tasted better than usual.", tags: ["coffee", "morning"], group: "g7", isMain: true },
-  { id: 8, image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800", story: "Waves repeating. Calming pattern.", tags: ["water", "beach"], group: "g8", isMain: true },
-  { id: 9, image: "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?w=800", story: "Crosswalk moment. Everyone passing by.", tags: ["people", "street", "sun"], group: "g9", isMain: true },
-  { id: 10, image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800", story: "Mountains far away. Felt small but peaceful.", tags: ["nature", "mountain"], group: "g10", isMain: true },
-  { id: 11, image: "https://images.unsplash.com/photo-1499084732479-de2c02d45fc4?w=800", story: "Books and silence. Time slowed down.", tags: ["indoor", "quiet"], group: "g11", isMain: true },
-  { id: 12, image: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800", story: "Road ahead. Didn't know where it leads.", tags: ["road", "travel"], group: "g12", isMain: true },
-  { id: 13, image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800", story: "Wide horizon, endless view.", tags: ["landscape", "wide"], group: "g13", isMain: true },
-  { id: 14, image: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=800", story: "Water stretching endlessly.", tags: ["water", "wide"], group: "g14", isMain: true },
-  { id: 15, image: "https://images.unsplash.com/photo-1520975922323-5f1c1d0c3c8b?w=800", story: "Tall building stretching into the sky.", tags: ["architecture", "city"], group: "g15", isMain: true },
-  { id: 16, image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800", story: "City lights bleeding into the night.", tags: ["city", "night"], group: "g16", isMain: true },
-  { id: 17, image: "https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800", story: "Minimal calm moment.", tags: ["minimal", "calm"], group: "g17", isMain: true },
-  { id: 18, image: "https://images.unsplash.com/photo-1444080748397-f442aa95c3e5?w=800", story: "Stars above. Everything else quiet.", tags: ["sky", "night"], group: "g18", isMain: true },
+  { id: 1,  image: "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800", story: "I noticed this car while walking. Something about it felt calm.",        tags: ["car", "street"],              group: "street",  isMain: true },
+  { id: 2,  image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800", story: "Work day. People moving fast but I felt still.",                          tags: ["work", "people", "indoor"],   group: "indoor",  isMain: true },
+  { id: 3,  image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800", story: "Coffee moment. Quiet, warm, and slow.",                                   tags: ["coffee", "latte"],            group: "coffee",  isMain: true },
+  { id: 4,  image: "https://images.unsplash.com/photo-1492724441997-5dc865305da7?w=800", story: "Late night street. Lights felt softer than usual.",                       tags: ["night", "street"],            group: "street",  isMain: false },
+  { id: 5,  image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800", story: "Train window reflections. Everything moving, but I felt still.",          tags: ["train", "reflection"],        group: "solo-5",  isMain: true },
+  { id: 6,  image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800", story: "Clouds rolling in. Quiet before the rain.",                               tags: ["sky", "weather"],             group: "sky",     isMain: true },
+  { id: 7,  image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800", story: "Cold morning. Coffee tasted better than usual.",                          tags: ["coffee", "morning"],          group: "coffee",  isMain: false },
+  { id: 8,  image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800", story: "Waves repeating. Calming pattern.",                                       tags: ["water", "beach"],             group: "water",   isMain: true },
+  { id: 9,  image: "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?w=800", story: "Crosswalk moment. Everyone passing by.",                                  tags: ["people", "street", "sun"],    group: "street",  isMain: false },
+  { id: 10, image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800", story: "Mountains far away. Felt small but peaceful.",                            tags: ["nature", "mountain"],         group: "solo-10", isMain: true },
+  { id: 11, image: "https://images.unsplash.com/photo-1499084732479-de2c02d45fc4?w=800", story: "Books and silence. Time slowed down.",                                    tags: ["indoor", "quiet"],            group: "indoor",  isMain: false },
+  { id: 12, image: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800", story: "Road ahead. Didn't know where it leads.",                                 tags: ["road", "travel"],             group: "travel",  isMain: true },
+  { id: 13, image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800", story: "Wide horizon, endless view.",                                             tags: ["landscape", "wide"],          group: "travel",  isMain: false },
+  { id: 14, image: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=800", story: "Water stretching endlessly.",                                             tags: ["water", "wide"],              group: "water",   isMain: false },
+  { id: 15, image: "https://images.unsplash.com/photo-1520975922323-5f1c1d0c3c8b?w=800", story: "Tall building stretching into the sky.",                                  tags: ["architecture", "city"],       group: "city",    isMain: true },
+  { id: 16, image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800", story: "City lights bleeding into the night.",                                    tags: ["city", "night"],              group: "city",    isMain: false },
+  { id: 17, image: "https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800", story: "Minimal calm moment.",                                                    tags: ["minimal", "calm"],            group: "solo-17", isMain: true },
+  { id: 18, image: "https://images.unsplash.com/photo-1444080748397-f442aa95c3e5?w=800", story: "Stars above. Everything else quiet.",                                     tags: ["sky", "night"],               group: "sky",     isMain: false },
 ];
 
 type Photo = {
@@ -36,6 +46,9 @@ type Photo = {
 const aspects = [1.3, 0.7, 1.0, 1.5, 0.75, 1.2, 0.8, 0.65, 1.35, 1.1, 0.9, 1.4, 0.6, 1.0, 1.6, 0.72, 1.25, 0.85];
 const photosWithAspect: Photo[] = photos.map((p, i) => ({ ...p, aspect: aspects[i] }));
 const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
+
+// Fixed: use photosWithAspect (not photos) for consistent total count
+const totalMain = photosWithAspect.filter((p) => p.isMain).length;
 
 function buildColumns(items: Photo[], numCols: number): Photo[][] {
   const cols: Photo[][] = Array.from({ length: numCols }, () => []);
@@ -71,6 +84,11 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const numCols = useNumCols();
 
+  // Helper: count how many photos are in a group
+  const getGroupCount = (group: string) => {
+    return photosWithAspect.filter((p) => p.group === group).length;
+  };
+
   useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
 
   useEffect(() => {
@@ -79,9 +97,15 @@ export default function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Fixed: moved outside component & wrapped in useCallback
+  const getRelatedPhotos = useCallback((current: Photo): Photo[] => {
+    return photosWithAspect.filter(
+      (p) => p.group === current.group && p.id !== current.id
+    );
+  }, []);
+
   const filtered = photosWithAspect.filter((photo) => {
     if (!photo.isMain) return false;
-
     const matchSearch = search === "" || photo.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
     const matchTag = !activeTag || photo.tags.includes(activeTag);
     return matchSearch && matchTag;
@@ -92,13 +116,6 @@ export default function Home() {
   const handleTagClick = (tag: string) => {
     setActiveTag(activeTag === tag ? null : tag);
     setSearch("");
-  };
-
-  // Related photos logic
-  const getRelatedPhotos = (current: Photo) => {
-    return photosWithAspect.filter(
-      (p) => p.group === current.group && p.id !== current.id
-    );
   };
 
   return (
@@ -326,6 +343,7 @@ export default function Home() {
         .card-tag { font-size: 9px; letter-spacing: 0.15em; color: #888; text-transform: uppercase; }
         .card-tag::before { content: "#"; }
 
+        /* ── MODAL ── */
         .modal-backdrop {
           position: fixed; inset: 0;
           background: rgba(5,5,4,0.97);
@@ -342,8 +360,8 @@ export default function Home() {
         }
         @media (min-width: 700px) { .modal { grid-template-columns: 3fr 2fr; } }
         @keyframes slideUp { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
-        .modal img { width: 100%; height: 100%; object-fit: cover; display: block; max-height: 55vh; }
-        @media (min-width: 700px) { .modal img { max-height: none; min-height: 480px; } }
+        .modal-main-img { width: 100%; height: 100%; object-fit: cover; display: block; max-height: 55vh; }
+        @media (min-width: 700px) { .modal-main-img { max-height: none; min-height: 480px; } }
         .modal-info { padding: 40px 28px; display: flex; flex-direction: column; gap: 20px; }
         .modal-num { font-size: 10px; letter-spacing: 0.3em; color: #333; text-transform: uppercase; }
         .modal-story {
@@ -357,6 +375,40 @@ export default function Home() {
           font-size: 11px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s;
         }
         .modal-tag-btn:hover { border-color: #555; color: #aaa; }
+
+        /* Related photos */
+        .related-label {
+          font-size: 10px;
+          letter-spacing: 0.2em;
+          color: #444;
+          text-transform: uppercase;
+          margin-bottom: 10px;
+        }
+        .related-strip {
+          display: flex;
+          gap: 8px;
+          overflow-x: auto;
+          padding-bottom: 4px;
+          scrollbar-width: none;
+        }
+        .related-strip::-webkit-scrollbar { display: none; }
+        .related-thumb {
+          width: 90px;
+          height: 120px;
+          object-fit: cover;
+          flex-shrink: 0;
+          cursor: pointer;
+          border-radius: 2px;
+          filter: brightness(0.8) grayscale(15%);
+          transition: filter 0.2s ease, transform 0.2s ease;
+          border: 1px solid transparent;
+        }
+        .related-thumb:hover {
+          filter: brightness(1) grayscale(0%);
+          transform: scale(1.04);
+          border-color: #444;
+        }
+
         .modal-close {
           background: transparent; border: none; color: #333;
           font-size: 10px; letter-spacing: 0.25em;
@@ -408,7 +460,8 @@ export default function Home() {
         <p className={`scroll-hint ${scrolled ? "hidden" : ""}`}>scroll to explore</p>
 
         <section className="gallery-section">
-          <p className="counter">{filtered.length} / {photos.length} moments</p>
+          {/* Fixed counter: uses totalMain instead of photos.length */}
+          <p className="counter">{filtered.length} / {totalMain} moments</p>
 
           {filtered.length === 0 ? (
             <div className="empty">No moments found</div>
@@ -424,6 +477,21 @@ export default function Home() {
                         loading="lazy"
                         style={{ aspectRatio: `1 / ${photo.aspect}` }}
                       />
+                      {getGroupCount(photo.group) > 1 && (
+                        <div style={{
+                          position: "absolute",
+                          top: "8px",
+                          right: "8px",
+                          background: "rgba(0,0,0,0.6)",
+                          color: "#e8e4dc",
+                          fontSize: "10px",
+                          letterSpacing: "0.1em",
+                          padding: "4px 6px",
+                          borderRadius: "2px"
+                        }}>
+                          +{getGroupCount(photo.group) - 1}
+                        </div>
+                      )}
                       <div className="card-overlay">
                         <p className="card-story">{photo.story}</p>
                         <div className="card-tags">
@@ -442,10 +510,11 @@ export default function Home() {
       {selectedPhoto && (
         <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <img src={selectedPhoto.image} alt={selectedPhoto.story} />
+            <img className="modal-main-img" src={selectedPhoto.image} alt={selectedPhoto.story} />
             <div className="modal-info">
               <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
               <p className="modal-story">{selectedPhoto.story}</p>
+
               <div className="modal-tags">
                 {selectedPhoto.tags.map((tag) => (
                   <button
@@ -457,36 +526,25 @@ export default function Home() {
                   </button>
                 ))}
               </div>
+
+              {/* Related photos — now actually works */}
               {getRelatedPhotos(selectedPhoto).length > 0 && (
-                <div style={{ marginTop: "20px" }}>
-                  <p style={{ fontSize: "10px", letterSpacing: "0.2em", color: "#444", marginBottom: "10px" }}>
-                    looks same, but different
-                  </p>
-                  <div style={{
-  display: "flex",
-  gap: "10px",
-  overflowX: "auto",
-  paddingBottom: "6px"
-}}>
+                <div>
+                  <p className="related-label">same moment, different frame</p>
+                  <div className="related-strip">
                     {getRelatedPhotos(selectedPhoto).map((photo) => (
                       <img
-  key={photo.id}
-  src={photo.image}
-  alt={photo.story}
-  style={{
-    width: "120px",
-    height: "160px",
-    objectFit: "cover",
-    flexShrink: 0,
-    cursor: "pointer",
-    borderRadius: "4px"
-  }}
-  onClick={() => setSelectedPhoto(photo)}
-/>
+                        key={photo.id}
+                        src={photo.image}
+                        alt={photo.story}
+                        className="related-thumb"
+                        onClick={() => setSelectedPhoto(photo)}
+                      />
                     ))}
                   </div>
                 </div>
               )}
+
               <button className="modal-close" onClick={() => setSelectedPhoto(null)}>← close</button>
             </div>
           </div>
