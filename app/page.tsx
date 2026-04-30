@@ -428,38 +428,25 @@ export default function Home() {
         ::-webkit-scrollbar-track { background: #0a0a09; }
         ::-webkit-scrollbar-thumb { background: #1e1e1e; }
 
-/* Subtle stack effect for grouped photos */
+/* Subtle stack effect — FIXED (darker + tighter) */
 
 .card.has-group::before,
-
 .card.has-group::after {
-
   content: "";
-
   position: absolute;
-
   inset: 0;
-
   border-radius: 3px;
-
   pointer-events: none;
-
 }
 
 .card.has-group::before {
-
-  transform: translate(6px, 6px);
-
-  background: rgba(255,255,255,0.03);
-
+  transform: translate(2px, 2px);
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .card.has-group::after {
-
-  transform: translate(12px, 12px);
-
-  background: rgba(255,255,255,0.015);
-
+  transform: translate(4px, 4px);
+  background: rgba(0, 0, 0, 0.2);
 }
       `}</style>
 
