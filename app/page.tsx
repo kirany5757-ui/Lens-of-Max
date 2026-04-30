@@ -126,10 +126,21 @@ export default function Home() {
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body {
-          background: #0a0a09;
-          color: #e8e4dc;
-          font-family: 'Inconsolata', monospace;
-          min-height: 100vh;
+          background: radial-gradient(
+
+    circle at 50% 40%,
+
+    rgba(255, 200, 120, 0.04),
+
+    rgba(10,10,9,1) 60%
+
+  );
+
+  color: #e8e4dc;
+
+  font-family: 'Inconsolata', monospace;
+
+  min-height: 100vh;
         }
 
         .page { opacity: 0; transition: opacity 0.8s ease; }
@@ -427,27 +438,6 @@ export default function Home() {
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: #0a0a09; }
         ::-webkit-scrollbar-thumb { background: #1e1e1e; }
-
-/* Subtle stack effect — FIXED (darker + tighter) */
-
-.card.has-group::before,
-.card.has-group::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 3px;
-  pointer-events: none;
-}
-
-.card.has-group::before {
-  transform: translate(2px, 2px);
-  background: rgba(0, 0, 0, 0.35);
-}
-
-.card.has-group::after {
-  transform: translate(4px, 4px);
-  background: rgba(0, 0, 0, 0.2);
-}
       `}</style>
 
       <div className={`page ${loaded ? "visible" : ""}`}>
