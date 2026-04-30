@@ -477,21 +477,6 @@ export default function Home() {
                         loading="lazy"
                         style={{ aspectRatio: `1 / ${photo.aspect}` }}
                       />
-                      {getGroupCount(photo.group) > 1 && (
-                        <div style={{
-                          position: "absolute",
-                          top: "8px",
-                          right: "8px",
-                          background: "rgba(0,0,0,0.6)",
-                          color: "#e8e4dc",
-                          fontSize: "10px",
-                          letterSpacing: "0.1em",
-                          padding: "4px 6px",
-                          borderRadius: "2px"
-                        }}>
-                          +{getGroupCount(photo.group) - 1}
-                        </div>
-                      )}
                       <div className="card-overlay">
                         <p className="card-story">{photo.story}</p>
                         <div className="card-tags">
