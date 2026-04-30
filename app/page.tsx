@@ -214,6 +214,10 @@ export default function Home() {
   margin: 0;
   letter-spacing: 0.08em;
   white-space: nowrap;
+
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .site-header.scrolled .hero-title::before,
