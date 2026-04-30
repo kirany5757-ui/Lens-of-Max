@@ -168,11 +168,17 @@ export default function Home() {
           pointer-events: all;
         }
         .site-header.scrolled .hero-content {
-          min-height: 64px;
-          padding: 0 24px;
-          flex-direction: row;
-          justify-content: space-between;
-          gap: 24px;
+  min-height: 64px;
+  padding: 0 24px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  transition: all 0.7s ease;
         }
 
         .hero-title {
@@ -204,8 +210,7 @@ export default function Home() {
         .site-header.scrolled .hero-title {
   font-size: 18px;
   margin: 0;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  letter-spacing: 0.08em;
   white-space: nowrap;
 }
 
