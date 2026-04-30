@@ -174,9 +174,11 @@ export default function Home() {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center; /* center everything */
 
   gap: 16px;
+
+  position: relative; /* needed for search positioning */
 
   transition: all 0.7s ease;
         }
@@ -251,7 +253,12 @@ export default function Home() {
           transition: max-width 0.5s ease, margin 0.5s ease;
           flex-shrink: 0;
         }
-        .site-header.scrolled .search-wrap { max-width: 220px; margin-bottom: 0; }
+        .site-header.scrolled .search-wrap {
+  position: absolute;
+  right: 24px;
+  max-width: 220px;
+  margin-bottom: 0;
+}
 
         .search-label {
           position: absolute;
