@@ -126,21 +126,10 @@ export default function Home() {
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body {
-          background: radial-gradient(
-
-    circle at 50% 40%,
-
-    rgba(255, 200, 120, 0.04),
-
-    rgba(10,10,9,1) 60%
-
-  );
-
-  color: #e8e4dc;
-
-  font-family: 'Inconsolata', monospace;
-
-  min-height: 100vh;
+          background: #0a0a09;
+          color: #e8e4dc;
+          font-family: 'Inconsolata', monospace;
+          min-height: 100vh;
         }
 
         .page { opacity: 0; transition: opacity 0.8s ease; }
