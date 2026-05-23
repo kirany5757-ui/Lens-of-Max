@@ -13,24 +13,17 @@ import { useState, useEffect, useCallback } from "react";
 // solo        → photos 5, 7(coffee), 10, 17 have unique groups
 
 const photos = [
-  { id: 1,  image: "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800", story: "I noticed this car while walking. Something about it felt calm.",        tags: ["car", "street"],              group: "street",  isMain: true },
-  { id: 2,  image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800", story: "Work day. People moving fast but I felt still.",                          tags: ["work", "people", "indoor"],   group: "indoor",  isMain: true },
-  { id: 3,  image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800", story: "Coffee moment. Quiet, warm, and slow.",                                   tags: ["coffee", "latte"],            group: "coffee",  isMain: true },
-  { id: 4,  image: "https://images.unsplash.com/photo-1492724441997-5dc865305da7?w=800", story: "Late night street. Lights felt softer than usual.",                       tags: ["night", "street"],            group: "street",  isMain: false },
-  { id: 5,  image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800", story: "Train window reflections. Everything moving, but I felt still.",          tags: ["train", "reflection"],        group: "solo-5",  isMain: true },
-  { id: 6,  image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800", story: "Clouds rolling in. Quiet before the rain.",                               tags: ["sky", "weather"],             group: "sky",     isMain: true },
-  { id: 7,  image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800", story: "Cold morning. Coffee tasted better than usual.",                          tags: ["coffee", "morning"],          group: "coffee",  isMain: false },
-  { id: 8,  image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800", story: "Waves repeating. Calming pattern.",                                       tags: ["water", "beach"],             group: "water",   isMain: true },
-  { id: 9,  image: "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?w=800", story: "Crosswalk moment. Everyone passing by.",                                  tags: ["people", "street", "sun"],    group: "street",  isMain: false },
-  { id: 10, image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800", story: "Mountains far away. Felt small but peaceful.",                            tags: ["nature", "mountain"],         group: "solo-10", isMain: true },
-  { id: 11, image: "https://images.unsplash.com/photo-1499084732479-de2c02d45fc4?w=800", story: "Books and silence. Time slowed down.",                                    tags: ["indoor", "quiet"],            group: "indoor",  isMain: false },
-  { id: 12, image: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800", story: "Road ahead. Didn't know where it leads.",                                 tags: ["road", "travel"],             group: "travel",  isMain: true },
-  { id: 13, image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800", story: "Wide horizon, endless view.",                                             tags: ["landscape", "wide"],          group: "travel",  isMain: false },
-  { id: 14, image: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=800", story: "Water stretching endlessly.",                                             tags: ["water", "wide"],              group: "water",   isMain: false },
-  { id: 15, image: "https://images.unsplash.com/photo-1520975922323-5f1c1d0c3c8b?w=800", story: "Tall building stretching into the sky.",                                  tags: ["architecture", "city"],       group: "city",    isMain: true },
-  { id: 16, image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800", story: "City lights bleeding into the night.",                                    tags: ["city", "night"],              group: "city",    isMain: false },
-  { id: 17, image: "https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800", story: "Minimal calm moment.",                                                    tags: ["minimal", "calm"],            group: "solo-17", isMain: true },
-  { id: 18, image: "https://images.unsplash.com/photo-1444080748397-f442aa95c3e5?w=800", story: "Stars above. Everything else quiet.",                                     tags: ["sky", "night"],               group: "sky",     isMain: false },
+  { id: 1, image: "/Photos/Riverside.jpg", story: "", tags: ["Riverside", "Kingston"] },
+  { id: 2, image: "/Photos/Plane.jpg", story: "", tags: ["Sky", "Plane"] },
+  { id: 3, image: "/Photos/Plane in the sky.jpg", story: "", tags: ["Plane", "Sky"] },
+  { id: 4, image: "/Photos/Autumn Evening.jpg", story: "", tags: ["Autumn", "Evening"] },
+  { id: 5, image: "/Photos/Full Rainbow.jpg", story: "", tags: ["Rainbow", "Weather"] },
+  { id: 6, image: "/Photos/Empty Street.jpg", story: "", tags: ["Street", "Weather"] },
+  { id: 7, image: "/Photos/Rainbow Arc.jpg", story: "", tags: ["Rainbow", "Weather"] },
+  { id: 8, image: "/Photos/Sunny Evening.jpg", story: "", tags: ["Water", "Beach"] },
+  { id: 9, image: "/Photos/Telephone Booth.jpg", story: "", tags: ["{Telephone Booth}", "Street", "Evening"] },
+  { id: 10, image: "/Photos/Terminal 5.jpg", story: "", tags: ["Terminal", "People"] },
+  { id: 11, image: "/Photos/Afadena.jpg", story: "", tags: ["Food", "Afadena"] },
 ];
 
 type Photo = {
@@ -44,7 +37,12 @@ type Photo = {
 };
 
 const aspects = [1.3, 0.7, 1.0, 1.5, 0.75, 1.2, 0.8, 0.65, 1.35, 1.1, 0.9, 1.4, 0.6, 1.0, 1.6, 0.72, 1.25, 0.85];
-const photosWithAspect: Photo[] = photos.map((p, i) => ({ ...p, aspect: aspects[i] }));
+const photosWithAspect: Photo[] = photos.map((p, i) => ({
+  ...p,
+  aspect: aspects[i],
+  group: "solo",
+  isMain: true,
+}));
 const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
 
 // Fixed: use photosWithAspect (not photos) for consistent total count
