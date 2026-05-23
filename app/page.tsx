@@ -17,9 +17,9 @@ const photos = [
   { id: 2, image: "/Photos/Plane.jpg", story: "", tags: ["Sky", "Plane"] },
   { id: 3, image: "/Photos/Plane in the Sky.jpg", story: "", tags: ["Plane", "Sky"] },
   { id: 4, image: "/Photos/Autumn Evening.jpg", story: "", tags: ["Autumn", "Evening"] },
-  { id: 5, image: "/Photos/Full Rainbow.jpg", story: "", tags: ["Rainbow", "Weather"] },
+  { id: 5, image: "/Photos/Full Rainbow.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: false },
   { id: 6, image: "/Photos/Empty street.jpg", story: "", tags: ["Street", "Weather"] },
-  { id: 7, image: "/Photos/Rainbow Arc.jpg", story: "", tags: ["Rainbow", "Weather"] },
+  { id: 7, image: "/Photos/Rainbow Arc.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: true },
   { id: 8, image: "/Photos/Sunny Evening.jpg", story: "", tags: ["Water", "Beach"] },
   { id: 9, image: "/Photos/Telephone Booth.jpg", story: "", tags: ["Telephone Booth", "Street", "Evening"] },
   { id: 10, image: "/Photos/Terminal 5.jpg", story: "", tags: ["Terminal", "People"] },
@@ -40,8 +40,8 @@ const aspects = [1.3, 0.7, 1.0, 1.5, 0.75, 1.2, 0.8, 0.65, 1.35, 1.1, 0.9, 1.4, 
 const photosWithAspect: Photo[] = photos.map((p, i) => ({
   ...p,
   aspect: aspects[i],
-  group: "solo",
-  isMain: true,
+  group: p.group ?? "solo",
+  isMain: p.isMain ?? true,
 }));
 const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
 
