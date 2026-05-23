@@ -40,7 +40,7 @@ const aspects = [1.3, 0.7, 1.0, 1.5, 0.75, 1.2, 0.8, 0.65, 1.35, 1.1, 0.9, 1.4, 
 const photosWithAspect: Photo[] = photos.map((p, i) => ({
   ...p,
   aspect: aspects[i],
-  group: p.group ?? "solo",
+  group: p.group ?? "",
   isMain: p.isMain ?? true,
 }));
 const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
@@ -558,22 +558,24 @@ className="card"  onClick={() => setSelectedPhoto(photo)}
               </div>
 
               {/* Related photos — now actually works */}
-              {getRelatedPhotos(selectedPhoto).length > 0 && (
-                <div>
-                  <p className="related-label">same moment, different frame</p>
-                  <div className="related-strip">
-                    {getRelatedPhotos(selectedPhoto).map((photo) => (
-                      <img
-                        key={photo.id}
-                        src={photo.image}
-                        alt={photo.story}
-                        className="related-thumb"
-                        onClick={() => setSelectedPhoto(photo)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+{selectedPhoto.group &&
+selectedPhoto.group !== "" &&
+getRelatedPhotos(selectedPhoto).length > 0 && (
+  <div>
+    <p className="related-label">same moment, different frame</p>
+    <div className="related-strip">
+      {getRelatedPhotos(selectedPhoto).map((photo) => (
+        <img
+          key={photo.id}
+          src={photo.image}
+          alt={photo.story}
+          className="related-thumb"
+          onClick={() => setSelectedPhoto(photo)}
+        />
+      ))}
+    </div>
+  </div>
+)}
 
               <button className="modal-close" onClick={() => setSelectedPhoto(null)}>← close</button>
             </div>
