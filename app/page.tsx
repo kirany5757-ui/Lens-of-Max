@@ -15,13 +15,13 @@ import { useState, useEffect, useCallback } from "react";
 const photos = [
   { id: 1, image: "/Photos/Riverside.jpg", story: "", tags: ["Riverside", "Kingston"] },
   { id: 2, image: "/Photos/Plane.jpg", story: "", tags: ["Sky", "Plane"] },
-  { id: 3, image: "/Photos/Plane in the sky.jpg", story: "", tags: ["Plane", "Sky"] },
+  { id: 3, image: "/Photos/Plane in the Sky.jpg", story: "", tags: ["Plane", "Sky"] },
   { id: 4, image: "/Photos/Autumn Evening.jpg", story: "", tags: ["Autumn", "Evening"] },
   { id: 5, image: "/Photos/Full Rainbow.jpg", story: "", tags: ["Rainbow", "Weather"] },
-  { id: 6, image: "/Photos/Empty Street.jpg", story: "", tags: ["Street", "Weather"] },
+  { id: 6, image: "/Photos/Empty street.jpg", story: "", tags: ["Street", "Weather"] },
   { id: 7, image: "/Photos/Rainbow Arc.jpg", story: "", tags: ["Rainbow", "Weather"] },
   { id: 8, image: "/Photos/Sunny Evening.jpg", story: "", tags: ["Water", "Beach"] },
-  { id: 9, image: "/Photos/Telephone Booth.jpg", story: "", tags: ["{Telephone Booth}", "Street", "Evening"] },
+  { id: 9, image: "/Photos/Telephone Booth.jpg", story: "", tags: ["Telephone Booth", "Street", "Evening"] },
   { id: 10, image: "/Photos/Terminal 5.jpg", story: "", tags: ["Terminal", "People"] },
   { id: 11, image: "/Photos/Afadena.jpg", story: "", tags: ["Food", "Afadena"] },
 ];
