@@ -190,7 +190,7 @@ export default function Home() {
   color: #e8e4dc;
   margin: 20px 0;
   position: relative;
-  text-shadow: 0 0 12px rgba(255, 200, 120, 0.12);
+  text-shadow: 0 0 12px rgba(255, 220, 160, 0.05);
 }
 
 .hero-title::before,
@@ -239,7 +239,7 @@ export default function Home() {
           font-family: 'Cormorant Garamond', serif;
           font-style: italic;
           font-size: 18px;
-          color: #444;
+          color: #666;
           margin-bottom: 52px;
           transition: opacity 0.3s ease, max-height 0.4s ease;
           overflow: hidden;
@@ -278,7 +278,7 @@ export default function Home() {
         .search-input {
           background: transparent;
           border: none;
-          border-bottom: 1px solid #222;
+          border-bottom: 1px solid #333;
           width: 100%;
           padding: 14px 0 14px 72px;
           font-family: 'Inconsolata', monospace;
@@ -289,7 +289,7 @@ export default function Home() {
         }
         .site-header.scrolled .search-input { font-size: 12px; padding: 6px 0; }
         .search-input:focus { border-color: #555; }
-        .search-input::placeholder { color: #2e2e2e; }
+        .search-input::placeholder { color: #555; }
 
         .hero-tags {
           display: flex;
