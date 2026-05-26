@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 const photos = [
   { id: 5,  image: "/Photos/Full Rainbow.jpg",      story: "", tags: ["Rainbow", "Weather"],                    group: "rainbow", isMain: false },
   { id: 7,  image: "/Photos/Rainbow Arc.jpg",        story: "", tags: ["Rainbow", "Weather"],                    group: "rainbow", isMain: true  },
   { id: 1,  image: "/Photos/Riverside.jpg",          story: "", tags: ["Riverside", "Kingston"],                 group: "",        isMain: true  },
-  { id: 2,  image: "/Photos/Plane.jpg",              story: "", tags: ["Sky", "Plane"],                          group: "",        isMain: true  },
-  { id: 3,  image: "/Photos/Plane in the Sky.jpg",   story: "", tags: ["Plane", "Sky"],                          group: "",     isMain: true },
+  { id: 2,  image: "/Photos/Plane.jpg",              story: "", tags: ["Sky", "Plane"],                          group: "plane",   isMain: true  },
+  { id: 3,  image: "/Photos/Plane in the Sky.jpg",   story: "", tags: ["Plane", "Sky"],                          group: "plane",   isMain: false },
   { id: 4,  image: "/Photos/Autumn Evening.jpg",     story: "", tags: ["Autumn", "Evening"],                     group: "",        isMain: true  },
   { id: 6,  image: "/Photos/Empty street.jpg",       story: "", tags: ["Street", "Weather"],                     group: "",        isMain: true  },
   { id: 8,  image: "/Photos/Sunny Evening.jpg",      story: "", tags: ["Evening"],                               group: "",        isMain: true  },
@@ -68,15 +68,30 @@ export default function Home() {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // 0 = fully in hero, 1 = fully scrolled — drives the morph
+  const [morphProgress, setMorphProgress] = useState(0);
   const numCols = useNumCols();
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
 
   useEffect(() => {
-    // FIX 1: tight threshold, no lag gap
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => {
+      // Cancel any pending frame
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        // Morph happens between 40px and 200px scroll
+        const progress = Math.min(1, Math.max(0, (y - 40) / 160));
+        setMorphProgress(progress);
+        setScrolled(y > 60);
+      });
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   const getRelatedPhotos = useCallback((current: Photo): Photo[] => {
@@ -100,6 +115,13 @@ export default function Home() {
     setSearch("");
   };
 
+  // Derived values from morphProgress — title fades out, nav fades in
+  const heroTitleOpacity = 1 - morphProgress;
+  const heroTitleBlur = morphProgress * 8; // px
+  const heroTitleScale = 1 - morphProgress * 0.06;
+  const navOpacity = morphProgress;
+  const navBlur = (1 - morphProgress) * 12; // starts blurry, sharpens
+
   return (
     <>
       <style>{`
@@ -117,10 +139,7 @@ export default function Home() {
         .page { opacity: 0; transition: opacity 0.8s ease; }
         .page.visible { opacity: 1; }
 
-        /* ── HEADER
-           FIX 2: header is always a fixed slim bar.
-           The HERO content sits behind it as a normal full-screen section.
-           No min-height animation — that was the lag culprit. ── */
+        /* ── FIXED NAV BAR ── */
         .site-header {
           position: fixed;
           top: 0; left: 0; right: 0;
@@ -130,60 +149,47 @@ export default function Home() {
           align-items: center;
           justify-content: space-between;
           padding: 0 32px;
-          /* FIX 3: only transition background & border, nothing layout-affecting */
-          transition: background 0.3s ease, border-color 0.3s ease;
-          border-bottom: 1px solid transparent;
+          /* No CSS transition — driven by JS morphProgress inline styles */
+          pointer-events: none;
         }
         .site-header.scrolled {
-          background: rgba(10,10,9,0.92);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border-color: #1a1a1a;
-        }
-
-        /* Name — always visible in header */
-        .header-name {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 20px;
-          font-weight: 300;
-          letter-spacing: 0.06em;
-          color: #e8e4dc;
-          /* FIX 4: GPU-accelerated opacity, not display:none */
-          opacity: 0;
-          transition: opacity 0.3s ease;
-          pointer-events: none;
-          white-space: nowrap;
-        }
-        .site-header.scrolled .header-name {
-          opacity: 1;
           pointer-events: all;
         }
 
-        /* Mini search in header */
+        /* Nav name — morphs from big hero title position */
+        .header-name {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 22px;
+          font-weight: 300;
+          letter-spacing: 0.06em;
+          color: #e8e4dc;
+          white-space: nowrap;
+          user-select: none;
+        }
+
+        /* Nav search — fades in alongside */
+        .header-search-wrap {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .header-search-icon { font-size: 13px; color: rgba(232,228,220,0.4); }
         .header-search {
           background: transparent;
           border: none;
-          border-bottom: 1px solid #282828;
+          border-bottom: 1px solid rgba(255,255,255,0.12);
           padding: 4px 0;
           font-family: 'Inconsolata', monospace;
           font-size: 12px;
           color: #e8e4dc;
           outline: none;
-          width: 0;
-          opacity: 0;
-          /* FIX 4: GPU opacity + width, no layout thrash */
-          transition: width 0.35s ease, opacity 0.3s ease, border-color 0.2s;
-          pointer-events: none;
+          width: 160px;
+          transition: border-color 0.2s, width 0.3s ease;
         }
-        .site-header.scrolled .header-search {
-          width: 180px;
-          opacity: 1;
-          pointer-events: all;
-        }
-        .header-search:focus { border-color: #666; }
-        .header-search::placeholder { color: #383838; }
+        .header-search:focus { border-color: rgba(255,255,255,0.3); width: 210px; }
+        .header-search::placeholder { color: rgba(232,228,220,0.25); }
 
-        /* ── HERO — normal flow, sits under the fixed header ── */
+        /* ── HERO ── */
         .hero {
           height: 100vh;
           display: flex;
@@ -209,7 +215,10 @@ export default function Home() {
           text-transform: uppercase;
           color: #444;
           margin-bottom: 20px;
+          /* fades with title */
+          transition: opacity 0.1s linear;
         }
+        /* The hero title — animated via inline style from JS */
         .hero-title {
           font-family: 'Cormorant Garamond', serif;
           font-size: clamp(72px, 16vw, 160px);
@@ -219,6 +228,8 @@ export default function Home() {
           color: #e8e4dc;
           margin: 0 0 8px;
           position: relative;
+          transform-origin: center top;
+          will-change: opacity, filter, transform;
         }
         .hero-title::before,
         .hero-title::after {
@@ -227,6 +238,7 @@ export default function Home() {
           left: 50%; transform: translateX(-50%);
           width: 60%; height: 1px;
           background: #2a2a2a;
+          transition: opacity 0.2s;
         }
         .hero-title::before { top: -14px; }
         .hero-title::after  { bottom: -14px; }
@@ -239,7 +251,6 @@ export default function Home() {
           margin: 28px 0 52px;
         }
 
-        /* Hero search — big */
         .hero-search-wrap {
           position: relative;
           width: 100%;
@@ -406,7 +417,6 @@ export default function Home() {
           cursor: pointer; text-transform: uppercase; transition: color 0.2s; text-align: left;
         }
         .modal-close:hover { color: #e8e4dc; }
-
         .empty { text-align: center; padding: 80px 0; color: #333; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: #0a0a09; }
@@ -415,25 +425,65 @@ export default function Home() {
 
       <div className={`page ${loaded ? "visible" : ""}`}>
 
-        {/* ── SLIM FIXED HEADER — always there, just fades in content on scroll ── */}
-        <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
-          <span className="header-name">Lens of Max</span>
-          <input
-            className="header-search"
-            type="text"
-            placeholder="search moments…"
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setActiveTag(null); }}
-          />
+        {/* ── NAV BAR — fades in as hero title fades out ── */}
+        <header
+          className={`site-header ${scrolled ? "scrolled" : ""}`}
+          style={{
+            opacity: navOpacity,
+            background: `rgba(10,10,9,${0.6 * morphProgress})`,
+            backdropFilter: `blur(${20 * morphProgress}px) saturate(${100 + 60 * morphProgress}%)`,
+            WebkitBackdropFilter: `blur(${20 * morphProgress}px) saturate(${100 + 60 * morphProgress}%)`,
+            borderBottom: `1px solid rgba(255,255,255,${0.06 * morphProgress})`,
+            // Slight upward travel on the way in — feels like it rises from the title
+            transform: `translateY(${(1 - morphProgress) * -8}px)`,
+          }}
+        >
+          <span className="header-name"
+            style={{
+              filter: `blur(${navBlur * 0.4}px)`,
+            }}
+          >
+            Lens of Max
+          </span>
+          <div className="header-search-wrap"
+            style={{
+              filter: `blur(${navBlur * 0.6}px)`,
+            }}
+          >
+            <span className="header-search-icon">⌕</span>
+            <input
+              className="header-search"
+              type="text"
+              placeholder="search moments…"
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setActiveTag(null); }}
+            />
+          </div>
         </header>
 
-        {/* ── HERO — normal flow section, no fixed positioning ── */}
+        {/* ── HERO ── */}
         <section className="hero">
-          <p className="hero-eyebrow">Visual journal</p>
-          <h1 className="hero-title">Lens of Max</h1>
-          <p className="hero-subtitle">The beauty of my camera&apos;s wink</p>
+          <p className="hero-eyebrow" style={{ opacity: heroTitleOpacity }}>
+            Visual journal
+          </p>
 
-          <div className="hero-search-wrap">
+          {/* Title fades + blurs out as nav fades in */}
+          <h1
+            className="hero-title"
+            style={{
+              opacity: heroTitleOpacity,
+              filter: `blur(${heroTitleBlur}px)`,
+              transform: `scale(${heroTitleScale})`,
+            }}
+          >
+            Lens of Max
+          </h1>
+
+          <p className="hero-subtitle" style={{ opacity: heroTitleOpacity }}>
+            The beauty of my camera&apos;s wink
+          </p>
+
+          <div className="hero-search-wrap" style={{ opacity: heroTitleOpacity }}>
             <span className="hero-search-label">Search</span>
             <input
               className="hero-search-input"
@@ -444,7 +494,7 @@ export default function Home() {
             />
           </div>
 
-          <div className="hero-tags">
+          <div className="hero-tags" style={{ opacity: heroTitleOpacity }}>
             {allTags.map((tag) => (
               <button
                 key={tag}
