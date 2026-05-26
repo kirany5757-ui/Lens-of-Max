@@ -20,7 +20,7 @@ const photos = [
   { id: 3, image: "/Photos/Plane in the Sky.jpg", story: "", tags: ["Plane", "Sky"] },
   { id: 4, image: "/Photos/Autumn Evening.jpg", story: "", tags: ["Autumn", "Evening"] },
   { id: 6, image: "/Photos/Empty street.jpg", story: "", tags: ["Street", "Weather"] },
-  { id: 8, image: "/Photos/Sunny Evening.jpg", story: "", tags: ["Water", "Beach"] },
+  { id: 8, image: "/Photos/Sunny Evening.jpg", story: "", tags: ["Evening"] },
   { id: 9, image: "/Photos/Telephone Booth.jpg", story: "", tags: ["Telephone Booth", "Street", "Evening"] },
   { id: 10, image: "/Photos/Terminal 5.jpg", story: "", tags: ["Terminal", "People"] },
   { id: 11, image: "/Photos/Afadena.jpg", story: "", tags: ["Food", "Afadena"] },
