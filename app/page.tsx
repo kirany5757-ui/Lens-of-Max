@@ -13,11 +13,11 @@ import { useState, useEffect, useCallback } from "react";
 // solo        → photos 5, 7(coffee), 10, 17 have unique groups
 
 const photos = [
+  { id: 5, image: "/Photos/Full Rainbow.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: false },
   { id: 1, image: "/Photos/Riverside.jpg", story: "", tags: ["Riverside", "Kingston"] },
   { id: 2, image: "/Photos/Plane.jpg", story: "", tags: ["Sky", "Plane"] },
   { id: 3, image: "/Photos/Plane in the Sky.jpg", story: "", tags: ["Plane", "Sky"] },
   { id: 4, image: "/Photos/Autumn Evening.jpg", story: "", tags: ["Autumn", "Evening"] },
-  { id: 5, image: "/Photos/Full Rainbow.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: false },
   { id: 6, image: "/Photos/Empty street.jpg", story: "", tags: ["Street", "Weather"] },
   { id: 7, image: "/Photos/Rainbow Arc.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: true },
   { id: 8, image: "/Photos/Sunny Evening.jpg", story: "", tags: ["Water", "Beach"] },
