@@ -190,7 +190,7 @@ export default function Home() {
   color: #e8e4dc;
   margin: 20px 0;
   position: relative;
-  text-shadow: 0 0 12px rgba(255, 220, 160, 0.05);
+  text-shadow: 0 0 6px rgba(255, 220, 160, 0.05);
 }
 
 .hero-title::before,
@@ -208,7 +208,7 @@ export default function Home() {
 .hero-title::after  { bottom: -14px; }
 
         .site-header.scrolled .hero-title {
-  font-size: 18px;
+  font-size: 20px;
   margin: 0;
   letter-spacing: 0.08em;
   white-space: nowrap;
@@ -268,7 +268,7 @@ export default function Home() {
           transform: translateY(-50%);
           font-size: 10px;
           letter-spacing: 0.3em;
-          color: #383838;
+          color: #5a5a5a;
           text-transform: uppercase;
           pointer-events: none;
           transition: opacity 0.3s ease;
@@ -278,7 +278,7 @@ export default function Home() {
         .search-input {
           background: transparent;
           border: none;
-          border-bottom: 1px solid #333;
+          border-bottom: 1px solid #444;
           width: 100%;
           padding: 14px 0 14px 72px;
           font-family: 'Inconsolata', monospace;
@@ -289,7 +289,7 @@ export default function Home() {
         }
         .site-header.scrolled .search-input { font-size: 12px; padding: 6px 0; }
         .search-input:focus { border-color: #555; }
-        .search-input::placeholder { color: #555; }
+        .search-input::placeholder { color: #666; }
 
         .hero-tags {
           display: flex;
@@ -305,7 +305,7 @@ export default function Home() {
 
         .tag-btn {
           background: transparent;
-          border: 1px solid #1e1e1e;
+          border: 1px solid #2d2d2d;
           color: #484848;
           padding: 4px 14px;
           font-family: 'Inconsolata', monospace;
@@ -412,7 +412,7 @@ export default function Home() {
         }
         .modal-tags { display: flex; flex-wrap: wrap; gap: 8px; }
         .modal-tag-btn {
-          background: transparent; border: 1px solid #1e1e1e; color: #555;
+          background: transparent; border: 1px solid #2d2d2d; color: #555;
           padding: 4px 12px; font-family: 'Inconsolata', monospace;
           font-size: 11px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s;
         }
