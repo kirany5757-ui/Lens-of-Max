@@ -2,28 +2,18 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-// Groups that actually make sense:
-// "coffee"    → photos 3 & 7 (both coffee moments)
-// "street"    → photos 1, 4 & 9 (car, late night street, crosswalk)
-// "sky"       → photos 6 & 18 (clouds, stars)
-// "water"     → photos 8 & 14 (waves, water wide)
-// "city"      → photos 15 & 16 (building, city lights)
-// "indoor"    → photos 2 & 11 (work, books)
-// "travel"    → photos 12 & 13 (road, horizon)
-// solo        → photos 5, 7(coffee), 10, 17 have unique groups
-
 const photos = [
-  { id: 5, image: "/Photos/Full Rainbow.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: false },
-  { id: 7, image: "/Photos/Rainbow Arc.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: true },
-  { id: 1, image: "/Photos/Riverside.jpg", story: "", tags: ["Riverside", "Kingston"] },
-  { id: 2, image: "/Photos/Plane.jpg", story: "", tags: ["Sky", "Plane"] },
-  { id: 3, image: "/Photos/Plane in the Sky.jpg", story: "", tags: ["Plane", "Sky"] },
-  { id: 4, image: "/Photos/Autumn Evening.jpg", story: "", tags: ["Autumn", "Evening"] },
-  { id: 6, image: "/Photos/Empty street.jpg", story: "", tags: ["Street", "Weather"] },
-  { id: 8, image: "/Photos/Sunny Evening.jpg", story: "", tags: ["Evening"] },
-  { id: 9, image: "/Photos/Telephone Booth.jpg", story: "", tags: ["Telephone Booth", "Street", "Evening"] },
-  { id: 10, image: "/Photos/Terminal 5.jpg", story: "", tags: ["Terminal", "People"] },
-  { id: 11, image: "/Photos/Afadena.jpg", story: "", tags: ["Food", "Afadena"] },
+  { id: 5,  image: "/Photos/Full Rainbow.jpg",      story: "", tags: ["Rainbow", "Weather"],                    group: "rainbow", isMain: false },
+  { id: 7,  image: "/Photos/Rainbow Arc.jpg",        story: "", tags: ["Rainbow", "Weather"],                    group: "rainbow", isMain: true  },
+  { id: 1,  image: "/Photos/Riverside.jpg",          story: "", tags: ["Riverside", "Kingston"],                 group: "",        isMain: true  },
+  { id: 2,  image: "/Photos/Plane.jpg",              story: "", tags: ["Sky", "Plane"],                          group: "plane",   isMain: true  },
+  { id: 3,  image: "/Photos/Plane in the Sky.jpg",   story: "", tags: ["Plane", "Sky"],                          group: "plane",   isMain: false },
+  { id: 4,  image: "/Photos/Autumn Evening.jpg",     story: "", tags: ["Autumn", "Evening"],                     group: "",        isMain: true  },
+  { id: 6,  image: "/Photos/Empty street.jpg",       story: "", tags: ["Street", "Weather"],                     group: "",        isMain: true  },
+  { id: 8,  image: "/Photos/Sunny Evening.jpg",      story: "", tags: ["Evening"],                               group: "",        isMain: true  },
+  { id: 9,  image: "/Photos/Telephone Booth.jpg",    story: "", tags: ["Telephone Booth", "Street", "Evening"],  group: "",        isMain: true  },
+  { id: 10, image: "/Photos/Terminal 5.jpg",         story: "", tags: ["Terminal", "People"],                    group: "",        isMain: true  },
+  { id: 11, image: "/Photos/Afadena.jpg",            story: "", tags: ["Food", "Afadena"],                       group: "",        isMain: true  },
 ];
 
 type Photo = {
@@ -36,16 +26,14 @@ type Photo = {
   aspect: number;
 };
 
-const aspects = [1.3, 0.7, 1.0, 1.5, 0.75, 1.2, 0.8, 0.65, 1.35, 1.1, 0.9, 1.4, 0.6, 1.0, 1.6, 0.72, 1.25, 0.85];
+const aspects = [1.3, 0.7, 1.0, 1.5, 0.75, 1.2, 0.8, 0.65, 1.35, 1.1, 0.9];
 const photosWithAspect: Photo[] = photos.map((p, i) => ({
   ...p,
-  aspect: aspects[i],
+  aspect: aspects[i] ?? 1.0,
   group: p.group ?? "",
   isMain: p.isMain ?? true,
 }));
 const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
-
-// Fixed: use photosWithAspect (not photos) for consistent total count
 const totalMain = photosWithAspect.filter((p) => p.isMain).length;
 
 function buildColumns(items: Photo[], numCols: number): Photo[][] {
@@ -82,31 +70,17 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const numCols = useNumCols();
 
-  // Helper: count how many photos are in a group
-  const getGroupCount = (group: string) => {
-    return photosWithAspect.filter((p) => p.group === group).length;
-  };
-
   useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
 
   useEffect(() => {
-  const onScroll = () => {
-    const y = window.scrollY;
+    // FIX 1: tight threshold, no lag gap
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-    setScrolled((prev) => {
-      if (!prev && y > 220) return true;
-      if (prev && y < 140) return false;
-      return prev;
-    });
-  };
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-
-  return () => window.removeEventListener("scroll", onScroll);
-}, []);
-
-  // Fixed: moved outside component & wrapped in useCallback
   const getRelatedPhotos = useCallback((current: Photo): Photo[] => {
+    if (!current.group) return [];
     return photosWithAspect.filter(
       (p) => p.group === current.group && p.id !== current.id
     );
@@ -143,188 +117,179 @@ export default function Home() {
         .page { opacity: 0; transition: opacity 0.8s ease; }
         .page.visible { opacity: 1; }
 
+        /* ── HEADER
+           FIX 2: header is always a fixed slim bar.
+           The HERO content sits behind it as a normal full-screen section.
+           No min-height animation — that was the lag culprit. ── */
         .site-header {
           position: fixed;
           top: 0; left: 0; right: 0;
           z-index: 50;
+          height: 60px;
           display: flex;
-          flex-direction: column;
           align-items: center;
-          justify-content: center;
-          background: transparent;
-          transition: background 0.5s ease, backdrop-filter 0.5s ease, border-color 0.5s ease;
+          justify-content: space-between;
+          padding: 0 32px;
+          /* FIX 3: only transition background & border, nothing layout-affecting */
+          transition: background 0.3s ease, border-color 0.3s ease;
           border-bottom: 1px solid transparent;
-          padding: 0 24px;
-          pointer-events: none;
         }
         .site-header.scrolled {
-          background: rgba(10,10,9,0.94);
+          background: rgba(10,10,9,0.92);
           backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
           border-color: #1a1a1a;
+        }
+
+        /* Name — always visible in header */
+        .header-name {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 20px;
+          font-weight: 300;
+          letter-spacing: 0.06em;
+          color: #e8e4dc;
+          /* FIX 4: GPU-accelerated opacity, not display:none */
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          pointer-events: none;
+          white-space: nowrap;
+        }
+        .site-header.scrolled .header-name {
+          opacity: 1;
           pointer-events: all;
         }
 
-        .hero-content {
+        /* Mini search in header */
+        .header-search {
+          background: transparent;
+          border: none;
+          border-bottom: 1px solid #282828;
+          padding: 4px 0;
+          font-family: 'Inconsolata', monospace;
+          font-size: 12px;
+          color: #e8e4dc;
+          outline: none;
+          width: 0;
+          opacity: 0;
+          /* FIX 4: GPU opacity + width, no layout thrash */
+          transition: width 0.35s ease, opacity 0.3s ease, border-color 0.2s;
+          pointer-events: none;
+        }
+        .site-header.scrolled .header-search {
+          width: 180px;
+          opacity: 1;
+          pointer-events: all;
+        }
+        .header-search:focus { border-color: #666; }
+        .header-search::placeholder { color: #383838; }
+
+        /* ── HERO — normal flow, sits under the fixed header ── */
+        .hero {
+          height: 100vh;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          min-height: 100vh;
           text-align: center;
           padding: 60px 24px 100px;
-          transition: min-height 0.5s ease, padding 0.5s ease;
-          pointer-events: all;
+          position: relative;
         }
-        .site-header.scrolled .hero-content {
-  min-height: 90px;
-  padding: 12px 24px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; /* center everything */
-
-  gap: 16px;
-
-  position: relative; /* needed for search positioning */
-
-  transition: all 0.7s ease;
+        .hero::after {
+          content: '';
+          position: absolute;
+          bottom: 0; left: 50%;
+          transform: translateX(-50%);
+          width: 1px; height: 60px;
+          background: linear-gradient(to bottom, #2a2a2a, transparent);
         }
-
-        .hero-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(80px, 18vw, 180px);
-  font-weight: 300;
-  line-height: 0.9;
-  letter-spacing: 0.08em;
-  color: #e8e4dc;
-  margin: 20px 0;
-  position: relative;
-  text-shadow: 0 0 6px rgba(255, 220, 160, 0.05);
-}
-
-.hero-title::before,
-.hero-title::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  height: 1px;
-  background: #2a2a2a;
-}
-
-.hero-title::before { top: -14px; }
-.hero-title::after  { bottom: -14px; }
-
-        .site-header.scrolled .hero-title {
-  font-size: 20px;
-  margin: 0;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.site-header.scrolled .hero-title::before,
-.site-header.scrolled .hero-title::after {
-  display: none;
-}
 
         .hero-eyebrow {
-          font-size: 01px;
+          font-size: 10px;
           letter-spacing: 0.35em;
           text-transform: uppercase;
           color: #444;
           margin-bottom: 20px;
-          transition: opacity 0.3s ease, max-height 0.4s ease;
-          overflow: hidden;
-          max-height: 40px;
         }
-        .site-header.scrolled .hero-eyebrow { opacity: 0; max-height: 0; margin: 0; }
+        .hero-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(72px, 16vw, 160px);
+          font-weight: 300;
+          line-height: 0.9;
+          letter-spacing: 0.06em;
+          color: #e8e4dc;
+          margin: 0 0 8px;
+          position: relative;
+        }
+        .hero-title::before,
+        .hero-title::after {
+          content: "";
+          position: absolute;
+          left: 50%; transform: translateX(-50%);
+          width: 60%; height: 1px;
+          background: #2a2a2a;
+        }
+        .hero-title::before { top: -14px; }
+        .hero-title::after  { bottom: -14px; }
 
         .hero-subtitle {
           font-family: 'Cormorant Garamond', serif;
           font-style: italic;
-          font-size: 18px;
+          font-size: 17px;
           color: #5c5a56;
-          margin-bottom: 52px;
-          transition: opacity 0.3s ease, max-height 0.4s ease;
-          overflow: hidden;
-          max-height: 40px;
+          margin: 28px 0 52px;
         }
-        .site-header.scrolled .hero-subtitle { opacity: 0; max-height: 0; margin: 0; }
 
-        .search-wrap {
+        /* Hero search — big */
+        .hero-search-wrap {
           position: relative;
           width: 100%;
-          max-width: 400px;
+          max-width: 380px;
           margin-bottom: 28px;
-          transition: max-width 0.5s ease, margin 0.5s ease;
-          flex-shrink: 0;
         }
-        .site-header.scrolled .search-wrap {
-  position: absolute;
-  right: 24px;
-  max-width: 220px;
-  margin-bottom: 0;
-}
-
-        .search-label {
+        .hero-search-label {
           position: absolute;
           left: 0; top: 50%;
           transform: translateY(-50%);
           font-size: 10px;
           letter-spacing: 0.3em;
-          color: #5a5a5a;
+          color: #3a3a3a;
           text-transform: uppercase;
           pointer-events: none;
-          transition: opacity 0.3s ease;
         }
-        .site-header.scrolled .search-label { opacity: 0; }
-
-        .search-input {
+        .hero-search-input {
           background: transparent;
           border: none;
-          border-bottom: 1px solid #444;
+          border-bottom: 1px solid #333;
           width: 100%;
-          padding: 14px 0 14px 72px;
+          padding: 12px 0 12px 68px;
           font-family: 'Inconsolata', monospace;
-          font-size: 16px;
+          font-size: 15px;
           color: #e8e4dc;
           outline: none;
-          transition: font-size 0.4s ease, padding 0.4s ease, border-color 0.2s ease;
+          transition: border-color 0.2s;
         }
-        .site-header.scrolled .search-input { font-size: 12px; padding: 6px 0; }
-        .search-input:focus { border-color: #555; }
-        .search-input::placeholder { color: #666; }
+        .hero-search-input:focus { border-color: #666; }
+        .hero-search-input::placeholder { color: #2e2e2e; }
 
         .hero-tags {
           display: flex;
           flex-wrap: wrap;
           gap: 8px;
           justify-content: center;
-          max-width: 560px;
-          transition: opacity 0.3s ease, max-height 0.5s ease;
-          max-height: 200px;
-          overflow: hidden;
+          max-width: 540px;
         }
-        .site-header.scrolled .hero-tags { opacity: 0; max-height: 0; pointer-events: none; }
-
         .tag-btn {
           background: transparent;
-          border: 1px solid #2d2d2d;
-          color: #727272;
+          border: 1px solid #222;
+          color: #555;
           padding: 4px 14px;
           font-family: 'Inconsolata', monospace;
           font-size: 11px;
           letter-spacing: 0.1em;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: border-color 0.2s, color 0.2s;
         }
-        .tag-btn:hover { border-color: #444; color: #999; }
+        .tag-btn:hover { border-color: #555; color: #aaa; }
         .tag-btn.active { border-color: #e8e4dc; color: #e8e4dc; }
 
         .scroll-hint {
@@ -343,10 +308,11 @@ export default function Home() {
         .scroll-hint.hidden { opacity: 0; }
         @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.8} }
 
+        /* ── GALLERY ── */
         .gallery-section {
           max-width: 1400px;
           margin: 0 auto;
-          padding: 100vh 12px 120px;
+          padding: 60px 12px 120px;
         }
         .counter {
           font-size: 10px;
@@ -360,13 +326,8 @@ export default function Home() {
         .masonry { display: flex; gap: 10px; align-items: flex-start; }
         .masonry-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
 
-.card {
-  cursor: pointer;
-  position: relative;
-  overflow: visible; /* important */
-  border-radius: 3px;
-  display: block;
-}        .card img {
+        .card { cursor: pointer; position: relative; overflow: hidden; border-radius: 3px; display: block; }
+        .card img {
           width: 100%; display: block; object-fit: cover;
           filter: grayscale(20%) brightness(0.88);
           transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s ease;
@@ -422,45 +383,22 @@ export default function Home() {
         }
         .modal-tags { display: flex; flex-wrap: wrap; gap: 8px; }
         .modal-tag-btn {
-          background: transparent; border: 1px solid #3a3a3a; color: #555;
+          background: transparent; border: 1px solid #2a2a2a; color: #555;
           padding: 4px 12px; font-family: 'Inconsolata', monospace;
           font-size: 11px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s;
         }
         .modal-tag-btn:hover { border-color: #555; color: #aaa; }
-
-        /* Related photos */
-        .related-label {
-          font-size: 10px;
-          letter-spacing: 0.2em;
-          color: #444;
-          text-transform: uppercase;
-          margin-bottom: 10px;
-        }
-        .related-strip {
-          display: flex;
-          gap: 8px;
-          overflow-x: auto;
-          padding-bottom: 4px;
-          scrollbar-width: none;
-        }
+        .related-label { font-size: 10px; letter-spacing: 0.2em; color: #444; text-transform: uppercase; margin-bottom: 10px; }
+        .related-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
         .related-strip::-webkit-scrollbar { display: none; }
         .related-thumb {
-          width: 90px;
-          height: 120px;
-          object-fit: cover;
-          flex-shrink: 0;
-          cursor: pointer;
-          border-radius: 2px;
+          width: 90px; height: 120px; object-fit: cover; flex-shrink: 0;
+          cursor: pointer; border-radius: 2px;
           filter: brightness(0.8) grayscale(15%);
           transition: filter 0.2s ease, transform 0.2s ease;
           border: 1px solid transparent;
         }
-        .related-thumb:hover {
-          filter: brightness(1) grayscale(0%);
-          transform: scale(1.04);
-          border-color: #444;
-        }
-
+        .related-thumb:hover { filter: brightness(1) grayscale(0%); transform: scale(1.04); border-color: #444; }
         .modal-close {
           background: transparent; border: none; color: #333;
           font-size: 10px; letter-spacing: 0.25em;
@@ -470,7 +408,6 @@ export default function Home() {
         .modal-close:hover { color: #e8e4dc; }
 
         .empty { text-align: center; padding: 80px 0; color: #333; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
-
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: #0a0a09; }
         ::-webkit-scrollbar-thumb { background: #1e1e1e; }
@@ -478,41 +415,52 @@ export default function Home() {
 
       <div className={`page ${loaded ? "visible" : ""}`}>
 
+        {/* ── SLIM FIXED HEADER — always there, just fades in content on scroll ── */}
         <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
-          <div className="hero-content">
-            <p className="hero-eyebrow">🕊️</p>
-            <h1 className="hero-title">Lens of Max</h1>
-            <p className="hero-subtitle">The beauty of my camera’s wink</p>
-
-            <div className="search-wrap">
-              <span className="search-label">Search</span>
-              <input
-                className="search-input"
-                type="text"
-                placeholder="search moments"
-                value={search}
-                onChange={(e) => { setSearch(e.target.value); setActiveTag(null); }}
-              />
-            </div>
-
-            <div className="hero-tags">
-              {allTags.map((tag) => (
-                <button
-                  key={tag}
-                  className={`tag-btn ${activeTag === tag ? "active" : ""}`}
-                  onClick={() => handleTagClick(tag)}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
+          <span className="header-name">Lens of Max</span>
+          <input
+            className="header-search"
+            type="text"
+            placeholder="search moments…"
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setActiveTag(null); }}
+          />
         </header>
+
+        {/* ── HERO — normal flow section, no fixed positioning ── */}
+        <section className="hero">
+          <p className="hero-eyebrow">Visual journal</p>
+          <h1 className="hero-title">Lens of Max</h1>
+          <p className="hero-subtitle">The beauty of my camera&apos;s wink</p>
+
+          <div className="hero-search-wrap">
+            <span className="hero-search-label">Search</span>
+            <input
+              className="hero-search-input"
+              type="text"
+              placeholder="search moments…"
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setActiveTag(null); }}
+            />
+          </div>
+
+          <div className="hero-tags">
+            {allTags.map((tag) => (
+              <button
+                key={tag}
+                className={`tag-btn ${activeTag === tag ? "active" : ""}`}
+                onClick={() => handleTagClick(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </section>
 
         <p className={`scroll-hint ${scrolled ? "hidden" : ""}`}>scroll to explore</p>
 
+        {/* ── GALLERY ── */}
         <section className="gallery-section">
-          {/* Fixed counter: uses totalMain instead of photos.length */}
           <p className="counter">{filtered.length} / {totalMain} moments</p>
 
           {filtered.length === 0 ? (
@@ -522,11 +470,8 @@ export default function Home() {
               {columns.map((col, ci) => (
                 <div key={ci} className="masonry-col">
                   {col.map((photo) => (
-<div
-  key={photo.id}
-className="card"  onClick={() => setSelectedPhoto(photo)}
->
-                        <img
+                    <div key={photo.id} className="card" onClick={() => setSelectedPhoto(photo)}>
+                      <img
                         src={photo.image}
                         alt={photo.story}
                         loading="lazy"
@@ -547,6 +492,7 @@ className="card"  onClick={() => setSelectedPhoto(photo)}
         </section>
       </div>
 
+      {/* ── MODAL ── */}
       {selectedPhoto && (
         <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -554,7 +500,6 @@ className="card"  onClick={() => setSelectedPhoto(photo)}
             <div className="modal-info">
               <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
               <p className="modal-story">{selectedPhoto.story}</p>
-
               <div className="modal-tags">
                 {selectedPhoto.tags.map((tag) => (
                   <button
@@ -566,27 +511,22 @@ className="card"  onClick={() => setSelectedPhoto(photo)}
                   </button>
                 ))}
               </div>
-
-              {/* Related photos — now actually works */}
-{selectedPhoto.group &&
-selectedPhoto.group !== "" &&
-getRelatedPhotos(selectedPhoto).length > 0 && (
-  <div>
-    <p className="related-label">same moment, different frame</p>
-    <div className="related-strip">
-      {getRelatedPhotos(selectedPhoto).map((photo) => (
-        <img
-          key={photo.id}
-          src={photo.image}
-          alt={photo.story}
-          className="related-thumb"
-          onClick={() => setSelectedPhoto(photo)}
-        />
-      ))}
-    </div>
-  </div>
-)}
-
+              {getRelatedPhotos(selectedPhoto).length > 0 && (
+                <div>
+                  <p className="related-label">same moment, different frame</p>
+                  <div className="related-strip">
+                    {getRelatedPhotos(selectedPhoto).map((photo) => (
+                      <img
+                        key={photo.id}
+                        src={photo.image}
+                        alt={photo.story}
+                        className="related-thumb"
+                        onClick={() => setSelectedPhoto(photo)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
               <button className="modal-close" onClick={() => setSelectedPhoto(null)}>← close</button>
             </div>
           </div>
