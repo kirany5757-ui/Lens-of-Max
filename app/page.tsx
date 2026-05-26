@@ -472,7 +472,7 @@ export default function Home() {
           <div className="hero-content">
             <p className="hero-eyebrow">🕊️</p>
             <h1 className="hero-title">Lens of Max</h1>
-            <p className="hero-subtitle">the beauty of my camera’s wink</p>
+            <p className="hero-subtitle">The beauty of my camera’s wink</p>
 
             <div className="search-wrap">
               <span className="search-label">Search</span>
