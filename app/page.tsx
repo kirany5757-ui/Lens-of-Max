@@ -239,7 +239,7 @@ export default function Home() {
           font-family: 'Cormorant Garamond', serif;
           font-style: italic;
           font-size: 18px;
-          color: #666;
+          color: #5c5a56;
           margin-bottom: 52px;
           transition: opacity 0.3s ease, max-height 0.4s ease;
           overflow: hidden;
@@ -479,7 +479,7 @@ export default function Home() {
               <input
                 className="search-input"
                 type="text"
-                placeholder=""
+                placeholder="search moments"
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setActiveTag(null); }}
               />
