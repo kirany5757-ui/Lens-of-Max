@@ -90,10 +90,20 @@ export default function Home() {
   useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 180);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const onScroll = () => {
+    const y = window.scrollY;
+
+    setScrolled((prev) => {
+      if (!prev && y > 220) return true;
+      if (prev && y < 140) return false;
+      return prev;
+    });
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  return () => window.removeEventListener("scroll", onScroll);
+}, []);
 
   // Fixed: moved outside component & wrapped in useCallback
   const getRelatedPhotos = useCallback((current: Photo): Photo[] => {
