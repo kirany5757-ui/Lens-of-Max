@@ -306,7 +306,7 @@ export default function Home() {
         .tag-btn {
           background: transparent;
           border: 1px solid #2d2d2d;
-          color: #484848;
+          color: #727272;
           padding: 4px 14px;
           font-family: 'Inconsolata', monospace;
           font-size: 11px;
@@ -412,7 +412,7 @@ export default function Home() {
         }
         .modal-tags { display: flex; flex-wrap: wrap; gap: 8px; }
         .modal-tag-btn {
-          background: transparent; border: 1px solid #2d2d2d; color: #555;
+          background: transparent; border: 1px solid #3a3a3a; color: #555;
           padding: 4px 12px; font-family: 'Inconsolata', monospace;
           font-size: 11px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s;
         }
