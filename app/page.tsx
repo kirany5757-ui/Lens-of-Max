@@ -166,11 +166,11 @@ export default function Home() {
           pointer-events: all;
         }
         .site-header.scrolled .hero-content {
-  min-height: 64px;
-  padding: 0 24px;
+  min-height: 90px;
+  padding: 12px 24px;
 
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center; /* center everything */
 
