@@ -470,16 +470,16 @@ export default function Home() {
 
         <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
           <div className="hero-content">
-            <p className="hero-eyebrow">Visual journal</p>
+            <p className="hero-eyebrow">🕊️</p>
             <h1 className="hero-title">Lens of Max</h1>
-            <p className="hero-subtitle">Moments caught before they disappear</p>
+            <p className="hero-subtitle">the beauty of my camera’s wink</p>
 
             <div className="search-wrap">
               <span className="search-label">Search</span>
               <input
                 className="search-input"
                 type="text"
-                placeholder="car, night, coffee…"
+                placeholder=""
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setActiveTag(null); }}
               />
