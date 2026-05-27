@@ -382,14 +382,11 @@ export default function Home() {
           left: 0;
           width: 28px;
           height: 28px;
-          border: 1px solid rgba(232,228,220,0.35);
-          border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           pointer-events: none;
           z-index: 9999;
-          background: rgba(255,255,255,0.03);
           transform: translate(-9999px, -9999px);
           transition: opacity 0.18s ease;
           will-change: transform, opacity;
