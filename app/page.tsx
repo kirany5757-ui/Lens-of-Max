@@ -84,7 +84,7 @@ export default function Home() {
         // Morph happens between 40px and 200px scroll
         const progress = Math.min(1, Math.max(0, (y - 40) / 160));
         setMorphProgress(progress);
-        setScrolled(y > 60);
+        setScrolled(y > 100);
       });
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -464,7 +464,7 @@ export default function Home() {
         {/* ── HERO ── */}
         <section className="hero">
           <p className="hero-eyebrow" style={{ opacity: heroTitleOpacity }}>
-            🕊️
+          🕊️
           </p>
 
           {/* Title fades + blurs out as nav fades in */}
