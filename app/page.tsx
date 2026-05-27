@@ -210,7 +210,8 @@ export default function Home() {
         }
 
         .hero-eyebrow {
-          font-size: 1px;
+          font-size: 10px;
+          opacity: 0.04;
           letter-spacing: 0.35em;
           text-transform: uppercase;
           color: #444;
