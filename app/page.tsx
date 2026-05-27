@@ -70,6 +70,7 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   // 0 = fully in hero, 1 = fully scrolled — drives the morph
   const [morphProgress, setMorphProgress] = useState(0);
+  const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
   const numCols = useNumCols();
   const rafRef = useRef<number | null>(null);
 
@@ -337,7 +338,13 @@ export default function Home() {
         .masonry { display: flex; gap: 10px; align-items: flex-start; }
         .masonry-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
 
-        .card { cursor: pointer; position: relative; overflow: hidden; border-radius: 3px; display: block; }
+        .card {
+          cursor: none;
+          position: relative;
+          overflow: hidden;
+          border-radius: 3px;
+          display: block;
+        }
         .card img {
           width: 100%; display: block; object-fit: cover;
           filter: grayscale(20%) brightness(0.88);
@@ -366,6 +373,41 @@ export default function Home() {
         .card:hover .card-tags { transform: translateY(0); }
         .card-tag { font-size: 9px; letter-spacing: 0.15em; color: #888; text-transform: uppercase; }
         .card-tag::before { content: "#"; }
+
+        /* ── CUSTOM CAMERA CURSOR ── */
+        .camera-cursor {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 34px;
+          height: 34px;
+          border: 1px solid rgba(232,228,220,0.45);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          pointer-events: none;
+          z-index: 9999;
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
+          background: rgba(255,255,255,0.03);
+          transform: translate(-50%, -50%);
+          transition:
+            opacity 0.18s ease,
+            transform 0.08s linear;
+          will-change: transform, opacity;
+        }
+
+        .camera-cursor.hidden {
+          opacity: 0;
+        }
+
+        .camera-cursor-icon {
+          font-size: 12px;
+          color: rgba(232,228,220,0.7);
+          line-height: 1;
+          user-select: none;
+        }
 
         /* ── MODAL ── */
         .modal-backdrop {
@@ -530,7 +572,28 @@ export default function Home() {
               {columns.map((col, ci) => (
                 <div key={ci} className="masonry-col">
                   {col.map((photo) => (
-                    <div key={photo.id} className="card" onClick={() => setSelectedPhoto(photo)}>
+                    <div
+                      key={photo.id}
+                      className="card"
+                      onClick={() => setSelectedPhoto(photo)}
+                      onMouseMove={(e) => {
+                        setCursor({
+                          x: e.clientX,
+                          y: e.clientY,
+                          visible: true,
+                        });
+                      }}
+                      onMouseEnter={(e) => {
+                        setCursor({
+                          x: e.clientX,
+                          y: e.clientY,
+                          visible: true,
+                        });
+                      }}
+                      onMouseLeave={() => {
+                        setCursor((prev) => ({ ...prev, visible: false }));
+                      }}
+                    >
                       <img
                         src={photo.image}
                         alt={photo.story}
@@ -550,6 +613,16 @@ export default function Home() {
             </div>
           )}
         </section>
+      </div>
+
+      <div
+        className={`camera-cursor ${cursor.visible ? "" : "hidden"}`}
+        style={{
+          left: `${cursor.x}px`,
+          top: `${cursor.y}px`,
+        }}
+      >
+        <span className="camera-cursor-icon">⌔</span>
       </div>
 
       {/* ── MODAL ── */}
