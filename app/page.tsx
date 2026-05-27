@@ -71,6 +71,7 @@ export default function Home() {
   // 0 = fully in hero, 1 = fully scrolled — drives the morph
   const [morphProgress, setMorphProgress] = useState(0);
   const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
+  const cursorRef = useRef<HTMLDivElement | null>(null);
   const numCols = useNumCols();
   const rafRef = useRef<number | null>(null);
 
@@ -381,7 +382,7 @@ export default function Home() {
           left: 0;
           width: 34px;
           height: 34px;
-          border: 1px solid rgba(232,228,220,0.45);
+          border: 1px solid rgba(232,228,220,0.35);
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -390,12 +391,10 @@ export default function Home() {
           z-index: 9999;
           backdrop-filter: blur(4px);
           -webkit-backdrop-filter: blur(4px);
-          background: rgba(255,255,255,0.03);
-          transform: translate(-50%, -50%);
-          transition:
-            opacity 0.18s ease,
-            transform 0.08s linear;
-          will-change: transform, opacity;
+          background: rgba(255,255,255,0.015);
+          transform: translate(-9999px, -9999px);
+          transition: opacity 0.18s ease;
+will-change: transform, opacity;
         }
 
         .camera-cursor.hidden {
@@ -584,11 +583,10 @@ export default function Home() {
                       className="card"
                       onClick={() => setSelectedPhoto(photo)}
                       onMouseMove={(e) => {
-                        setCursor({
-                          x: e.clientX,
-                          y: e.clientY,
-                          visible: true,
-                        });
+                        if (cursorRef.current) {
+                          cursorRef.current.style.transform =
+                            `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
+                        }
                       }}
                       onMouseEnter={(e) => {
                         setCursor({
@@ -598,8 +596,13 @@ export default function Home() {
                         });
                       }}
                       onMouseLeave={() => {
-                        setCursor((prev) => ({ ...prev, visible: false }));
-                      }}
+  setCursor((prev) => ({ ...prev, visible: false }));
+
+  if (cursorRef.current) {
+    cursorRef.current.style.transform =
+      "translate(-9999px, -9999px)";
+  }
+}}
                     >
                       <img
                         src={photo.image}
@@ -623,12 +626,9 @@ export default function Home() {
       </div>
 
       <div
-        className={`camera-cursor ${cursor.visible ? "" : "hidden"}`}
-        style={{
-          left: `${cursor.x}px`,
-          top: `${cursor.y}px`,
-        }}
-      >
+  ref={cursorRef}
+  className={`camera-cursor ${cursor.visible ? "" : "hidden"}`}
+        >
         <span className="camera-cursor-icon">⌔</span>
       </div>
 
@@ -641,12 +641,11 @@ export default function Home() {
               src={selectedPhoto.image}
               alt={selectedPhoto.story}
               onMouseMove={(e) => {
-                setCursor({
-                  x: e.clientX,
-                  y: e.clientY,
-                  visible: true,
-                });
-              }}
+  if (cursorRef.current) {
+    cursorRef.current.style.transform =
+      `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
+  }
+}}
               onMouseEnter={(e) => {
                 setCursor({
                   x: e.clientX,
