@@ -6,8 +6,8 @@ const photos = [
   { id: 5,  image: "/Photos/Full Rainbow.jpg",      story: "", tags: ["Rainbow", "Weather"],                    group: "rainbow", isMain: false },
   { id: 7,  image: "/Photos/Rainbow Arc.jpg",        story: "", tags: ["Rainbow", "Weather"],                    group: "rainbow", isMain: true  },
   { id: 1,  image: "/Photos/Riverside.jpg",          story: "", tags: ["Riverside", "Kingston"],                 group: "",        isMain: true  },
-  { id: 2,  image: "/Photos/Plane.jpg",              story: "", tags: ["Sky", "Plane"],                          group: "plane",   isMain: true  },
-  { id: 3,  image: "/Photos/Plane in the Sky.jpg",   story: "", tags: ["Plane", "Sky"],                          group: "plane",   isMain: false },
+  { id: 2,  image: "/Photos/Plane.jpg",              story: "", tags: ["Sky", "Plane"],                          group: "",   isMain: true  },
+  { id: 3,  image: "/Photos/Plane in the Sky.jpg",   story: "", tags: ["Plane", "Sky"],                          group: "",   isMain: true },
   { id: 4,  image: "/Photos/Autumn Evening.jpg",     story: "", tags: ["Autumn", "Evening"],                     group: "",        isMain: true  },
   { id: 6,  image: "/Photos/Empty street.jpg",       story: "", tags: ["Street", "Weather"],                     group: "",        isMain: true  },
   { id: 8,  image: "/Photos/Sunny Evening.jpg",      story: "", tags: ["Evening"],                               group: "",        isMain: true  },
@@ -426,7 +426,14 @@ export default function Home() {
         }
         @media (min-width: 700px) { .modal { grid-template-columns: 3fr 2fr; } }
         @keyframes slideUp { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
-        .modal-main-img { width: 100%; height: 100%; object-fit: cover; display: block; max-height: 55vh; }
+        .modal-main-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          max-height: 55vh;
+          cursor: none;
+        }
         @media (min-width: 700px) { .modal-main-img { max-height: none; min-height: 480px; } }
         .modal-info { padding: 40px 28px; display: flex; flex-direction: column; gap: 20px; }
         .modal-num { font-size: 10px; letter-spacing: 0.3em; color: #333; text-transform: uppercase; }
@@ -629,7 +636,28 @@ export default function Home() {
       {selectedPhoto && (
         <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <img className="modal-main-img" src={selectedPhoto.image} alt={selectedPhoto.story} />
+            <img
+              className="modal-main-img"
+              src={selectedPhoto.image}
+              alt={selectedPhoto.story}
+              onMouseMove={(e) => {
+                setCursor({
+                  x: e.clientX,
+                  y: e.clientY,
+                  visible: true,
+                });
+              }}
+              onMouseEnter={(e) => {
+                setCursor({
+                  x: e.clientX,
+                  y: e.clientY,
+                  visible: true,
+                });
+              }}
+              onMouseLeave={() => {
+                setCursor((prev) => ({ ...prev, visible: false }));
+              }}
+            />
             <div className="modal-info">
               <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
               <p className="modal-story">{selectedPhoto.story}</p>
