@@ -3,17 +3,17 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
 const photos = [
-  { id: 5,  image: "/Photos/Full Rainbow.jpg",      story: "", tags: ["Rainbow", "Weather"],                    group: "rainbow", isMain: false },
-  { id: 7,  image: "/Photos/Rainbow Arc.jpg",        story: "", tags: ["Rainbow", "Weather"],                    group: "rainbow", isMain: true  },
-  { id: 1,  image: "/Photos/Riverside.jpg",          story: "", tags: ["Riverside", "Kingston"],                 group: "",        isMain: true  },
-  { id: 2,  image: "/Photos/Plane.jpg",              story: "", tags: ["Sky", "Plane"],                          group: "",   isMain: true  },
-  { id: 3,  image: "/Photos/Plane in the Sky.jpg",   story: "", tags: ["Plane", "Sky"],                          group: "",   isMain: true },
-  { id: 4,  image: "/Photos/Autumn Evening.jpg",     story: "", tags: ["Autumn", "Evening"],                     group: "",        isMain: true  },
-  { id: 6,  image: "/Photos/Empty street.jpg",       story: "", tags: ["Street", "Weather"],                     group: "",        isMain: true  },
-  { id: 8,  image: "/Photos/Sunny Evening.jpg",      story: "", tags: ["Evening"],                               group: "",        isMain: true  },
-  { id: 9,  image: "/Photos/Telephone Booth.jpg",    story: "", tags: ["Telephone Booth", "Street", "Evening"],  group: "",        isMain: true  },
-  { id: 10, image: "/Photos/Terminal 5.jpg",         story: "", tags: ["Terminal", "People"],                    group: "",        isMain: true  },
-  { id: 11, image: "/Photos/Afadena.jpg",            story: "", tags: ["Food", "Afadena"],                       group: "",        isMain: true  },
+  { id: 5, image: "/Photos/Full Rainbow.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: false },
+  { id: 7, image: "/Photos/Rainbow Arc.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: true },
+  { id: 1, image: "/Photos/Riverside.jpg", story: "", tags: ["Riverside", "Kingston"], group: "", isMain: true },
+  { id: 2, image: "/Photos/Plane.jpg", story: "", tags: ["Sky", "Plane"], group: "", isMain: true },
+  { id: 3, image: "/Photos/Plane in the Sky.jpg", story: "", tags: ["Plane", "Sky"], group: "", isMain: true },
+  { id: 4, image: "/Photos/Autumn Evening.jpg", story: "", tags: ["Autumn", "Evening"], group: "", isMain: true },
+  { id: 6, image: "/Photos/Empty street.jpg", story: "", tags: ["Street", "Weather"], group: "", isMain: true },
+  { id: 8, image: "/Photos/Sunny Evening.jpg", story: "", tags: ["Evening"], group: "", isMain: true },
+  { id: 9, image: "/Photos/Telephone Booth.jpg", story: "", tags: ["Telephone Booth", "Street", "Evening"], group: "", isMain: true },
+  { id: 10, image: "/Photos/Terminal 5.jpg", story: "", tags: ["Terminal", "People"], group: "", isMain: true },
+  { id: 11, image: "/Photos/Afadena.jpg", story: "", tags: ["Food", "Afadena"], group: "", isMain: true },
 ];
 
 type Photo = {
@@ -380,8 +380,8 @@ export default function Home() {
           position: fixed;
           top: 0;
           left: 0;
-          width: 34px;
-          height: 34px;
+          width: 28px;
+          height: 28px;
           border: 1px solid rgba(232,228,220,0.35);
           border-radius: 50%;
           display: flex;
@@ -389,12 +389,10 @@ export default function Home() {
           justify-content: center;
           pointer-events: none;
           z-index: 9999;
-          backdrop-filter: blur(4px);
-          -webkit-backdrop-filter: blur(4px);
-          background: rgba(255,255,255,0.015);
+          background: rgba(255,255,255,0.03);
           transform: translate(-9999px, -9999px);
           transition: opacity 0.18s ease;
-will-change: transform, opacity;
+          will-change: transform, opacity;
         }
 
         .camera-cursor.hidden {
@@ -512,7 +510,7 @@ will-change: transform, opacity;
         {/* ── HERO ── */}
         <section className="hero">
           <p className="hero-eyebrow" style={{ opacity: heroTitleOpacity }}>
-          🕊️
+            🕊️
           </p>
 
           {/* Title fades + blurs out as nav fades in */}
@@ -532,11 +530,11 @@ will-change: transform, opacity;
           </p>
 
           <div
-  className="hero-search-wrap"
-  style={{
-    opacity: Math.max(0, 1 - morphProgress * 2.2),
-  }}
->
+            className="hero-search-wrap"
+            style={{
+              opacity: Math.max(0, 1 - morphProgress * 2.2),
+            }}
+          >
             <span className="hero-search-label">Search</span>
             <input
               className="hero-search-input"
@@ -548,11 +546,11 @@ will-change: transform, opacity;
           </div>
 
           <div
-  className="hero-tags"
-  style={{
-    opacity: Math.max(0, 1 - morphProgress * 2.4),
-  }}
->
+            className="hero-tags"
+            style={{
+              opacity: Math.max(0, 1 - morphProgress * 2.4),
+            }}
+          >
             {allTags.map((tag) => (
               <button
                 key={tag}
@@ -596,13 +594,13 @@ will-change: transform, opacity;
                         });
                       }}
                       onMouseLeave={() => {
-  setCursor((prev) => ({ ...prev, visible: false }));
+                        setCursor((prev) => ({ ...prev, visible: false }));
 
-  if (cursorRef.current) {
-    cursorRef.current.style.transform =
-      "translate(-9999px, -9999px)";
-  }
-}}
+                        if (cursorRef.current) {
+                          cursorRef.current.style.transform =
+                            "translate(-9999px, -9999px)";
+                        }
+                      }}
                     >
                       <img
                         src={photo.image}
@@ -626,9 +624,9 @@ will-change: transform, opacity;
       </div>
 
       <div
-  ref={cursorRef}
-  className={`camera-cursor ${cursor.visible ? "" : "hidden"}`}
-        >
+        ref={cursorRef}
+        className={`camera-cursor ${cursor.visible ? "" : "hidden"}`}
+      >
         <span className="camera-cursor-icon">⌔</span>
       </div>
 
@@ -641,11 +639,11 @@ will-change: transform, opacity;
               src={selectedPhoto.image}
               alt={selectedPhoto.story}
               onMouseMove={(e) => {
-  if (cursorRef.current) {
-    cursorRef.current.style.transform =
-      `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
-  }
-}}
+                if (cursorRef.current) {
+                  cursorRef.current.style.transform =
+                    `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
+                }
+              }}
               onMouseEnter={(e) => {
                 setCursor({
                   x: e.clientX,
