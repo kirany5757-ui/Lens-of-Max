@@ -627,7 +627,7 @@ export default function Home() {
         ref={cursorRef}
         className={`camera-cursor ${cursor.visible ? "" : "hidden"}`}
       >
-        <span className="camera-cursor-icon">⌔</span>
+        <span className="camera-cursor-icon">📷</span>
       </div>
 
       {/* ── MODAL ── */}
