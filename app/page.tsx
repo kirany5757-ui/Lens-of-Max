@@ -210,7 +210,7 @@ export default function Home() {
         }
 
         .hero-eyebrow {
-          font-size: 10px;
+          font-size: 1px;
           letter-spacing: 0.35em;
           text-transform: uppercase;
           color: #444;
@@ -464,7 +464,7 @@ export default function Home() {
         {/* ── HERO ── */}
         <section className="hero">
           <p className="hero-eyebrow" style={{ opacity: heroTitleOpacity }}>
-            Visual journal
+            🕊️
           </p>
 
           {/* Title fades + blurs out as nav fades in */}
@@ -483,7 +483,12 @@ export default function Home() {
             The beauty of my camera&apos;s wink
           </p>
 
-          <div className="hero-search-wrap" style={{ opacity: heroTitleOpacity }}>
+          <div
+  className="hero-search-wrap"
+  style={{
+    opacity: Math.max(0, 1 - morphProgress * 2.2),
+  }}
+>
             <span className="hero-search-label">Search</span>
             <input
               className="hero-search-input"
@@ -494,7 +499,12 @@ export default function Home() {
             />
           </div>
 
-          <div className="hero-tags" style={{ opacity: heroTitleOpacity }}>
+          <div
+  className="hero-tags"
+  style={{
+    opacity: Math.max(0, 1 - morphProgress * 2.4),
+  }}
+>
             {allTags.map((tag) => (
               <button
                 key={tag}
