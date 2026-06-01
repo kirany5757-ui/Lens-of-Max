@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
 const photos = [
+  { id: 12, image: "/Photos/Crow 1.jpg", story: "", tags: ["Richmond", "Crow"], group: "Crow", isMain: true },
   { id: 5, image: "/Photos/Full Rainbow.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: false },
   { id: 7, image: "/Photos/Rainbow Arc.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: true },
   { id: 1, image: "/Photos/Riverside.jpg", story: "", tags: ["Riverside", "Kingston"], group: "", isMain: true },
