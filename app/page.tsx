@@ -7,6 +7,7 @@ const photos = [
   { id: 13, image: "/Photos/Heidi-Love-Baking org.jpg", story: "", tags: ["Richmond", "Street", "Bakery", "Raw"], group: "heidi", isMain: false},
   { id: 14, image: "/Photos/Sheen Gate.jpg", story: "", tags: ["Richmond", "Sheen Gate", "Park", "Edit"], group: "Sheen Gate", isMain: true},
   { id: 15, image: "/Photos/Sheen Gate Org.jpg", story: "", tags: ["Richmond", "Sheen Gate", "Park", "Raw"], group: "Sheen Gate", isMain: false},
+  { id: 16, image: "/Photos/Sheen Gate Fr1.jpg", story: "", tags: ["Richmond", "Sheen Gate", "park"], group: "Sheen Gate", isMain: false},
   { id: 5, image: "/Photos/Full Rainbow.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: false },
   { id: 7, image: "/Photos/Rainbow Arc.jpg", story: "", tags: ["Rainbow", "Weather"], group: "rainbow", isMain: true },
   { id: 1, image: "/Photos/Riverside.jpg", story: "", tags: ["Riverside", "Kingston"], group: "", isMain: true },
