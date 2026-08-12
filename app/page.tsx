@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-
+import Image from "next/image";
 const photos = [
   { id: 12, image: "/Photos/Heidi-Love-Baking.jpg", story: "", tags: ["Richmond", "Street", "Bakery", "Edit"], group: "heidi", isMain: true},
   { id: 13, image: "/Photos/Heidi-Love-Baking org.jpg", story: "", tags: ["Richmond", "Street", "Bakery", "Raw"], group: "heidi", isMain: false},
@@ -610,12 +610,13 @@ export default function Home() {
                         }
                       }}
                     >
-                      <img
-                        src={photo.image}
-                        alt={photo.story}
-                        loading="lazy"
-                        style={{ aspectRatio: `1 / ${photo.aspect}` }}
-                      />
+                      <Image
+  src={photo.image}
+  alt={photo.story}
+  width={800}
+  height={800 / photo.aspect}
+  style={{ width: "100%", height: "auto", aspectRatio: `1 / ${photo.aspect}` }}
+/>
                       <div className="card-overlay">
                         <p className="card-story">{photo.story}</p>
                         <div className="card-tags">
