@@ -615,6 +615,7 @@ export default function Home() {
   alt={photo.story}
   width={800}
   height={800 / photo.aspect}
+  quality={100}
   style={{ width: "100%", height: "auto", aspectRatio: `1 / ${photo.aspect}` }}
 />
                       <div className="card-overlay">
@@ -643,10 +644,13 @@ export default function Home() {
       {selectedPhoto && (
         <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <img
+            <Image
               className="modal-main-img"
               src={selectedPhoto.image}
               alt={selectedPhoto.story}
+              width={1200}
+              height={800}
+              quality={100}
               onMouseMove={(e) => {
                 if (cursorRef.current) {
                   cursorRef.current.style.transform =
