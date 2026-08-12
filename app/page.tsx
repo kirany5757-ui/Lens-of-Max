@@ -484,23 +484,7 @@ export default function Home() {
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: #0a0a09; }
         ::-webkit-scrollbar-thumb { background: #1e1e1e; }
-        /* ── CSS FADE IN ANIMATION ── */
-        .reveal {
-          /* This tells the browser to run the fadeUp animation once, and stay visible at the end */
-          animation: fadeUp 0.8s ease-out forwards;
-          opacity: 0; /* Keeps them hidden until the animation starts */
-        }
-
-        @keyframes fadeUp {
-          0% {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
+        
       `}</style>
 
       <div className={`page ${loaded ? "visible" : ""}`}>
@@ -636,7 +620,6 @@ export default function Home() {
                       }}
                     >
                       <Image
-  className="reveal"
   src={photo.image}
   alt={photo.story}
   width={800}
