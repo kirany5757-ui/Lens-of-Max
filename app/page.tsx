@@ -214,13 +214,12 @@ export default function Home() {
 
         /* ── HERO ── */
         .hero {
-          height: 100vh;
           display: flex;
           flex-direction: column;
           align-items: center;
-          justify-content: center;
+          justify-content: flex-start;
           text-align: center;
-          padding: 60px 24px 100px;
+          padding: 160px 24px 60px;
           position: relative;
         }
         .hero::after {
