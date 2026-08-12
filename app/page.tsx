@@ -76,6 +76,26 @@ function useNumCols(): number {
 export default function Home() {
   const [search, setSearch] = useState("");
   const [activeTags, setActiveTags] = useState<string[]>([]);
+  useEffect(() => {
+    // This watches the screen to see when elements scroll into view
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target); // Stop watching once it appears
+          }
+        });
+      },
+      { threshold: 0.15 } // Triggers when 15% of the image is visible
+    );
+
+    // Find all our hidden images and start watching them
+    const elements = document.querySelectorAll(".reveal");
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [activeTags, search]); // Re-runs this watcher whenever you filter tags!
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -484,6 +504,16 @@ export default function Home() {
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: #0a0a09; }
         ::-webkit-scrollbar-thumb { background: #1e1e1e; }
+        /* ── SCROLL REVEAL ANIMATION ── */
+        .reveal {
+          opacity: 0;
+          transform: translateY(40px);
+          transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
       `}</style>
 
       <div className={`page ${loaded ? "visible" : ""}`}>
@@ -581,8 +611,6 @@ export default function Home() {
           </div>
         </section>
 
-        <p className={`scroll-hint ${scrolled ? "hidden" : ""}`}>scroll to explore</p>
-
         {/* ── GALLERY ── */}
         <section className="gallery-section">
           <p className="counter">{filtered.length} / {totalMain} moments</p>
@@ -621,6 +649,7 @@ export default function Home() {
                       }}
                     >
                       <Image
+  className="reveal"
   src={photo.image}
   alt={photo.story}
   width={800}
