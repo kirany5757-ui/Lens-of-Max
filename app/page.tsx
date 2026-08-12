@@ -160,7 +160,7 @@ export default function Home() {
           height: 60px;
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          justify-content: flex-end;
           padding: 0 32px;
           /* No CSS transition — driven by JS morphProgress inline styles */
           pointer-events: none;
@@ -171,6 +171,9 @@ export default function Home() {
 
         /* Nav name — morphs from big hero title position */
         .header-name {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
           font-family: 'Cormorant Garamond', serif;
           font-size: 22px;
           font-weight: 300;
@@ -527,7 +530,8 @@ export default function Home() {
             style={{
               opacity: heroTitleOpacity,
               filter: `blur(${heroTitleBlur}px)`,
-              transform: `scale(${heroTitleScale})`,
+              /* We added translateY here to slide it up as you scroll! */
+              transform: `translateY(-${morphProgress * 220}px) scale(${heroTitleScale})`,
             }}
           >
             Lens of Max
