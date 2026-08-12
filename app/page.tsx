@@ -87,8 +87,7 @@ export default function Home() {
           }
         });
       },
-      { threshold: 0.15 } // Triggers when 15% of the image is visible
-    );
+{ rootMargin: "50px", threshold: 0 } // Triggers slightly before the image enters the screen    );
 
     // Find all our hidden images and start watching them
     const elements = document.querySelectorAll(".reveal");
