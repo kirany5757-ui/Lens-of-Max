@@ -75,7 +75,7 @@ function useNumCols(): number {
 
 export default function Home() {
   const [search, setSearch] = useState("");
-  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [activeTags, setActiveTags] = useState<string[]>([]);
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -117,14 +117,21 @@ export default function Home() {
   const filtered = photosWithAspect.filter((photo) => {
     if (!photo.isMain) return false;
     const matchSearch = search === "" || photo.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
-    const matchTag = !activeTag || photo.tags.includes(activeTag);
-    return matchSearch && matchTag;
+    // This ensures the photo has EVERY tag the user clicked
+    const matchTags = activeTags.length === 0 || activeTags.every((t) => photo.tags.includes(t));
+    return matchSearch && matchTags;
   });
 
   const columns = buildColumns(filtered, numCols);
 
   const handleTagClick = (tag: string) => {
-    setActiveTag(activeTag === tag ? null : tag);
+    if (activeTags.includes(tag)) {
+      // If already selected, remove it from the active list
+      setActiveTags(activeTags.filter((t) => t !== tag));
+    } else {
+      // If not selected, add it to the active list
+      setActiveTags([...activeTags, tag]);
+    }
     setSearch("");
   };
 
@@ -513,7 +520,7 @@ export default function Home() {
               type="text"
               placeholder="search moments…"
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setActiveTag(null); }}
+              onChange={(e) => { setSearch(e.target.value); setActiveTags([]); }}
             />
           </div>
         </header>
@@ -566,7 +573,7 @@ export default function Home() {
             {allTags.map((tag) => (
               <button
                 key={tag}
-                className={`tag-btn ${activeTag === tag ? "active" : ""}`}
+                className={`tag-btn ${activeTags.includes(tag) ? "active" : ""}`}
                 onClick={() => handleTagClick(tag)}
               >
                 {tag}
@@ -680,7 +687,7 @@ export default function Home() {
                   <button
                     key={tag}
                     className="modal-tag-btn"
-                    onClick={() => { setActiveTag(tag); setSearch(""); setSelectedPhoto(null); }}
+                    onClick={() => { setActiveTags([tag]); setSearch(""); setSelectedPhoto(null); }}
                   >
                     #{tag}
                   </button>
