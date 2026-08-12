@@ -76,26 +76,6 @@ function useNumCols(): number {
 export default function Home() {
   const [search, setSearch] = useState("");
   const [activeTags, setActiveTags] = useState<string[]>([]);
-  useEffect(() => {
-    // This watches the screen to see when elements scroll into view
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            observer.unobserve(entry.target); // Stop watching once it appears
-          }
-        });
-      },
-      { rootMargin: "50px", threshold: 0 } // Triggers slightly before the image enters the screen
-    );
-
-    // Find all our hidden images and start watching them
-    const elements = document.querySelectorAll(".reveal");
-    elements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, [activeTags, search]); // Re-runs this watcher whenever you filter tags!
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -504,15 +484,22 @@ export default function Home() {
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: #0a0a09; }
         ::-webkit-scrollbar-thumb { background: #1e1e1e; }
-        /* ── SCROLL REVEAL ANIMATION ── */
+        /* ── CSS FADE IN ANIMATION ── */
         .reveal {
-          opacity: 0;
-          transform: translateY(40px);
-          transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+          /* This tells the browser to run the fadeUp animation once, and stay visible at the end */
+          animation: fadeUp 0.8s ease-out forwards;
+          opacity: 0; /* Keeps them hidden until the animation starts */
         }
-        .reveal.visible {
-          opacity: 1;
-          transform: translateY(0);
+
+        @keyframes fadeUp {
+          0% {
+            opacity: 0;
+            transform: translateY(40px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
       `}</style>
 
