@@ -133,6 +133,12 @@ export default function Home() {
       setActiveTags([...activeTags, tag]);
     }
     setSearch("");
+    
+    // Automatically smoothly scroll down to the gallery section!
+    const gallery = document.querySelector('.gallery-section');
+    if (gallery) {
+      gallery.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   // Derived values from morphProgress — title fades out, nav fades in
