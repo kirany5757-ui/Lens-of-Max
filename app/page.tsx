@@ -560,7 +560,7 @@ export default function Home() {
               type="text"
               placeholder="search moments…"
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setActiveTag(null); }}
+              onChange={(e) => { setSearch(e.target.value); setActiveTags([]); }}
             />
           </div>
 
