@@ -113,8 +113,27 @@ export default function Home() {
       (p) => p.group === current.group && p.id !== current.id
     );
   }, []);
+// ── BATCH SHUFFLE ENGINE ──
+  const [shuffledPhotos] = useState(() => {
+    // 1. The Shuffler
+    const shuffle = (arr) => {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    };
 
-  const filtered = photosWithAspect.filter((photo) => {
+    // 2. The Slicer & Stitcher (Batches of 7)
+    const batched = [];
+    for (let i = 0; i < photosWithAspect.length; i += 7) {
+      const chunk = photosWithAspect.slice(i, i + 7);
+      batched.push(...shuffle(chunk));
+    }
+    return batched;
+  });
+const filtered = shuffledPhotos.filter((photo) => {
     if (!photo.isMain) return false;
     const matchSearch = search === "" || photo.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
     // This ensures the photo has EVERY tag the user clicked
