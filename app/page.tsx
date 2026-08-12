@@ -87,7 +87,8 @@ export default function Home() {
           }
         });
       },
-{ rootMargin: "50px", threshold: 0 } // Triggers slightly before the image enters the screen    );
+      { rootMargin: "50px", threshold: 0 } // Triggers slightly before the image enters the screen
+    );
 
     // Find all our hidden images and start watching them
     const elements = document.querySelectorAll(".reveal");
