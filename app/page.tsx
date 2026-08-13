@@ -5,9 +5,6 @@ import Image from "next/image";
 const photos = [
   { id: 12, image: "/Photos/Heidi-Love-Baking.jpg", story: "", tags: ["Richmond", "Street", "Bakery", "Edit"], group: "heidi", isMain: true},
   { id: 13, image: "/Photos/Heidi-Love-Baking org.jpg", story: "", tags: ["Richmond", "Street", "Bakery", "Raw"], group: "heidi", isMain: false},
-  { id: 14, image: "/Photos/Sheen Gate.jpg", story: "", tags: ["Richmond", "Sheen Gate", "Park", "Edit"], group: "Sheen Gate", isMain: true},
-  { id: 15, image: "/Photos/Sheen Gate Org.jpg", story: "", tags: ["Richmond", "Sheen Gate", "Park", "Raw"], group: "Sheen Gate", isMain: false},
-  { id: 16, image: "/Photos/Sheen Gate Fr1.jpg", story: "", tags: ["Richmond", "Sheen Gate", "park"], group: "Sheen Gate", isMain: false},
   { id: 17, image: "/Photos/Morning Walk.jpg", story: "", tags: ["Richmond", "Morning walk", "park", "edit"], group: "Morning Walk", isMain: true},
   { id: 18, image: "/Photos/Man bw trees 1.jpg", story: "", tags: ["Richmond", "Morning walk", "park", "raw"], group: "Morning Walk", isMain: false },
   { id: 19, image: "/Photos/Man bw trees.jpg", story: "", tags: ["Richmond", "Morning walk", "park"], group: "Morning Walk", isMain: false },
