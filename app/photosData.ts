@@ -1,4 +1,9 @@
 export const photos = [
+  { id: 26, image: "/Photos/[GoldenHour_Railway_Sunset]_Golden_Hour_Railway_different1.jpg", story: "", tags: ["GoldenHour", "Railway", "Sunset"], group: "Golden Hour Railway", isMain: false },
+  { id: 27, image: "/Photos/[GoldenHour_Railway_Sunset]_Golden_Hour_Railway_different2.jpg", story: "", tags: ["GoldenHour", "Railway", "Sunset"], group: "Golden Hour Railway", isMain: false },
+  { id: 28, image: "/Photos/[GoldenHour_Railway_Sunset]_Golden_Hour_Railway_different3.jpg", story: "", tags: ["GoldenHour", "Railway", "Sunset"], group: "Golden Hour Railway", isMain: false },
+  { id: 29, image: "/Photos/[GoldenHour_Railway_Sunset]_Golden_Hour_Railway_hero.jpg", story: "", tags: ["GoldenHour", "Railway", "Sunset"], group: "Golden Hour Railway", isMain: true },
+
   { id: 24, image: "/Photos/[Wildlife_Deer_Nature_Richmond]_Deer_Capture_Different.jpg", story: "", tags: ["Wildlife", "Deer", "Nature", "Richmond"], group: "Deer Capture", isMain: false },
   { id: 25, image: "/Photos/[Wildlife_Deer_Nature_Richmond]_Deer_Capture_Hero.jpg", story: "", tags: ["Wildlife", "Deer", "Nature", "Richmond"], group: "Deer Capture", isMain: true },
 
