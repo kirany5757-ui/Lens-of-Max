@@ -19,6 +19,5 @@ export const photos = [
   { id: 9, image: "/Photos/Telephone Booth.jpg", story: "", tags: ["Telephone Booth", "Street", "Evening"], group: "", isMain: true },
   { id: 10, image: "/Photos/Terminal 5.jpg", story: "", tags: ["Terminal", "People"], group: "", isMain: true },
   { id: 11, image: "/Photos/Afadena.jpg", story: "", tags: ["Food", "Afadena"], group: "", isMain: true },
-  { id: 24, image: "/Photos/[Wildlife_Deer_Nature_Richmond]_Deer_Capture_Different.jpg", story: "", tags: ["Wildlife", "Deer", "Nature", "Richmond"], group: "Deer Capture", isMain: false },
-  { id: 25, image: "/Photos/[Wildlife_Deer_Nature_Richmond]_Deer_Capture_Hero.jpg", story: "", tags: ["Wildlife", "Deer", "Nature", "Richmond"], group: "Deer Capture", isMain: true }
+  
 ];
