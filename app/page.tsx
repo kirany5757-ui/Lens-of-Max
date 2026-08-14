@@ -370,23 +370,24 @@ const filtered = shuffledPhotos.filter((photo) => {
           transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s ease;
         }
         .card:hover img { transform: scale(1.06); filter: grayscale(0%) brightness(1.02); }
-        .card-overlay {
+        ..card-overlay {
           position: absolute; inset: 0;
           background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.05) 55%, transparent 100%);
           opacity: 0; transition: opacity 0.35s ease;
           display: flex; flex-direction: column; justify-content: flex-end;
-          padding: 20px 14px 14px;
+          padding: 16px 14px 10px;
         }
         .card:hover .card-overlay { opacity: 1; }
         .card-story {
           font-family: 'Cormorant Garamond', serif;
           font-style: italic; font-size: 14px;
-          color: #e8e4dc; line-height: 1.45; margin-bottom: 8px;
+          color: #e8e4dc; line-height: 1.45; margin-bottom: 4px;
           transform: translateY(6px); transition: transform 0.35s ease;
         }
         .card:hover .card-story { transform: translateY(0); }
         .card-tags {
           display: flex; gap: 6px; flex-wrap: wrap;
+          margin-top: 0px;
           transform: translateY(6px); transition: transform 0.35s ease 0.05s;
         }
         .card:hover .card-tags { transform: translateY(0); }
