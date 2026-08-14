@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "ship": "node sync.js && git add . && git commit -m 'Auto-sync: Portfolio updated' && git push"
   },
   "dependencies": {
     "next": "16.2.4",
