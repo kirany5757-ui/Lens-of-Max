@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 const photos = [
+  { id: 20, image: "/Photos/Moody Aviation Shot 2.jpg", story: "", tags: ["Plane", "Aviation", "max", "Edit"], group: "Moody aviation", isMain: true},
+  { id: 21, image: "/Photos/Moody Aviation Shot 1.jpg", story: "", tags: ["Plane", "Aviation", "max", "Edit"], group: "Moody aviation", isMain: false},
   { id: 12, image: "/Photos/Heidi-Love-Baking.jpg", story: "", tags: ["Richmond", "Street", "Bakery", "Edit"], group: "heidi", isMain: true},
   { id: 13, image: "/Photos/Heidi-Love-Baking org.jpg", story: "", tags: ["Richmond", "Street", "Bakery", "Raw"], group: "heidi", isMain: false},
   { id: 17, image: "/Photos/Morning Walk.jpg", story: "", tags: ["Richmond", "Morning walk", "park", "edit"], group: "Morning Walk", isMain: true},
