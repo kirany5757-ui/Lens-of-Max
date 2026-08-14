@@ -1,4 +1,7 @@
 export const photos = [
+  { id: 24, image: "/Photos/[Wildlife_Deer_Nature_Richmond]_Deer_Capture_Different.jpg", story: "", tags: ["Wildlife", "Deer", "Nature", "Richmond"], group: "Deer Capture", isMain: false },
+  { id: 25, image: "/Photos/[Wildlife_Deer_Nature_Richmond]_Deer_Capture_Hero.jpg", story: "", tags: ["Wildlife", "Deer", "Nature", "Richmond"], group: "Deer Capture", isMain: true },
+
   { id: 22, image: "/Photos/The glowing art deco figures — Grid Hero.jpg", story: "", tags: ["Theatre", "Architecture", "Odeon", "Edit"], group: "Odeon 70mm", isMain: true},
   { id: 23, image: "/Photos/The wider architectural view — Extra Frame.jpg", story: "", tags: ["Theatre", "Architecture", "Odeon", "Edit"], group: "Odeon 70mm", isMain: false},
   { id: 20, image: "/Photos/Moody Aviation Shot 2.jpg", story: "", tags: ["Plane", "Aviation", "max", "Edit"], group: "Moody aviation", isMain: true},
