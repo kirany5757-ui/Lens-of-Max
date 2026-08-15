@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { photos } from "./photosData";
+
 type Photo = {
   id: number;
   image: string;
@@ -17,25 +18,16 @@ const aspects = [
   0.75, 0.75, 0.8, 0.75, 0.75, 0.75, 1.7, 1.7, 1.7, 1.35,
   1.1, 0.9, 0.7, 1.0, 1.5, 0.75, 1.2, 0.8, 0.65,
 ];
+
 const photosWithAspect: Photo[] = photos.map((p, i) => ({
   ...p,
   aspect: aspects[i] ?? 1.0,
   group: p.group ?? "",
   isMain: p.isMain ?? true,
 }));
+
 const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
 const totalMain = photosWithAspect.filter((p) => p.isMain).length;
-
-function buildColumns(items: Photo[], numCols: number): Photo[][] {
-  const cols: Photo[][] = Array.from({ length: numCols }, () => []);
-  const heights = Array(numCols).fill(0);
-  items.forEach((item) => {
-    const shortest = heights.indexOf(Math.min(...heights));
-    cols[shortest].push(item);
-    heights[shortest] += item.aspect;
-  });
-  return cols;
-}
 
 function useNumCols(): number {
   const [cols, setCols] = useState(3);
@@ -69,11 +61,9 @@ export default function Home() {
 
   useEffect(() => {
     const onScroll = () => {
-      // Cancel any pending frame
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = requestAnimationFrame(() => {
         const y = window.scrollY;
-        // Morph happens between 40px and 200px scroll
         const progress = Math.min(1, Math.max(0, (y - 40) / 160));
         setMorphProgress(progress);
         setScrolled(y > 100);
@@ -92,11 +82,11 @@ export default function Home() {
       (p) => p.group === current.group && p.id !== current.id
     );
   }, []);
-// ── BATCH SHUFFLE ENGINE ──
-  const [shuffledPhotos] = useState(() => {
-    // 1. The Shuffler
-    const shuffle = (arr: Photo[]) => {
-      const copy = [...arr];
+
+  // ── BATCH SHUFFLE ENGINE ──
+  const shuffleEngine = useCallback((arr: Photo[]) => {
+    const shuffle = (list: Photo[]) => {
+      const copy = [...list];
       for (let i = copy.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [copy[i], copy[j]] = [copy[j], copy[i]];
@@ -104,41 +94,41 @@ export default function Home() {
       return copy;
     };
 
-    // 2. The Slicer & Stitcher (Batches of 7)
     const batched = [];
-    for (let i = 0; i < photosWithAspect.length; i += 7) {
-      const chunk = photosWithAspect.slice(i, i + 7);
+    for (let i = 0; i < arr.length; i += 7) {
+      const chunk = arr.slice(i, i + 7);
       batched.push(...shuffle(chunk));
     }
     return batched;
-  });
-const filtered = shuffledPhotos.filter((photo) => {
+  }, []);
+
+  const [shuffledPhotos, setShuffledPhotos] = useState<Photo[]>(() => shuffleEngine(photosWithAspect));
+
+  const handleRefresh = () => {
+    setShuffledPhotos(shuffleEngine(photosWithAspect));
+  };
+
+  const filtered = shuffledPhotos.filter((photo) => {
     if (!photo.isMain) return false;
     const matchSearch = search === "" || photo.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
-    // This ensures the photo has EVERY tag the user clicked
     const matchTags = activeTags.length === 0 || activeTags.every((t) => photo.tags.includes(t));
     return matchSearch && matchTags;
   });
 
-  const columns = buildColumns(filtered, numCols);
-
   const handleTagClick = (tag: string) => {
     if (activeTags.includes(tag)) {
-      // If already selected, remove it from the active list
       setActiveTags(activeTags.filter((t) => t !== tag));
     } else {
-      // If not selected, add it to the active list
       setActiveTags([...activeTags, tag]);
     }
     setSearch("");
   };
 
-  // Derived values from morphProgress — title fades out, nav fades in
   const heroTitleOpacity = 1 - morphProgress;
-  const heroTitleBlur = morphProgress * 8; // px
+  const heroTitleBlur = morphProgress * 8; 
   const heroTitleScale = 1 - morphProgress * 0.06;
   const navOpacity = morphProgress;
-  const navBlur = (1 - morphProgress) * 12; // starts blurry, sharpens
+  const navBlur = (1 - morphProgress) * 12; 
 
   return (
     <>
@@ -167,14 +157,12 @@ const filtered = shuffledPhotos.filter((photo) => {
           align-items: center;
           justify-content: flex-end;
           padding: 0 32px;
-          /* No CSS transition — driven by JS morphProgress inline styles */
           pointer-events: none;
         }
         .site-header.scrolled {
           pointer-events: all;
         }
 
-        /* Nav name — morphs from big hero title position */
         .header-name {
           position: absolute;
           left: 50%;
@@ -188,7 +176,6 @@ const filtered = shuffledPhotos.filter((photo) => {
           user-select: none;
         }
 
-        /* Nav search — fades in alongside */
         .header-search-wrap {
           display: flex;
           align-items: center;
@@ -235,10 +222,8 @@ const filtered = shuffledPhotos.filter((photo) => {
           text-transform: uppercase;
           color: #444;
           margin-bottom: 20px;
-          /* fades with title */
           transition: opacity 0.1s linear;
         }
-        /* The hero title — animated via inline style from JS */
         .hero-title {
           font-family: 'Cormorant Garamond', serif;
           font-size: clamp(72px, 16vw, 160px);
@@ -323,39 +308,44 @@ const filtered = shuffledPhotos.filter((photo) => {
         .tag-btn:hover { border-color: #555; color: #aaa; }
         .tag-btn.active { border-color: #e8e4dc; color: #e8e4dc; }
 
-        .scroll-hint {
-          position: fixed;
-          bottom: 28px; left: 50%;
-          transform: translateX(-50%);
-          font-size: 9px;
-          letter-spacing: 0.3em;
-          color: #2e2e2e;
-          text-transform: uppercase;
-          white-space: nowrap;
-          animation: pulse 2.8s ease-in-out infinite;
-          transition: opacity 0.4s ease;
-          pointer-events: none;
-        }
-        .scroll-hint.hidden { opacity: 0; }
-        @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.8} }
-
         /* ── GALLERY ── */
         .gallery-section {
           max-width: 1400px;
           margin: 0 auto;
           padding: 60px 12px 120px;
         }
+        .gallery-header {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          margin-bottom: 40px;
+        }
         .counter {
           font-size: 10px;
           letter-spacing: 0.2em;
           color: #2e2e2e;
-          text-align: center;
-          margin-bottom: 40px;
           text-transform: uppercase;
         }
-
-        .masonry { display: flex; gap: 10px; align-items: flex-start; }
-        .masonry-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+        .refresh-btn {
+          background: transparent;
+          border: 1px solid #222;
+          color: #555;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s;
+          font-size: 12px;
+        }
+        .refresh-btn:hover {
+          border-color: #555;
+          color: #e8e4dc;
+          transform: rotate(180deg);
+        }
 
         .card {
           cursor: none;
@@ -370,7 +360,7 @@ const filtered = shuffledPhotos.filter((photo) => {
           transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s ease;
         }
         .card:hover img { transform: scale(1.06); filter: grayscale(0%) brightness(1.02); }
-        ..card-overlay {
+        .card-overlay {
           position: absolute; inset: 0;
           background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.05) 55%, transparent 100%);
           opacity: 0; transition: opacity 0.35s ease;
@@ -411,16 +401,8 @@ const filtered = shuffledPhotos.filter((photo) => {
           will-change: transform, opacity;
         }
 
-        .camera-cursor.hidden {
-          opacity: 0;
-        }
-
-        .camera-cursor-icon {
-          font-size: 12px;
-          color: rgba(232,228,220,0.7);
-          line-height: 1;
-          user-select: none;
-        }
+        .camera-cursor.hidden { opacity: 0; }
+        .camera-cursor-icon { font-size: 12px; color: rgba(232,228,220,0.7); line-height: 1; user-select: none; }
 
         /* ── MODAL ── */
         .modal-backdrop {
@@ -440,12 +422,7 @@ const filtered = shuffledPhotos.filter((photo) => {
         @media (min-width: 700px) { .modal { grid-template-columns: 3fr 2fr; } }
         @keyframes slideUp { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
         .modal-main-img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-          max-height: 55vh;
-          cursor: none;
+          width: 100%; height: 100%; object-fit: cover; display: block; max-height: 55vh; cursor: none;
         }
         @media (min-width: 700px) { .modal-main-img { max-height: none; min-height: 480px; } }
         .modal-info { padding: 40px 28px; display: flex; flex-direction: column; gap: 20px; }
@@ -466,16 +443,13 @@ const filtered = shuffledPhotos.filter((photo) => {
         .related-strip::-webkit-scrollbar { display: none; }
         .related-thumb {
           width: 90px; height: 120px; object-fit: cover; flex-shrink: 0;
-          cursor: pointer; border-radius: 2px;
-          filter: brightness(0.8) grayscale(15%);
-          transition: filter 0.2s ease, transform 0.2s ease;
-          border: 1px solid transparent;
+          cursor: pointer; border-radius: 2px; filter: brightness(0.8) grayscale(15%);
+          transition: filter 0.2s ease, transform 0.2s ease; border: 1px solid transparent;
         }
         .related-thumb:hover { filter: brightness(1) grayscale(0%); transform: scale(1.04); border-color: #444; }
         .modal-close {
           background: transparent; border: none; color: #333;
-          font-size: 10px; letter-spacing: 0.25em;
-          font-family: 'Inconsolata', monospace;
+          font-size: 10px; letter-spacing: 0.25em; font-family: 'Inconsolata', monospace;
           cursor: pointer; text-transform: uppercase; transition: color 0.2s; text-align: left;
         }
         .modal-close:hover { color: #e8e4dc; }
@@ -483,12 +457,9 @@ const filtered = shuffledPhotos.filter((photo) => {
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: #0a0a09; }
         ::-webkit-scrollbar-thumb { background: #1e1e1e; }
-        
       `}</style>
 
       <div className={`page ${loaded ? "visible" : ""}`}>
-
-        {/* ── NAV BAR — fades in as hero title fades out ── */}
         <header
           className={`site-header ${scrolled ? "scrolled" : ""}`}
           style={{
@@ -497,22 +468,13 @@ const filtered = shuffledPhotos.filter((photo) => {
             backdropFilter: `blur(${20 * morphProgress}px) saturate(${100 + 60 * morphProgress}%)`,
             WebkitBackdropFilter: `blur(${20 * morphProgress}px) saturate(${100 + 60 * morphProgress}%)`,
             borderBottom: `1px solid rgba(255,255,255,${0.06 * morphProgress})`,
-            // Slight upward travel on the way in — feels like it rises from the title
             transform: `translateY(${(1 - morphProgress) * -8}px)`,
           }}
         >
-          <span className="header-name"
-            style={{
-              filter: `blur(${navBlur * 0.4}px)`,
-            }}
-          >
+          <span className="header-name" style={{ filter: `blur(${navBlur * 0.4}px)` }}>
             Lens of Max
           </span>
-          <div className="header-search-wrap"
-            style={{
-              filter: `blur(${navBlur * 0.6}px)`,
-            }}
-          >
+          <div className="header-search-wrap" style={{ filter: `blur(${navBlur * 0.6}px)` }}>
             <span className="header-search-icon">⌕</span>
             <input
               className="header-search"
@@ -524,35 +486,23 @@ const filtered = shuffledPhotos.filter((photo) => {
           </div>
         </header>
 
-        {/* ── HERO ── */}
         <section className="hero">
-          <p className="hero-eyebrow" style={{ opacity: heroTitleOpacity }}>
-            🕊️
-          </p>
-
-          {/* Title fades + blurs out as nav fades in */}
+          <p className="hero-eyebrow" style={{ opacity: heroTitleOpacity }}>🕊️</p>
           <h1
             className="hero-title"
             style={{
               opacity: heroTitleOpacity,
               filter: `blur(${heroTitleBlur}px)`,
-              /* We added translateY here to slide it up as you scroll! */
               transform: `translateY(-${morphProgress * 220}px) scale(${heroTitleScale})`,
             }}
           >
             Lens of Max
           </h1>
-
           <p className="hero-subtitle" style={{ opacity: heroTitleOpacity }}>
             The beauty of my camera&apos;s wink
           </p>
 
-          <div
-            className="hero-search-wrap"
-            style={{
-              opacity: Math.max(0, 1 - morphProgress * 2.2),
-            }}
-          >
+          <div className="hero-search-wrap" style={{ opacity: Math.max(0, 1 - morphProgress * 2.2) }}>
             <span className="hero-search-label">Search</span>
             <input
               className="hero-search-input"
@@ -563,12 +513,7 @@ const filtered = shuffledPhotos.filter((photo) => {
             />
           </div>
 
-          <div
-            className="hero-tags"
-            style={{
-              opacity: Math.max(0, 1 - morphProgress * 2.4),
-            }}
-          >
+          <div className="hero-tags" style={{ opacity: Math.max(0, 1 - morphProgress * 2.4) }}>
             {allTags.map((tag) => (
               <button
                 key={tag}
@@ -581,24 +526,23 @@ const filtered = shuffledPhotos.filter((photo) => {
           </div>
         </section>
 
-        {/* ── GALLERY ── */}
         <section className="gallery-section">
-          <p className="counter">{filtered.length} / {totalMain} moments</p>
+          <div className="gallery-header">
+            <p className="counter">{filtered.length} / {totalMain} moments</p>
+            <button className="refresh-btn" onClick={handleRefresh} title="Reshuffle Grid">↻</button>
+          </div>
 
           {filtered.length === 0 ? (
             <div className="empty">No moments found</div>
           ) : (
-            /* We bypass the old flex CSS by using inline CSS Columns */
             <div style={{ columnCount: numCols, columnGap: '16px' }}>
-              
-              {/* Notice we are just mapping the flat 'filtered' array now! No more nested loops. */}
               {filtered.map((photo) => (
                 <div
                   key={photo.id}
                   className="card relative w-full mb-4 overflow-hidden rounded-sm group cursor-pointer"
                   style={{
                     aspectRatio: photo.aspect,
-                    breakInside: 'avoid', /* Prevents photos from snapping in half across columns */
+                    breakInside: 'avoid',
                     display: 'inline-block' 
                   }}
                   onClick={() => setSelectedPhoto(photo)}
@@ -611,7 +555,6 @@ const filtered = shuffledPhotos.filter((photo) => {
                     quality={100}
                     style={{ width: "100%", height: "auto" }}
                   />
-                  
                   <div className="card-overlay">
                     <p className="card-story">{photo.story}</p>
                     <div className="card-tags">
@@ -622,20 +565,15 @@ const filtered = shuffledPhotos.filter((photo) => {
                   </div>
                 </div>
               ))}
-              
             </div>
           )}
         </section>
       </div>
 
-      <div
-        ref={cursorRef}
-        className={`camera-cursor ${cursor.visible ? "" : "hidden"}`}
-      >
+      <div ref={cursorRef} className={`camera-cursor ${cursor.visible ? "" : "hidden"}`}>
         <span className="camera-cursor-icon">📷</span>
       </div>
 
-      {/* ── MODAL ── */}
       {selectedPhoto && (
         <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -652,16 +590,8 @@ const filtered = shuffledPhotos.filter((photo) => {
                     `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
                 }
               }}
-              onMouseEnter={(e) => {
-                setCursor({
-                  x: e.clientX,
-                  y: e.clientY,
-                  visible: true,
-                });
-              }}
-              onMouseLeave={() => {
-                setCursor((prev) => ({ ...prev, visible: false }));
-              }}
+              onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
+              onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
             />
             <div className="modal-info">
               <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
