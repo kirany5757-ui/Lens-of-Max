@@ -1,4 +1,6 @@
 export const photos = [
+  { id: 31, image: "/Photos/[London_Street_Bus]_Bus_Stop_hero.jpg", story: "", tags: ["London", "Street", "Bus"], group: "Bus Stop", isMain: true },
+
   { id: 30, image: "/Photos/[GoldenHour_Railway_Sunset]_Railway_Gantry_hero.jpg", story: "", tags: ["GoldenHour", "Railway", "Sunset"], group: "Railway Gantry", isMain: true },
 
   { id: 26, image: "/Photos/[GoldenHour_Railway_Sunset]_Golden_Hour_Railway_different1.jpg", story: "", tags: ["GoldenHour", "Railway", "Sunset"], group: "Golden Hour Railway", isMain: false },
