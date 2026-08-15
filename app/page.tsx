@@ -588,36 +588,41 @@ const filtered = shuffledPhotos.filter((photo) => {
           {filtered.length === 0 ? (
             <div className="empty">No moments found</div>
           ) : (
-            <div className="masonry">
-              {columns.map((col, ci) => (
-                <div key={ci} className="masonry-col">
-                  {col.map((photo) => (
-                    <div
-                      key={photo.id}
-                      className="card relative w-full mb-6 overflow-hidden rounded-sm group"
-                      style={{ aspectRatio: photo.aspect }}
-                      onClick={() => setSelectedPhoto(photo)}
-                    >
-                      <Image
-                        src={photo.image}
-                        alt={photo.story}
-                        width={800}
-                        height={800 / photo.aspect}
-                        quality={100}
-                        style={{ width: "100%", height: "auto" }}
-                      />
-                      <div className="card-overlay">
-                        <p className="card-story">{photo.story}</p>
-                        <div className="card-tags">
-                          {photo.tags.map((t) => (
-                            <span key={t} className="card-tag">{t}</span>
-                          ))}
-                        </div>
-                      </div>
+            /* We bypass the old flex CSS by using inline CSS Columns */
+            <div style={{ columnCount: numCols, columnGap: '16px' }}>
+              
+              {/* Notice we are just mapping the flat 'filtered' array now! No more nested loops. */}
+              {filtered.map((photo) => (
+                <div
+                  key={photo.id}
+                  className="card relative w-full mb-4 overflow-hidden rounded-sm group cursor-pointer"
+                  style={{
+                    aspectRatio: photo.aspect,
+                    breakInside: 'avoid', /* Prevents photos from snapping in half across columns */
+                    display: 'inline-block' 
+                  }}
+                  onClick={() => setSelectedPhoto(photo)}
+                >
+                  <Image
+                    src={photo.image}
+                    alt={photo.story}
+                    width={800}
+                    height={800 / photo.aspect}
+                    quality={100}
+                    style={{ width: "100%", height: "auto" }}
+                  />
+                  
+                  <div className="card-overlay">
+                    <p className="card-story">{photo.story}</p>
+                    <div className="card-tags">
+                      {photo.tags.map((t) => (
+                        <span key={t} className="card-tag">{t}</span>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
               ))}
+              
             </div>
           )}
         </section>
