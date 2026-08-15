@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { photos } from "./photosData";
-import LoadingReel from './LoadingReel';
 type Photo = {
   id: number;
   image: string;
@@ -143,7 +142,6 @@ const filtered = shuffledPhotos.filter((photo) => {
 
   return (
     <>
-    <LoadingReel />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inconsolata:wght@300;400&display=swap');
 
