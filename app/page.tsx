@@ -541,9 +541,8 @@ export default function Home() {
                   key={photo.id}
                   className="card relative w-full mb-4 overflow-hidden rounded-sm group cursor-pointer"
                   style={{
-                    aspectRatio: photo.aspect,
-                    breakInside: 'avoid',
-                    display: 'inline-block' 
+                    breakInside: 'avoid', /* Prevents photos from snapping in half */
+                    display: 'block' /* Forces the container to shrink-wrap the image */
                   }}
                   onClick={() => setSelectedPhoto(photo)}
                 >
@@ -551,9 +550,9 @@ export default function Home() {
                     src={photo.image}
                     alt={photo.story}
                     width={800}
-                    height={800 / photo.aspect}
+                    height={800} // Let Next.js handle the base resolution
                     quality={100}
-                    style={{ width: "100%", height: "auto" }}
+                    style={{ width: "100%", height: "auto" }} // This makes the image drive the height!
                   />
                   <div className="card-overlay">
                     <p className="card-story">{photo.story}</p>
