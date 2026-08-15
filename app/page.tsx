@@ -539,10 +539,11 @@ export default function Home() {
               {filtered.map((photo) => (
                 <div
                   key={photo.id}
-                  className="card relative w-full mb-4 overflow-hidden rounded-sm group cursor-pointer"
+                  className="card relative w-full overflow-hidden rounded-sm group cursor-pointer"
                   style={{
-                    breakInside: 'avoid', /* Prevents photos from snapping in half */
-                    display: 'block' /* Forces the container to shrink-wrap the image */
+                    marginBottom: '16px', /* Explicitly force the vertical gap */
+                    breakInside: 'avoid', 
+                    display: 'inline-block' /* The magic fix to stop margin collapse */
                   }}
                   onClick={() => setSelectedPhoto(photo)}
                 >
@@ -550,10 +551,15 @@ export default function Home() {
                     src={photo.image}
                     alt={photo.story}
                     width={800}
-                    height={800} // Let Next.js handle the base resolution
+                    height={800} 
                     quality={100}
-                    style={{ width: "100%", height: "auto" }} // This makes the image drive the height!
+                    style={{ 
+                      width: "100%", 
+                      height: "auto", 
+                      display: "block" /* Kills the tiny invisible gap under images */
+                    }} 
                   />
+                  
                   <div className="card-overlay">
                     <p className="card-story">{photo.story}</p>
                     <div className="card-tags">
@@ -563,10 +569,10 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </section>
+            ))}
+          </div>
+        )}
+      </section>
       </div>
 
       <div ref={cursorRef} className={`camera-cursor ${cursor.visible ? "" : "hidden"}`}>
