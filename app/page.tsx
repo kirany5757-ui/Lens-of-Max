@@ -594,42 +594,24 @@ const filtered = shuffledPhotos.filter((photo) => {
                   {col.map((photo) => (
                     <div
                       key={photo.id}
-                      className="card"
+                      className="card relative w-full mb-6 overflow-hidden rounded-sm group"
+                      style={{ aspectRatio: photo.aspect }}
                       onClick={() => setSelectedPhoto(photo)}
-                      onMouseMove={(e) => {
-                        if (cursorRef.current) {
-                          cursorRef.current.style.transform =
-                            `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
-                        }
-                      }}
-                      onMouseEnter={(e) => {
-                        setCursor({
-                          x: e.clientX,
-                          y: e.clientY,
-                          visible: true,
-                        });
-                      }}
-                      onMouseLeave={() => {
-                        setCursor((prev) => ({ ...prev, visible: false }));
-
-                        if (cursorRef.current) {
-                          cursorRef.current.style.transform =
-                            "translate(-9999px, -9999px)";
-                        }
-                      }}
                     >
                       <Image
-  src={photo.image}
-  alt={photo.story}
-  width={800}
-  height={800 / photo.aspect}
-  quality={100}
-  style={{ width: "100%", height: "auto", aspectRatio: `1 / ${photo.aspect}` }}
-/>
+                        src={photo.image}
+                        alt={photo.story}
+                        width={800}
+                        height={800 / photo.aspect}
+                        quality={100}
+                        style={{ width: "100%", height: "auto" }}
+                      />
                       <div className="card-overlay">
                         <p className="card-story">{photo.story}</p>
                         <div className="card-tags">
-                          {photo.tags.map((t) => <span key={t} className="card-tag">{t}</span>)}
+                          {photo.tags.map((t) => (
+                            <span key={t} className="card-tag">{t}</span>
+                          ))}
                         </div>
                       </div>
                     </div>
