@@ -481,28 +481,34 @@ export default function Home() {
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
-          background: rgba(10, 10, 9, 0.6);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(0, 0, 0, 0.7);
+          border: 1px solid rgba(255, 255, 255, 0.2);
           color: #e8e4dc;
-          padding: 16px 12px;
+          width: 44px;
+          height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           font-family: 'Inconsolata', monospace;
-          font-size: 14px;
-          letter-spacing: 0.2em;
+          font-size: 18px;
           cursor: pointer;
           z-index: 110;
           transition: all 0.2s ease;
           backdrop-filter: blur(4px);
+          border-radius: 50%;
         }
         .modal-float-btn:hover {
-          background: rgba(20, 20, 18, 0.9);
-          border-color: rgba(255, 255, 255, 0.3);
+          background: rgba(20, 20, 18, 0.95);
+          border-color: rgba(255, 255, 255, 0.6);
+          color: #ffffff;
+          transform: translateY(-50%) scale(1.08);
         }
-        .modal-prev-btn { left: -60px; }
-        .modal-next-btn { right: -60px; }
+        /* Position them neatly inside the left and right edges of the modal box */
+        .modal-prev-btn { left: 20px; }
+        .modal-next-btn { right: calc(40% + 20px); }
 
-        @media (max-width: 1040px) {
-          .modal-prev-btn { left: 16px; }
-          .modal-next-btn { right: 16px; }
+        @media (max-width: 700px) {
+          .modal-next-btn { right: 20px; }
         }
         
         .empty { text-align: center; padding: 80px 0; color: #888; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
