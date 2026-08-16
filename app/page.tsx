@@ -661,7 +661,17 @@ export default function Home() {
                         src={photo.image}
                         alt={photo.story}
                         className="related-thumb"
+                        style={{ cursor: 'none' }} /* Overrides the default pointer */
                         onClick={() => setSelectedPhoto(photo)}
+                        /* Add the exact same tracking logic here */
+                        onMouseMove={(e) => {
+                          if (cursorRef.current) {
+                            cursorRef.current.style.transform =
+                              `translate(${e.clientX - 14}px, ${e.clientY - 14}px)`;
+                          }
+                        }}
+                        onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
+                        onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
                       />
                     ))}
                   </div>
