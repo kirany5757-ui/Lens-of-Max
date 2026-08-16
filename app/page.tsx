@@ -475,12 +475,21 @@ export default function Home() {
         .related-thumb:hover { filter: brightness(1) grayscale(0%); transform: scale(1.04); border-color: #666; }
         
         /* Brightened from #333 to #aaa so they can actually find the close button! */
-        .modal-close {
+        /* ── MODAL NAVIGATION ── */
+        .modal-nav {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin-top: auto; 
+          padding-top: 24px;
+        }
+        .modal-nav-btn {
           background: transparent; border: none; color: #aaa;
           font-size: 10px; letter-spacing: 0.25em; font-family: 'Inconsolata', monospace;
-          cursor: pointer; text-transform: uppercase; transition: color 0.2s; text-align: left;
+          cursor: pointer; text-transform: uppercase; transition: color 0.2s;
         }
-        .modal-close:hover { color: #e8e4dc; }
+        .modal-nav-btn:hover { color: #e8e4dc; }
+        .modal-nav-divider { color: #333; font-size: 10px; }
         
         .empty { text-align: center; padding: 80px 0; color: #888; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
         ::-webkit-scrollbar { width: 3px; }
@@ -677,7 +686,45 @@ export default function Home() {
                   </div>
                 </div>
               )}
-              <button className="modal-close" onClick={() => setSelectedPhoto(null)}>← close</button>
+              <div className="modal-nav">
+                <button 
+                  className="modal-nav-btn" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
+                    const prevIndex = currentIndex === 0 ? filtered.length - 1 : currentIndex - 1;
+                    setSelectedPhoto(filtered[prevIndex]);
+                  }}
+                >
+                  ← prev
+                </button>
+                
+                <span className="modal-nav-divider">/</span>
+                
+                <button 
+                  className="modal-nav-btn" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
+                    const nextIndex = currentIndex === filtered.length - 1 ? 0 : currentIndex + 1;
+                    setSelectedPhoto(filtered[nextIndex]);
+                  }}
+                >
+                  next →
+                </button>
+                
+                <span className="modal-nav-divider">/</span>
+                
+                <button 
+                  className="modal-nav-btn" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedPhoto(null);
+                  }}
+                >
+                  close ✕
+                </button>
+              </div>
             </div>
           </div>
         </div>
