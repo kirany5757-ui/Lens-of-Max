@@ -476,20 +476,34 @@ export default function Home() {
         
         /* Brightened from #333 to #aaa so they can actually find the close button! */
         /* ── MODAL NAVIGATION ── */
-        .modal-nav {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          margin-top: auto; 
-          padding-top: 24px;
+        /* ── FLOATING MODAL ARROWS ── */
+        .modal-float-btn {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(10, 10, 9, 0.6);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #e8e4dc;
+          padding: 16px 12px;
+          font-family: 'Inconsolata', monospace;
+          font-size: 14px;
+          letter-spacing: 0.2em;
+          cursor: pointer;
+          z-index: 110;
+          transition: all 0.2s ease;
+          backdrop-filter: blur(4px);
         }
-        .modal-nav-btn {
-          background: transparent; border: none; color: #aaa;
-          font-size: 10px; letter-spacing: 0.25em; font-family: 'Inconsolata', monospace;
-          cursor: pointer; text-transform: uppercase; transition: color 0.2s;
+        .modal-float-btn:hover {
+          background: rgba(20, 20, 18, 0.9);
+          border-color: rgba(255, 255, 255, 0.3);
         }
-        .modal-nav-btn:hover { color: #e8e4dc; }
-        .modal-nav-divider { color: #333; font-size: 10px; }
+        .modal-prev-btn { left: -60px; }
+        .modal-next-btn { right: -60px; }
+
+        @media (max-width: 1040px) {
+          .modal-prev-btn { left: 16px; }
+          .modal-next-btn { right: 16px; }
+        }
         
         .empty { text-align: center; padding: 80px 0; color: #888; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
         ::-webkit-scrollbar { width: 3px; }
@@ -629,7 +643,34 @@ export default function Home() {
 
       {selectedPhoto && (
         <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal relative" style={{ position: 'relative' }} onClick={(e) => e.stopPropagation()}>
+            
+            {/* FLOATING PREV BUTTON */}
+            <button 
+              className="modal-float-btn modal-prev-btn" 
+              onClick={(e) => {
+                e.stopPropagation();
+                const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
+                const prevIndex = currentIndex === 0 ? filtered.length - 1 : currentIndex - 1;
+                setSelectedPhoto(filtered[prevIndex]);
+              }}
+            >
+              ←
+            </button>
+
+            {/* FLOATING NEXT BUTTON */}
+            <button 
+              className="modal-float-btn modal-next-btn" 
+              onClick={(e) => {
+                e.stopPropagation();
+                const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
+                const nextIndex = currentIndex === filtered.length - 1 ? 0 : currentIndex + 1;
+                setSelectedPhoto(filtered[nextIndex]);
+              }}
+            >
+              →
+            </button>
+
             <Image
               className="modal-main-img"
               src={selectedPhoto.image}
@@ -646,6 +687,7 @@ export default function Home() {
               onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
               onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
             />
+            
             <div className="modal-info">
               <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
               <p className="modal-story">{selectedPhoto.story}</p>
@@ -670,9 +712,8 @@ export default function Home() {
                         src={photo.image}
                         alt={photo.story}
                         className="related-thumb"
-                        style={{ cursor: 'none' }} /* Overrides the default pointer */
+                        style={{ cursor: 'none' }}
                         onClick={() => setSelectedPhoto(photo)}
-                        /* Add the exact same tracking logic here */
                         onMouseMove={(e) => {
                           if (cursorRef.current) {
                             cursorRef.current.style.transform =
@@ -686,45 +727,8 @@ export default function Home() {
                   </div>
                 </div>
               )}
-              <div className="modal-nav">
-                <button 
-                  className="modal-nav-btn" 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
-                    const prevIndex = currentIndex === 0 ? filtered.length - 1 : currentIndex - 1;
-                    setSelectedPhoto(filtered[prevIndex]);
-                  }}
-                >
-                  ← prev
-                </button>
-                
-                <span className="modal-nav-divider">/</span>
-                
-                <button 
-                  className="modal-nav-btn" 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
-                    const nextIndex = currentIndex === filtered.length - 1 ? 0 : currentIndex + 1;
-                    setSelectedPhoto(filtered[nextIndex]);
-                  }}
-                >
-                  next →
-                </button>
-                
-                <span className="modal-nav-divider">/</span>
-                
-                <button 
-                  className="modal-nav-btn" 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedPhoto(null);
-                  }}
-                >
-                  close ✕
-                </button>
-              </div>
+              
+              <button className="modal-close" onClick={() => setSelectedPhoto(null)}>close ✕</button>
             </div>
           </div>
         </div>
