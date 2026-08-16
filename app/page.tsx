@@ -83,8 +83,9 @@ export default function Home() {
     );
   }, []);
 
-  // ── BATCH SHUFFLE ENGINE ──
+ // ── HYBRID BATCH SHUFFLER ──
   const shuffleEngine = useCallback((arr: Photo[]) => {
+    // 1. The micro-shuffler for individual batches
     const shuffle = (list: Photo[]) => {
       const copy = [...list];
       for (let i = copy.length - 1; i > 0; i--) {
@@ -94,14 +95,31 @@ export default function Home() {
       return copy;
     };
 
+    let batchSize = 6; // Safe fallback
+
+    // 2. The Scale Gate
+    if (arr.length >= 100) {
+      batchSize = 10; // Locked in at 100+
+    } else {
+      // Find the perfect factor for smaller collections
+      for (let b = 7; b >= 4; b--) {
+        if (arr.length % b === 0) {
+          batchSize = b;
+          break;
+        }
+      }
+    }
+
+    // 3. Slice and shuffle
     const batched = [];
-    for (let i = 0; i < arr.length; i += 7) {
-      const chunk = arr.slice(i, i + 7);
+    for (let i = 0; i < arr.length; i += batchSize) {
+      // .slice naturally catches the leftover photos at the end!
+      const chunk = arr.slice(i, i + batchSize);
       batched.push(...shuffle(chunk));
     }
+    
     return batched;
   }, []);
-
   const [shuffledPhotos, setShuffledPhotos] = useState<Photo[]>(() => shuffleEngine(photosWithAspect));
 
   const handleRefresh = () => {
