@@ -444,19 +444,27 @@ export default function Home() {
         }
         @media (min-width: 700px) { .modal-main-img { max-height: none; min-height: 480px; } }
         .modal-info { padding: 40px 28px; display: flex; flex-direction: column; gap: 20px; }
-        .modal-num { font-size: 10px; letter-spacing: 0.3em; color: #333; text-transform: uppercase; }
+        
+        /* Brightened from #333 to #888 */
+        .modal-num { font-size: 10px; letter-spacing: 0.3em; color: #888; text-transform: uppercase; } 
+        
         .modal-story {
           font-family: 'Cormorant Garamond', serif;
           font-size: 21px; font-weight: 300; line-height: 1.55; color: #e8e4dc; flex: 1;
         }
         .modal-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        
+        /* Brightened text to #aaa and border to #444 for better visibility */
         .modal-tag-btn {
-          background: transparent; border: 1px solid #2a2a2a; color: #555;
+          background: transparent; border: 1px solid #444; color: #aaa;
           padding: 4px 12px; font-family: 'Inconsolata', monospace;
           font-size: 11px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s;
         }
-        .modal-tag-btn:hover { border-color: #555; color: #aaa; }
-        .related-label { font-size: 10px; letter-spacing: 0.2em; color: #444; text-transform: uppercase; margin-bottom: 10px; }
+        .modal-tag-btn:hover { border-color: #e8e4dc; color: #e8e4dc; }
+        
+        /* Brightened from #444 to #888 */
+        .related-label { font-size: 10px; letter-spacing: 0.2em; color: #888; text-transform: uppercase; margin-bottom: 10px; } 
+        
         .related-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
         .related-strip::-webkit-scrollbar { display: none; }
         .related-thumb {
@@ -464,14 +472,17 @@ export default function Home() {
           cursor: pointer; border-radius: 2px; filter: brightness(0.8) grayscale(15%);
           transition: filter 0.2s ease, transform 0.2s ease; border: 1px solid transparent;
         }
-        .related-thumb:hover { filter: brightness(1) grayscale(0%); transform: scale(1.04); border-color: #444; }
+        .related-thumb:hover { filter: brightness(1) grayscale(0%); transform: scale(1.04); border-color: #666; }
+        
+        /* Brightened from #333 to #aaa so they can actually find the close button! */
         .modal-close {
-          background: transparent; border: none; color: #333;
+          background: transparent; border: none; color: #aaa;
           font-size: 10px; letter-spacing: 0.25em; font-family: 'Inconsolata', monospace;
           cursor: pointer; text-transform: uppercase; transition: color 0.2s; text-align: left;
         }
         .modal-close:hover { color: #e8e4dc; }
-        .empty { text-align: center; padding: 80px 0; color: #333; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
+        
+        .empty { text-align: center; padding: 80px 0; color: #888; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: #0a0a09; }
         ::-webkit-scrollbar-thumb { background: #1e1e1e; }
