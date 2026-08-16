@@ -568,13 +568,23 @@ export default function Home() {
               {filtered.map((photo) => (
                 <div
                   key={photo.id}
-                  className="card relative w-full overflow-hidden rounded-sm group cursor-pointer"
+                  /* Removed cursor-pointer so the custom cursor can shine */
+                  className="card relative w-full overflow-hidden rounded-sm group"
                   style={{
-                    marginBottom: '16px', /* Explicitly force the vertical gap */
+                    marginBottom: '16px', 
                     breakInside: 'avoid', 
-                    display: 'inline-block' /* The magic fix to stop margin collapse */
+                    display: 'inline-block' 
                   }}
                   onClick={() => setSelectedPhoto(photo)}
+                  /* Add the custom cursor tracking exactly like the modal! */
+                  onMouseMove={(e) => {
+                    if (cursorRef.current) {
+                      cursorRef.current.style.transform =
+                        `translate(${e.clientX - 14}px, ${e.clientY - 14}px)`;
+                    }
+                  }}
+                  onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
+                  onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
                 >
                   <Image
                     src={photo.image}
@@ -585,7 +595,7 @@ export default function Home() {
                     style={{ 
                       width: "100%", 
                       height: "auto", 
-                      display: "block" /* Kills the tiny invisible gap under images */
+                      display: "block" 
                     }} 
                   />
                   
@@ -598,7 +608,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-            ))}
+              ))}
           </div>
         )}
       </section>
