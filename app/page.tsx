@@ -503,15 +503,19 @@ export default function Home() {
           color: #ffffff;
           transform: translateY(-50%) scale(1.08);
         }
-        /* Position them neatly inside the left and right edges of the modal box */
-        .modal-prev-btn { left: -70px; }
-        .modal-next-btn { right: -70px; }
-
-        @media (max-width: 1040px) {
-          .modal-prev-btn { left: 16px; }          
-          .modal-next-btn { right: 16px; }
+          .modal {
+          background: #111; max-width: 900px; width: 100%;
+          max-height: 90vh; overflow-y: auto;
+          display: grid; grid-template-columns: 1fr;
+          animation: slideUp 0.3s ease;
         }
-        
+
+        .modal-prev-btn { left: 16px; }
+        .modal-next-btn { right: calc(40% + 16px); }
+
+        @media (max-width: 700px) {
+          .modal-next-btn { right: 16px; }
+        }        
         .empty { text-align: center; padding: 80px 0; color: #888; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: #0a0a09; }
