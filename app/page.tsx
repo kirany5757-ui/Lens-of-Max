@@ -477,45 +477,34 @@ export default function Home() {
         /* Brightened from #333 to #aaa so they can actually find the close button! */
         /* ── MODAL NAVIGATION ── */
         /* ── FLOATING MODAL ARROWS ── */
+/* ── OUTSIDE BACKDROP FLOATING ARROWS ── */
         .modal-float-btn {
-          position: absolute;
+          position: fixed;
           top: 50%;
           transform: translateY(-50%);
-          background: rgba(0, 0, 0, 0.7);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          color: #e8e4dc;
-          width: 44px;
-          height: 44px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-family: 'Inconsolata', monospace;
-          font-size: 18px;
+          background: transparent;
+          border: none;
+          color: rgba(232, 228, 220, 0.7);
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 60px;
+          font-weight: 300;
           cursor: pointer;
-          z-index: 110;
-          transition: all 0.2s ease;
-          backdrop-filter: blur(4px);
-          border-radius: 50%;
+          z-index: 120;
+          transition: color 0.2s ease, transform 0.2s ease;
+          padding: 20px;
+          line-height: 1;
         }
         .modal-float-btn:hover {
-          background: rgba(20, 20, 18, 0.95);
-          border-color: rgba(255, 255, 255, 0.6);
-          color: #ffffff;
-          transform: translateY(-50%) scale(1.08);
+          color: #e8e4dc;
+          transform: translateY(-50%) scale(1.1);
         }
-          .modal {
-          background: #111; max-width: 900px; width: 100%;
-          max-height: 90vh; overflow-y: auto;
-          display: grid; grid-template-columns: 1fr;
-          animation: slideUp 0.3s ease;
-        }
+        .modal-prev-btn { left: 60px; }
+        .modal-next-btn { right: 60px; }
 
-        .modal-prev-btn { left: 16px; }
-        .modal-next-btn { right: calc(40% + 16px); }
-
-        @media (max-width: 700px) {
+        @media (max-width: 1040px) {
+          .modal-prev-btn { left: 16px; }
           .modal-next-btn { right: 16px; }
-        }        
+        }
         .empty { text-align: center; padding: 80px 0; color: #888; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: #0a0a09; }
@@ -652,36 +641,36 @@ export default function Home() {
         <span className="camera-cursor-icon">📷</span>
       </div>
 
-      {selectedPhoto && (
+{selectedPhoto && (
         <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
-          <div className="modal relative" style={{ position: 'relative' }} onClick={(e) => e.stopPropagation()}>
-            
-            {/* FLOATING PREV BUTTON */}
-            <button 
-              className="modal-float-btn modal-prev-btn" 
-              onClick={(e) => {
-                e.stopPropagation();
-                const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
-                const prevIndex = currentIndex === 0 ? filtered.length - 1 : currentIndex - 1;
-                setSelectedPhoto(filtered[prevIndex]);
-              }}
-            >
-              ←
-            </button>
+          
+          {/* FLOATING PREV ARROW */}
+          <button 
+            className="modal-float-btn modal-prev-btn" 
+            onClick={(e) => {
+              e.stopPropagation();
+              const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
+              const prevIndex = currentIndex === 0 ? filtered.length - 1 : currentIndex - 1;
+              setSelectedPhoto(filtered[prevIndex]);
+            }}
+          >
+            ‹
+          </button>
 
-            {/* FLOATING NEXT BUTTON */}
-            <button 
-              className="modal-float-btn modal-next-btn" 
-              onClick={(e) => {
-                e.stopPropagation();
-                const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
-                const nextIndex = currentIndex === filtered.length - 1 ? 0 : currentIndex + 1;
-                setSelectedPhoto(filtered[nextIndex]);
-              }}
-            >
-              →
-            </button>
+          {/* FLOATING NEXT ARROW */}
+          <button 
+            className="modal-float-btn modal-next-btn" 
+            onClick={(e) => {
+              e.stopPropagation();
+              const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
+              const nextIndex = currentIndex === filtered.length - 1 ? 0 : currentIndex + 1;
+              setSelectedPhoto(filtered[nextIndex]);
+            }}
+          >
+            ›
+          </button>
 
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
             <Image
               className="modal-main-img"
               src={selectedPhoto.image}
