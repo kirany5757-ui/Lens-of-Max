@@ -504,11 +504,12 @@ export default function Home() {
           transform: translateY(-50%) scale(1.08);
         }
         /* Position them neatly inside the left and right edges of the modal box */
-        .modal-prev-btn { left: 20px; }
-        .modal-next-btn { right: calc(40% + 20px); }
+        .modal-prev-btn { left: -70px; }
+        .modal-next-btn { right: -70px; }
 
-        @media (max-width: 700px) {
-          .modal-next-btn { right: 20px; }
+        @media (max-width: 1040px) {
+          .modal-prev-btn { left: 16px; }          
+          .modal-next-btn { right: 16px; }
         }
         
         .empty { text-align: center; padding: 80px 0; color: #888; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
