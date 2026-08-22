@@ -171,19 +171,22 @@ export default function Home() {
         /* ── FIXED LEFT VERTICAL BRAND ── */
         .vertical-brand {
           position: fixed;
-          left: 24px;
+          left: 28px;
           top: 0;
           bottom: 0;
+          height: 100vh;
           z-index: 40;
           display: flex;
+          flex-direction: column;
           align-items: center;
-          justify-content: center;
+          justify-content: space-between;
+          padding: 60px 0;
           writing-mode: vertical-rl;
           transform: rotate(180deg);
           font-family: 'Inconsolata', monospace;
           font-size: 13px;
           font-weight: 700;
-          letter-spacing: 0.6em;
+          letter-spacing: 0.8em;
           color: transparent;
           -webkit-text-stroke: 0.6px rgba(232, 228, 220, 0.85);
           text-transform: uppercase;
