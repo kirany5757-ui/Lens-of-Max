@@ -259,7 +259,7 @@ export default function Home() {
 
         /* ── MAIN CONTAINER ── */
         .main-container {
-          max-width: 1330px;
+          max-width: 1230px;
           margin: 0 auto;
           padding: 120px 24px 80px;
         }
