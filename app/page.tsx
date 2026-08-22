@@ -51,7 +51,6 @@ export default function Home() {
   const [navOpen, setNavOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   
-  // Friend's suggested intro states
   const [introVisible, setIntroVisible] = useState(true);
   const [introMounted, setIntroMounted] = useState(true);
 
@@ -62,7 +61,6 @@ export default function Home() {
   useEffect(() => { 
     setTimeout(() => setLoaded(true), 100); 
 
-    // Timing logic for signature intro fade-out & unmount
     const fadeTimer = setTimeout(() => setIntroVisible(false), 1600);
     const unmountTimer = setTimeout(() => setIntroMounted(false), 2200);
     return () => { clearTimeout(fadeTimer); clearTimeout(unmountTimer); };
@@ -123,7 +121,7 @@ export default function Home() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inconsolata:wght@300;400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inconsolata:wght@300;400;700&display=swap');
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
@@ -170,7 +168,7 @@ export default function Home() {
           color: #7a7770;
         }
 
-        /* ── FIXED LEFT VERTICAL BRAND ── */
+        /* ── FIXED LEFT VERTICAL BRAND (Bolder Outlined Style) ── */
         .vertical-brand {
           position: fixed;
           left: 28px;
@@ -179,9 +177,12 @@ export default function Home() {
           transform-origin: left center;
           z-index: 40;
           font-family: 'Inconsolata', monospace;
-          font-size: 11px;
-          letter-spacing: 0.35em;
-          color: rgba(232, 228, 220, 0.4);
+          font-size: 15px;
+          font-weight: 700;
+          letter-spacing: 0.4em;
+          color: transparent;
+          -webkit-text-stroke: 0.6px rgba(232, 228, 220, 0.85);
+          text-stroke: 0.6px rgba(232, 228, 220, 0.85);
           text-transform: uppercase;
           pointer-events: none;
           white-space: nowrap;
@@ -191,6 +192,17 @@ export default function Home() {
         .vertical-brand.visible { opacity: 1; }
         @media (max-width: 900px) {
           .vertical-brand { display: none; }
+        }
+
+        /* ── HIDDEN DOVE EASTER EGG ── */
+        .hidden-dove {
+          position: absolute;
+          bottom: 4px;
+          right: 4px;
+          font-size: 1px;
+          opacity: 0.4;
+          line-height: 1;
+          user-select: none;
         }
 
         /* ── FIXED RIGHT VERTICAL NAV ── */
@@ -205,17 +217,34 @@ export default function Home() {
           align-items: center;
           gap: 24px;
           font-family: 'Inconsolata', monospace;
-          font-size: 11px;
-          letter-spacing: 0.3em;
+          font-size: 13px;
+          font-weight: 700;
+          letter-spacing: 0.35em;
           text-transform: uppercase;
+        }
+        .nav-mark {
+          width: 22px;
+          height: 22px;
+          border: 1px solid rgba(232,228,220,0.5);
+          border-radius: 50%;
+          position: relative;
+        }
+        .nav-mark::before {
+          content: "";
+          position: absolute;
+          top: 50%; left: 50%;
+          width: 1px; height: 22px;
+          background: rgba(232,228,220,0.5);
+          transform: translate(-50%, -50%) rotate(35deg);
         }
         .vertical-nav button {
           background: transparent;
           border: none;
-          color: rgba(232, 228, 220, 0.5);
+          color: rgba(232, 228, 220, 0.6);
           font-family: 'Inconsolata', monospace;
-          font-size: 11px;
-          letter-spacing: 0.3em;
+          font-size: 13px;
+          font-weight: 700;
+          letter-spacing: 0.35em;
           cursor: pointer;
           transition: color 0.2s;
         }
@@ -231,14 +260,14 @@ export default function Home() {
           }
         }
 
-        /* ── MAIN CONTAINER (with top breathing room) ── */
+        /* ── MAIN CONTAINER (with generous breathing room) ── */
         .main-container {
           max-width: 1300px;
           margin: 0 auto;
-          padding: 100px 100px 140px;
+          padding: 140px 100px 120px;
         }
         @media (max-width: 900px) {
-          .main-container { padding: 90px 24px 80px; }
+          .main-container { padding: 120px 24px 80px; }
         }
 
         /* ── NAV DRAWER OVERLAY ── */
@@ -391,18 +420,20 @@ export default function Home() {
       )}
 
       <div className={`page ${loaded ? "visible" : ""}`}>
-        {/* ── FIXED LEFT VERTICAL BRAND (Fades in as intro finishes) ── */}
+        {/* ── FIXED LEFT VERTICAL BRAND (Bold Outlined + Hidden Dove) ── */}
         <div className={`vertical-brand ${!introVisible ? "visible" : ""}`}>
-          LENS OF MAX &nbsp;&mdash;&nbsp; 🕊️
+          LENS OF MAX
+          <span className="hidden-dove">🕊️</span>
         </div>
 
-        {/* ── FIXED RIGHT VERTICAL NAV ── */}
+        {/* ── FIXED RIGHT VERTICAL NAV (With Geometric Mark) ── */}
         <nav className="vertical-nav">
+          <span className="nav-mark" aria-hidden="true"></span>
           <button onClick={() => setNavOpen(true)}>NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}</button>
           <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
         </nav>
 
-        {/* ── MAIN SCROLLABLE CONTENT (Clean duplicate header removed) ── */}
+        {/* ── MAIN SCROLLABLE CONTENT ── */}
         <main className="main-container">
           <section className="gallery-section">
             <div className="gallery-header">
