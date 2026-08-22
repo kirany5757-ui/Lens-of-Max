@@ -33,8 +33,8 @@ function useNumCols(): number {
   const [cols, setCols] = useState(3);
   useEffect(() => {
     const update = () => {
-      if (window.innerWidth < 560) setCols(1);
-      else if (window.innerWidth < 900) setCols(2);
+      if (window.innerWidth < 768) setCols(1);
+      else if (window.innerWidth < 1100) setCols(2);
       else setCols(3);
     };
     update();
@@ -48,6 +48,7 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [navOpen, setNavOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
   const cursorRef = useRef<HTMLDivElement | null>(null);
@@ -71,23 +72,16 @@ export default function Home() {
       }
       return copy;
     };
-
     let batchSize = 6;
-    if (arr.length >= 100) {
-      batchSize = 10;
-    } else {
+    if (arr.length >= 100) batchSize = 10;
+    else {
       for (let b = 7; b >= 4; b--) {
-        if (arr.length % b === 0) {
-          batchSize = b;
-          break;
-        }
+        if (arr.length % b === 0) { batchSize = b; break; }
       }
     }
-
     const batched = [];
     for (let i = 0; i < arr.length; i += batchSize) {
-      const chunk = arr.slice(i, i + batchSize);
-      batched.push(...shuffle(chunk));
+      batched.push(...shuffle(arr.slice(i, i + batchSize)));
     }
     return batched;
   }, []);
@@ -122,7 +116,7 @@ export default function Home() {
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body {
-          background: #0a0a09;
+          background: #080807;
           color: #e8e4dc;
           font-family: 'Inconsolata', monospace;
           min-height: 100vh;
@@ -131,154 +125,139 @@ export default function Home() {
         .page { opacity: 0; transition: opacity 0.8s ease; }
         .page.visible { opacity: 1; }
 
-        /* ── MINIMAL UTILITY STICKY HEADER ── */
-        .site-header {
-          position: sticky;
-          top: 0;
-          z-index: 50;
-          background: rgba(10, 10, 9, 0.85);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          padding: 16px 48px;
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
+        /* ── FIXED LEFT VERTICAL BRAND (Darren Oorloff Style) ── */
+        .vertical-brand {
+          position: fixed;
+          left: 28px;
+          top: 50%;
+          transform: translateY(-50%) rotate(-90deg);
+          transform-origin: left center;
+          z-index: 40;
+          font-family: 'Inconsolata', monospace;
+          font-size: 11px;
+          letter-spacing: 0.35em;
+          color: rgba(232, 228, 220, 0.4);
+          text-transform: uppercase;
+          pointer-events: none;
+          white-space: nowrap;
+        }
+        @media (max-width: 900px) {
+          .vertical-brand { display: none; }
         }
 
-        .header-search-wrap {
+        /* ── FIXED RIGHT VERTICAL NAV ── */
+        .vertical-nav {
+          position: fixed;
+          right: 32px;
+          top: 50%;
+          transform: translateY(-50%) rotate(90deg);
+          transform-origin: right center;
+          z-index: 40;
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 24px;
+          font-family: 'Inconsolata', monospace;
+          font-size: 11px;
+          letter-spacing: 0.3em;
+          text-transform: uppercase;
         }
-        .header-search-icon { font-size: 13px; color: rgba(232,228,220,0.4); }
-        .header-search {
+        .vertical-nav button {
           background: transparent;
           border: none;
-          border-bottom: 1px solid rgba(255,255,255,0.12);
-          padding: 4px 0;
+          color: rgba(232, 228, 220, 0.5);
           font-family: 'Inconsolata', monospace;
-          font-size: 12px;
+          font-size: 11px;
+          letter-spacing: 0.3em;
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+        .vertical-nav button:hover, .vertical-nav button.active {
           color: #e8e4dc;
-          outline: none;
-          width: 160px;
-          transition: border-color 0.2s, width 0.3s ease;
         }
-        .header-search:focus { border-color: rgba(255,255,255,0.3); width: 210px; }
-        .header-search::placeholder { color: rgba(232,228,220,0.25); }
+        @media (max-width: 900px) {
+          .vertical-nav {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            transform: none;
+          }
+        }
 
-        /* ── EDITORIAL HERO ── */
-        .hero-compact {
-          max-width: 1500px;
+        /* ── MAIN CONTAINER WITH MARGINS FOR FIXED BORDERS ── */
+        .main-container {
+          max-width: 1300px;
           margin: 0 auto;
-          padding: 60px 48px 40px;
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-          border-bottom: 1px solid rgba(255,255,255,0.05);
+          padding: 80px 100px 120px;
+        }
+        @media (max-width: 900px) {
+          .main-container { padding: 80px 24px 80px; }
         }
 
-        .hero-eyebrow {
-          font-size: 12px;
-          opacity: 0.35;
-          margin-bottom: -4px;
+        /* ── TOP HERO INTRODUCTION ── */
+        .site-hero {
+          margin-bottom: 60px;
         }
-
-        .hero-title-group h1 {
+        .site-hero h1 {
           font-family: 'Cormorant Garamond', serif;
-          font-size: clamp(42px, 6.5vw, 80px);
+          font-size: clamp(40px, 6vw, 72px);
           font-weight: 300;
           letter-spacing: 0.04em;
           color: #e8e4dc;
-          line-height: 1;
+          line-height: 1.1;
           margin-bottom: 8px;
         }
-
-        .hero-title-group p {
+        .site-hero p {
           font-family: 'Cormorant Garamond', serif;
           font-style: italic;
-          font-size: 17px;
+          font-size: 16px;
           color: #7a7770;
         }
 
-        .hero-tags {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-          max-width: 700px;
-          margin-top: 6px;
+        /* ── TAG DRAWER / NAV OVERLAY ── */
+        .nav-drawer {
+          position: fixed; inset: 0;
+          background: rgba(8, 8, 7, 0.96);
+          backdrop-filter: blur(12px);
+          z-index: 90;
+          display: flex; flex-direction: column; justify-content: center; align-items: center;
+          padding: 40px;
+          animation: fadeIn 0.25s ease;
         }
-        .tag-btn {
-          background: transparent;
-          border: 1px solid rgba(255,255,255,0.12);
-          color: #777;
-          padding: 5px 14px;
-          font-family: 'Inconsolata', monospace;
-          font-size: 11px;
-          letter-spacing: 0.1em;
-          cursor: pointer;
-          transition: all 0.2s ease;
+        .nav-drawer-content {
+          max-width: 600px; width: 100%;
+          display: flex; flex-direction: column; gap: 30px;
         }
-        .tag-btn:hover { border-color: rgba(255,255,255,0.4); color: #ccc; }
-        .tag-btn.active { border-color: #e8e4dc; color: #e8e4dc; background: rgba(255,255,255,0.03); }
+        .nav-drawer-header {
+          display: flex; justify-content: space-between; align-items: center;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+          padding-bottom: 16px;
+        }
+        .nav-drawer-title { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: #888; }
+        .nav-drawer-close { background: transparent; border: none; color: #888; font-size: 11px; letter-spacing: 0.2em; cursor: pointer; }
+        .nav-drawer-close:hover { color: #e8e4dc; }
+        .nav-tags-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+        .nav-tag-pill {
+          background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #aaa;
+          padding: 8px 16px; font-family: 'Inconsolata', monospace; font-size: 12px;
+          letter-spacing: 0.15em; cursor: pointer; transition: all 0.2s;
+        }
+        .nav-tag-pill:hover { border-color: #e8e4dc; color: #e8e4dc; }
+        .nav-tag-pill.active { border-color: #e8e4dc; background: #e8e4dc; color: #080807; }
 
-        /* ── ASYMMETRIC EDITORIAL GALLERY GRID ── */
-        .gallery-section {
-          max-width: 1500px;
-          margin: 0 auto;
-          padding: 50px 48px 140px;
-        }
+        /* ── GALLERY GRID ── */
         .gallery-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 36px;
+          display: flex; align-items: center; justify-content: space-between;
+          margin-bottom: 30px; padding-bottom: 16px;
+          border-bottom: 1px solid rgba(255,255,255,0.06);
         }
-        .counter {
-          font-size: 10px;
-          letter-spacing: 0.25em;
-          color: #555;
-          text-transform: uppercase;
-        }
+        .counter { font-size: 10px; letter-spacing: 0.25em; color: #555; text-transform: uppercase; }
         .refresh-btn {
-          background: transparent;
-          border: 1px solid rgba(255,255,255,0.15);
-          color: #777;
-          width: 28px;
-          height: 28px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          font-size: 13px;
+          background: transparent; border: 1px solid rgba(255,255,255,0.12); color: #777;
+          width: 26px; height: 26px; border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer; transition: all 0.3s ease; font-size: 12px;
         }
-        .refresh-btn:hover {
-          border-color: #e8e4dc;
-          color: #e8e4dc;
-          transform: rotate(180deg);
-        }
-
-        .editorial-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 24px;
-          grid-auto-flow: dense;
-        }
-        @media (max-width: 1024px) {
-          .editorial-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 600px) {
-          .editorial-grid { grid-template-columns: 1fr; }
-        }
-
-        .card.span-2 {
-          grid-column: span 2;
-        }
-        @media (max-width: 1024px) {
-          .card.span-2 { grid-column: span 1; }
-        }
+        .refresh-btn:hover { border-color: #e8e4dc; color: #e8e4dc; transform: rotate(180deg); }
 
         .card {
           cursor: none;
@@ -286,32 +265,33 @@ export default function Home() {
           overflow: hidden;
           border-radius: 2px;
           background: #141412;
+          margin-bottom: 20px;
+          break-inside: avoid;
         }
         .card img {
           width: 100%; display: block; object-fit: cover;
           filter: grayscale(15%) brightness(0.9);
-          transition: transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s ease;
+          transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s ease;
         }
         .card:hover img { transform: scale(1.04); filter: grayscale(0%) brightness(1.02); }
-        
         .card-overlay {
           position: absolute; inset: 0;
           background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
           opacity: 0; transition: opacity 0.35s ease;
           display: flex; flex-direction: column; justify-content: flex-end;
-          padding: 24px 20px 18px;
+          padding: 20px 16px 14px;
         }
         .card:hover .card-overlay { opacity: 1; }
         .card-story {
           font-family: 'Cormorant Garamond', serif;
-          font-style: italic; font-size: 15px;
-          color: #e8e4dc; line-height: 1.45; margin-bottom: 6px;
-          transform: translateY(8px); transition: transform 0.35s ease;
+          font-style: italic; font-size: 14px;
+          color: #e8e4dc; line-height: 1.45; margin-bottom: 4px;
+          transform: translateY(6px); transition: transform 0.35s ease;
         }
         .card:hover .card-story { transform: translateY(0); }
         .card-tags {
           display: flex; gap: 6px; flex-wrap: wrap;
-          transform: translateY(8px); transition: transform 0.35s ease 0.05s;
+          transform: translateY(6px); transition: transform 0.35s ease 0.05s;
         }
         .card:hover .card-tags { transform: translateY(0); }
         .card-tag { font-size: 9px; letter-spacing: 0.15em; color: #888; text-transform: uppercase; }
@@ -319,8 +299,7 @@ export default function Home() {
 
         /* ── CUSTOM CAMERA CURSOR ── */
         .camera-cursor {
-          position: fixed;
-          top: 0; left: 0;
+          position: fixed; top: 0; left: 0;
           width: 28px; height: 28px;
           display: flex; align-items: center; justify-content: center;
           pointer-events: none; z-index: 9999;
@@ -330,148 +309,84 @@ export default function Home() {
         .camera-cursor.hidden { opacity: 0; }
         .camera-cursor-icon { font-size: 12px; color: rgba(232,228,220,0.7); user-select: none; }
 
-        /* ── STAGE 3: REFINED CINEMATIC MODAL VIEWER ── */
+        /* ── MODAL VIEWER ── */
         .modal-backdrop {
           position: fixed; inset: 0;
           background: rgba(5,5,4,0.98);
           display: flex; align-items: center; justify-content: center;
-          padding: 40px; z-index: 100;
+          padding: 32px; z-index: 100;
           animation: fadeIn 0.25s ease;
         }
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        
         .modal {
-          background: #0d0d0c; 
-          max-width: 1100px; width: 100%;
+          background: #0e0e0d; max-width: 1000px; width: 100%;
           max-height: 88vh; overflow-y: auto;
           display: grid; grid-template-columns: 1fr;
           border: 1px solid rgba(255,255,255,0.06);
           animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @media (min-width: 768px) { .modal { grid-template-columns: 1.7fr 1fr; } }
+        @media (min-width: 768px) { .modal { grid-template-columns: 1.6fr 1fr; } }
         @keyframes slideUp { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
-        
-        .modal-main-img { 
-          width: 100%; height: 100%; object-fit: cover; display: block; 
-          max-height: 65vh; cursor: none; 
-          filter: brightness(0.98);
-        }
-        @media (min-width: 768px) { .modal-main-img { max-height: none; min-height: 560px; } }
-        
-        .modal-info { 
-          padding: 56px 40px; 
-          display: flex; flex-direction: column; gap: 28px; 
-          justify-content: space-between;
-        }
-        
-        .modal-num { 
-          font-size: 10px; letter-spacing: 0.35em; color: #666; text-transform: uppercase; 
-        }
-        
-        .modal-story { 
-          font-family: 'Cormorant Garamond', serif; 
-          font-size: 24px; font-weight: 300; line-height: 1.6; 
-          color: #f2efe9; 
-          letter-spacing: 0.01em;
-        }
-        
+        .modal-main-img { width: 100%; height: 100%; object-fit: cover; display: block; max-height: 60vh; cursor: none; }
+        @media (min-width: 768px) { .modal-main-img { max-height: none; min-height: 500px; } }
+        .modal-info { padding: 48px 36px; display: flex; flex-direction: column; gap: 24px; justify-content: space-between; }
+        .modal-num { font-size: 10px; letter-spacing: 0.3em; color: #666; text-transform: uppercase; }
+        .modal-story { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; line-height: 1.55; color: #e8e4dc; }
         .modal-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-        .modal-tag-btn { 
-          background: transparent; border: 1px solid rgba(255,255,255,0.12); color: #999; 
-          padding: 5px 12px; font-family: 'Inconsolata', monospace; font-size: 11px; 
-          letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s; 
-        }
+        .modal-tag-btn { background: transparent; border: 1px solid rgba(255,255,255,0.12); color: #999; padding: 4px 12px; font-family: 'Inconsolata', monospace; font-size: 11px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s; }
         .modal-tag-btn:hover { border-color: #e8e4dc; color: #e8e4dc; }
-        
-        .related-label { 
-          font-size: 10px; letter-spacing: 0.25em; color: #666; text-transform: uppercase; margin-bottom: 12px; 
-        }
-        .related-strip { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+        .related-label { font-size: 10px; letter-spacing: 0.2em; color: #666; text-transform: uppercase; margin-bottom: 10px; }
+        .related-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
         .related-strip::-webkit-scrollbar { display: none; }
-        .related-thumb { 
-          width: 80px; height: 110px; object-fit: cover; flex-shrink: 0; cursor: pointer; 
-          border-radius: 2px; filter: brightness(0.75) grayscale(20%); 
-          transition: filter 0.2s ease, transform 0.2s ease; border: 1px solid transparent; 
-        }
+        .related-thumb { width: 80px; height: 110px; object-fit: cover; flex-shrink: 0; cursor: pointer; border-radius: 2px; filter: brightness(0.8) grayscale(20%); transition: filter 0.2s ease, transform 0.2s ease; border: 1px solid transparent; }
         .related-thumb:hover { filter: brightness(1) grayscale(0%); transform: scale(1.03); border-color: #666; }
-        
-        .modal-close { 
-          background: transparent; border: none; color: #666; 
-          font-family: 'Inconsolata', monospace; font-size: 11px; letter-spacing: 0.25em; 
-          text-transform: uppercase; cursor: pointer; text-align: left; 
-          padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06);
-          transition: color 0.2s; 
-        }
+        .modal-close { background: transparent; border: none; color: #666; font-family: 'Inconsolata', monospace; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; cursor: pointer; text-align: left; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); transition: color 0.2s; }
         .modal-close:hover { color: #e8e4dc; }
 
-        .modal-float-btn { 
-          position: fixed; top: 50%; transform: translateY(-50%); 
-          background: transparent; border: none; color: rgba(232, 228, 220, 0.5); 
-          font-family: 'Cormorant Garamond', serif; font-size: 72px; font-weight: 300; 
-          cursor: pointer; z-index: 120; transition: color 0.2s ease; padding: 24px; line-height: 1; 
-        }
+        .modal-float-btn { position: fixed; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: rgba(232, 228, 220, 0.5); font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 300; cursor: pointer; z-index: 120; transition: color 0.2s ease; padding: 24px; line-height: 1; }
         .modal-float-btn:hover { color: #e8e4dc; }
-        .modal-prev-btn { left: 40px; }
-        .modal-next-btn { right: 40px; }
+        .modal-prev-btn { left: 32px; }
+        .modal-next-btn { right: 32px; }
 
         .empty { text-align: center; padding: 100px 0; color: #666; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #0a0a09; }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: #080807; }
         ::-webkit-scrollbar-thumb { background: #222; }
       `}</style>
 
       <div className={`page ${loaded ? "visible" : ""}`}>
-        {/* ── MINIMAL UTILITY STICKY HEADER ── */}
-        <header className="site-header">
-          <div className="header-search-wrap">
-            <span className="header-search-icon">⌕</span>
-            <input
-              className="header-search"
-              type="text"
-              placeholder="search moments…"
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setActiveTags([]); }}
-            />
-          </div>
-        </header>
+        {/* ── FIXED LEFT VERTICAL BRAND MARK ── */}
+        <div className="vertical-brand">
+          LENS OF MAX &nbsp;&mdash;&nbsp; 🕊️
+        </div>
 
-        {/* ── EDITORIAL HERO ── */}
-        <section className="hero-compact">
-          <p className="hero-eyebrow">🕊️</p>
-          <div className="hero-title-group">
+        {/* ── FIXED RIGHT VERTICAL NAV ── */}
+        <nav className="vertical-nav">
+          <button onClick={() => setNavOpen(true)}>NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}</button>
+          <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
+        </nav>
+
+        {/* ── MAIN SCROLLABLE CONTENT ── */}
+        <main className="main-container">
+          <header className="site-hero">
             <h1>Lens of Max</h1>
             <p>The beauty of my camera&apos;s wink</p>
-          </div>
-          <div className="hero-tags">
-            {allTags.map((tag) => (
-              <button
-                key={tag}
-                className={`tag-btn ${activeTags.includes(tag) ? "active" : ""}`}
-                onClick={() => handleTagClick(tag)}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-        </section>
+          </header>
 
-        {/* ── ASYMMETRIC EDITORIAL GALLERY ── */}
-        <section className="gallery-section">
-          <div className="gallery-header">
-            <p className="counter">{filtered.length} / {totalMain} moments</p>
-            <button className="refresh-btn" onClick={handleRefresh} title="Reshuffle Grid">↻</button>
-          </div>
+          <section className="gallery-section">
+            <div className="gallery-header">
+              <p className="counter">{filtered.length} / {totalMain} moments</p>
+              <button className="refresh-btn" onClick={handleRefresh} title="Reshuffle Grid">↻</button>
+            </div>
 
-          {filtered.length === 0 ? (
-            <div className="empty">No moments found</div>
-          ) : (
-            <div className="editorial-grid">
-              {filtered.map((photo, index) => {
-                const isAnchor = photo.aspect > 1.4 || index % 7 === 2;
-                return (
+            {filtered.length === 0 ? (
+              <div className="empty">No moments found</div>
+            ) : (
+              <div style={{ columnCount: numCols, columnGap: '20px' }}>
+                {filtered.map((photo) => (
                   <div
                     key={photo.id}
-                    className={`card ${isAnchor ? "span-2" : ""}`}
+                    className="card"
                     onClick={() => setSelectedPhoto(photo)}
                     onMouseMove={(e) => {
                       if (cursorRef.current) {
@@ -485,7 +400,7 @@ export default function Home() {
                     <Image
                       src={photo.image}
                       alt={photo.story}
-                      width={1200}
+                      width={1000}
                       height={800} 
                       quality={100}
                       style={{ width: "100%", height: "auto", display: "block" }} 
@@ -500,17 +415,48 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </section>
+                ))}
+              </div>
+            )}
+          </section>
+        </main>
       </div>
 
+      {/* ── NAV OVERLAY DRAWER ── */}
+      {navOpen && (
+        <div className="nav-drawer" onClick={() => setNavOpen(false)}>
+          <div className="nav-drawer-content" onClick={(e) => e.stopPropagation()}>
+            <div className="nav-drawer-header">
+              <span className="nav-drawer-title">Filter by Tags</span>
+              <button className="nav-drawer-close" onClick={() => setNavOpen(false)}>CLOSE ✕</button>
+            </div>
+            <div className="nav-tags-grid">
+              <button
+                className={`nav-tag-pill ${activeTags.length === 0 ? "active" : ""}`}
+                onClick={() => { setActiveTags([]); setNavOpen(false); }}
+              >
+                All Moments
+              </button>
+              {allTags.map((tag) => (
+                <button
+                  key={tag}
+                  className={`nav-tag-pill ${activeTags.includes(tag) ? "active" : ""}`}
+                  onClick={() => { handleTagClick(tag); setNavOpen(false); }}
+                >
+                  #{tag}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── CUSTOM CAMERA CURSOR ── */}
       <div ref={cursorRef} className={`camera-cursor ${cursor.visible ? "" : "hidden"}`}>
         <span className="camera-cursor-icon">📷</span>
       </div>
 
+      {/* ── MODAL VIEWER ── */}
       {selectedPhoto && (
         <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
           <button 
@@ -542,8 +488,8 @@ export default function Home() {
               className="modal-main-img"
               src={selectedPhoto.image}
               alt={selectedPhoto.story}
-              width={1400}
-              height={900}
+              width={1200}
+              height={800}
               quality={100}
               onMouseMove={(e) => {
                 if (cursorRef.current) {
