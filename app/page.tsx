@@ -167,7 +167,7 @@ export default function Home() {
         .header-search:focus { border-color: rgba(255,255,255,0.3); width: 210px; }
         .header-search::placeholder { color: rgba(232,228,220,0.25); }
 
-        /* ── EDITORIAL HERO (Asymmetric Balance) ── */
+        /* ── EDITORIAL HERO ── */
         .hero-compact {
           max-width: 1500px;
           margin: 0 auto;
@@ -273,7 +273,6 @@ export default function Home() {
           .editorial-grid { grid-template-columns: 1fr; }
         }
 
-        /* Asymmetric rhythm classes */
         .card.span-2 {
           grid-column: span 2;
         }
@@ -331,43 +330,89 @@ export default function Home() {
         .camera-cursor.hidden { opacity: 0; }
         .camera-cursor-icon { font-size: 12px; color: rgba(232,228,220,0.7); user-select: none; }
 
-        /* ── MODAL ── */
+        /* ── STAGE 3: REFINED CINEMATIC MODAL VIEWER ── */
         .modal-backdrop {
           position: fixed; inset: 0;
-          background: rgba(5,5,4,0.97);
+          background: rgba(5,5,4,0.98);
           display: flex; align-items: center; justify-content: center;
-          padding: 32px; z-index: 100;
+          padding: 40px; z-index: 100;
           animation: fadeIn 0.25s ease;
         }
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        
         .modal {
-          background: #111; max-width: 1000px; width: 100%;
-          max-height: 90vh; overflow-y: auto;
+          background: #0d0d0c; 
+          max-width: 1100px; width: 100%;
+          max-height: 88vh; overflow-y: auto;
           display: grid; grid-template-columns: 1fr;
+          border: 1px solid rgba(255,255,255,0.06);
           animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @media (min-width: 768px) { .modal { grid-template-columns: 1.6fr 1fr; } }
-        @keyframes slideUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
-        .modal-main-img { width: 100%; height: 100%; object-fit: cover; display: block; max-height: 60vh; cursor: none; }
-        @media (min-width: 768px) { .modal-main-img { max-height: none; min-height: 520px; } }
-        .modal-info { padding: 48px 36px; display: flex; flex-direction: column; gap: 24px; }
-        .modal-num { font-size: 10px; letter-spacing: 0.3em; color: #777; text-transform: uppercase; }
-        .modal-story { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; line-height: 1.55; color: #e8e4dc; flex: 1; }
+        @media (min-width: 768px) { .modal { grid-template-columns: 1.7fr 1fr; } }
+        @keyframes slideUp { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
+        
+        .modal-main-img { 
+          width: 100%; height: 100%; object-fit: cover; display: block; 
+          max-height: 65vh; cursor: none; 
+          filter: brightness(0.98);
+        }
+        @media (min-width: 768px) { .modal-main-img { max-height: none; min-height: 560px; } }
+        
+        .modal-info { 
+          padding: 56px 40px; 
+          display: flex; flex-direction: column; gap: 28px; 
+          justify-content: space-between;
+        }
+        
+        .modal-num { 
+          font-size: 10px; letter-spacing: 0.35em; color: #666; text-transform: uppercase; 
+        }
+        
+        .modal-story { 
+          font-family: 'Cormorant Garamond', serif; 
+          font-size: 24px; font-weight: 300; line-height: 1.6; 
+          color: #f2efe9; 
+          letter-spacing: 0.01em;
+        }
+        
         .modal-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-        .modal-tag-btn { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #aaa; padding: 5px 12px; font-family: 'Inconsolata', monospace; font-size: 11px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s; }
+        .modal-tag-btn { 
+          background: transparent; border: 1px solid rgba(255,255,255,0.12); color: #999; 
+          padding: 5px 12px; font-family: 'Inconsolata', monospace; font-size: 11px; 
+          letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s; 
+        }
         .modal-tag-btn:hover { border-color: #e8e4dc; color: #e8e4dc; }
-        .related-label { font-size: 10px; letter-spacing: 0.2em; color: #777; text-transform: uppercase; margin-bottom: 10px; }
+        
+        .related-label { 
+          font-size: 10px; letter-spacing: 0.25em; color: #666; text-transform: uppercase; margin-bottom: 12px; 
+        }
         .related-strip { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
         .related-strip::-webkit-scrollbar { display: none; }
-        .related-thumb { width: 90px; height: 120px; object-fit: cover; flex-shrink: 0; cursor: pointer; border-radius: 2px; filter: brightness(0.8) grayscale(15%); transition: filter 0.2s ease, transform 0.2s ease; border: 1px solid transparent; }
-        .related-thumb:hover { filter: brightness(1) grayscale(0%); transform: scale(1.04); border-color: #666; }
-        .modal-close { background: transparent; border: none; color: #777; font-family: 'Inconsolata', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; text-align: left; margin-top: auto; padding-top: 12px; transition: color 0.2s; }
+        .related-thumb { 
+          width: 80px; height: 110px; object-fit: cover; flex-shrink: 0; cursor: pointer; 
+          border-radius: 2px; filter: brightness(0.75) grayscale(20%); 
+          transition: filter 0.2s ease, transform 0.2s ease; border: 1px solid transparent; 
+        }
+        .related-thumb:hover { filter: brightness(1) grayscale(0%); transform: scale(1.03); border-color: #666; }
+        
+        .modal-close { 
+          background: transparent; border: none; color: #666; 
+          font-family: 'Inconsolata', monospace; font-size: 11px; letter-spacing: 0.25em; 
+          text-transform: uppercase; cursor: pointer; text-align: left; 
+          padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06);
+          transition: color 0.2s; 
+        }
         .modal-close:hover { color: #e8e4dc; }
 
-        .modal-float-btn { position: fixed; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: rgba(232, 228, 220, 0.6); font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 300; cursor: pointer; z-index: 120; transition: color 0.2s ease; padding: 24px; line-height: 1; }
+        .modal-float-btn { 
+          position: fixed; top: 50%; transform: translateY(-50%); 
+          background: transparent; border: none; color: rgba(232, 228, 220, 0.5); 
+          font-family: 'Cormorant Garamond', serif; font-size: 72px; font-weight: 300; 
+          cursor: pointer; z-index: 120; transition: color 0.2s ease; padding: 24px; line-height: 1; 
+        }
         .modal-float-btn:hover { color: #e8e4dc; }
-        .modal-prev-btn { left: 32px; }
-        .modal-next-btn { right: 32px; }
+        .modal-prev-btn { left: 40px; }
+        .modal-next-btn { right: 40px; }
 
         .empty { text-align: center; padding: 100px 0; color: #666; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; }
         ::-webkit-scrollbar { width: 4px; }
@@ -422,7 +467,6 @@ export default function Home() {
           ) : (
             <div className="editorial-grid">
               {filtered.map((photo, index) => {
-                // Introduce deliberate asymmetry: every 5th or wide aspect ratio item spans 2 columns
                 const isAnchor = photo.aspect > 1.4 || index % 7 === 2;
                 return (
                   <div
@@ -512,44 +556,50 @@ export default function Home() {
             />
             
             <div className="modal-info">
-              <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
-              <p className="modal-story">{selectedPhoto.story}</p>
-              <div className="modal-tags">
-                {selectedPhoto.tags.map((tag) => (
-                  <button
-                    key={tag}
-                    className="modal-tag-btn"
-                    onClick={() => { setActiveTags([tag]); setSearch(""); setSelectedPhoto(null); }}
-                  >
-                    #{tag}
-                  </button>
-                ))}
+              <div>
+                <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
+                <p className="modal-story" style={{ marginTop: '16px' }}>{selectedPhoto.story}</p>
               </div>
-              {getRelatedPhotos(selectedPhoto).length > 0 && (
-                <div>
-                  <p className="related-label">same moment, different frame</p>
-                  <div className="related-strip">
-                    {getRelatedPhotos(selectedPhoto).map((photo) => (
-                      <img
-                        key={photo.id}
-                        src={photo.image}
-                        alt={photo.story}
-                        className="related-thumb"
-                        style={{ cursor: 'none' }}
-                        onClick={() => setSelectedPhoto(photo)}
-                        onMouseMove={(e) => {
-                          if (cursorRef.current) {
-                            cursorRef.current.style.transform =
-                              `translate(${e.clientX - 14}px, ${e.clientY - 14}px)`;
-                          }
-                        }}
-                        onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
-                        onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
-                      />
-                    ))}
-                  </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div className="modal-tags">
+                  {selectedPhoto.tags.map((tag) => (
+                    <button
+                      key={tag}
+                      className="modal-tag-btn"
+                      onClick={() => { setActiveTags([tag]); setSearch(""); setSelectedPhoto(null); }}
+                    >
+                      #{tag}
+                    </button>
+                  ))}
                 </div>
-              )}
+
+                {getRelatedPhotos(selectedPhoto).length > 0 && (
+                  <div>
+                    <p className="related-label">same moment, different frame</p>
+                    <div className="related-strip">
+                      {getRelatedPhotos(selectedPhoto).map((photo) => (
+                        <img
+                          key={photo.id}
+                          src={photo.image}
+                          alt={photo.story}
+                          className="related-thumb"
+                          style={{ cursor: 'none' }}
+                          onClick={() => setSelectedPhoto(photo)}
+                          onMouseMove={(e) => {
+                            if (cursorRef.current) {
+                              cursorRef.current.style.transform =
+                                `translate(${e.clientX - 14}px, ${e.clientY - 14}px)`;
+                            }
+                          }}
+                          onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
+                          onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
               
               <button className="modal-close" onClick={() => setSelectedPhoto(null)}>close ✕</button>
             </div>
