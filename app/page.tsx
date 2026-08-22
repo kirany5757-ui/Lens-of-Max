@@ -182,7 +182,7 @@ export default function Home() {
           justify-content: space-between;
           z-index: 40;
           font-family: 'Inconsolata', monospace;
-          font-size: 13px;
+          font-size: 15px;
           font-weight: 700;
           color: transparent;
           -webkit-text-stroke: 0.6px rgba(232, 228, 220, 0.85);
