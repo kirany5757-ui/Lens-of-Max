@@ -50,11 +50,23 @@ export default function Home() {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [navOpen, setNavOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
+  
+  // Friend's suggested intro states
+  const [introVisible, setIntroVisible] = useState(true);
+  const [introMounted, setIntroMounted] = useState(true);
+
   const cursorRef = useRef<HTMLDivElement | null>(null);
+  const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
   const numCols = useNumCols();
 
-  useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
+  useEffect(() => { 
+    setTimeout(() => setLoaded(true), 100); 
+
+    // Timing logic for signature intro fade-out & unmount
+    const fadeTimer = setTimeout(() => setIntroVisible(false), 1600);
+    const unmountTimer = setTimeout(() => setIntroMounted(false), 2200);
+    return () => { clearTimeout(fadeTimer); clearTimeout(unmountTimer); };
+  }, []);
 
   const getRelatedPhotos = useCallback((current: Photo): Photo[] => {
     if (!current.group) return [];
@@ -125,7 +137,40 @@ export default function Home() {
         .page { opacity: 0; transition: opacity 0.8s ease; }
         .page.visible { opacity: 1; }
 
-        /* ── FIXED LEFT VERTICAL BRAND (Darren Oorloff Style) ── */
+        /* ── ONE-TIME SIGNATURE INTRO ── */
+        .signature-intro {
+          position: fixed;
+          inset: 0;
+          z-index: 200;
+          background: #080807;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          opacity: 1;
+          transition: opacity 0.6s ease;
+          pointer-events: none;
+        }
+        .signature-intro.fade-out { opacity: 0; }
+
+        .signature-intro h1 {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(48px, 8vw, 96px);
+          font-weight: 300;
+          letter-spacing: 0.05em;
+          color: #e8e4dc;
+          line-height: 1;
+          margin-bottom: 12px;
+        }
+        .signature-intro p {
+          font-family: 'Cormorant Garamond', serif;
+          font-style: italic;
+          font-size: 17px;
+          color: #7a7770;
+        }
+
+        /* ── FIXED LEFT VERTICAL BRAND ── */
         .vertical-brand {
           position: fixed;
           left: 28px;
@@ -140,7 +185,10 @@ export default function Home() {
           text-transform: uppercase;
           pointer-events: none;
           white-space: nowrap;
+          opacity: 0;
+          transition: opacity 0.8s ease 0.9s;
         }
+        .vertical-brand.visible { opacity: 1; }
         @media (max-width: 900px) {
           .vertical-brand { display: none; }
         }
@@ -183,37 +231,17 @@ export default function Home() {
           }
         }
 
-        /* ── MAIN CONTAINER WITH MARGINS FOR FIXED BORDERS ── */
+        /* ── MAIN CONTAINER (with top breathing room) ── */
         .main-container {
           max-width: 1300px;
           margin: 0 auto;
-          padding: 80px 100px 120px;
+          padding: 100px 100px 140px;
         }
         @media (max-width: 900px) {
-          .main-container { padding: 80px 24px 80px; }
+          .main-container { padding: 90px 24px 80px; }
         }
 
-        /* ── TOP HERO INTRODUCTION ── */
-        .site-hero {
-          margin-bottom: 60px;
-        }
-        .site-hero h1 {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: clamp(40px, 6vw, 72px);
-          font-weight: 300;
-          letter-spacing: 0.04em;
-          color: #e8e4dc;
-          line-height: 1.1;
-          margin-bottom: 8px;
-        }
-        .site-hero p {
-          font-family: 'Cormorant Garamond', serif;
-          font-style: italic;
-          font-size: 16px;
-          color: #7a7770;
-        }
-
-        /* ── TAG DRAWER / NAV OVERLAY ── */
+        /* ── NAV DRAWER OVERLAY ── */
         .nav-drawer {
           position: fixed; inset: 0;
           background: rgba(8, 8, 7, 0.96);
@@ -354,9 +382,17 @@ export default function Home() {
         ::-webkit-scrollbar-thumb { background: #222; }
       `}</style>
 
+      {/* ── ONE-TIME SIGNATURE INTRO OVERLAY ── */}
+      {introMounted && (
+        <div className={`signature-intro ${!introVisible ? "fade-out" : ""}`}>
+          <h1>Lens of Max</h1>
+          <p>The beauty of my camera&apos;s wink</p>
+        </div>
+      )}
+
       <div className={`page ${loaded ? "visible" : ""}`}>
-        {/* ── FIXED LEFT VERTICAL BRAND MARK ── */}
-        <div className="vertical-brand">
+        {/* ── FIXED LEFT VERTICAL BRAND (Fades in as intro finishes) ── */}
+        <div className={`vertical-brand ${!introVisible ? "visible" : ""}`}>
           LENS OF MAX &nbsp;&mdash;&nbsp; 🕊️
         </div>
 
@@ -366,13 +402,8 @@ export default function Home() {
           <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
         </nav>
 
-        {/* ── MAIN SCROLLABLE CONTENT ── */}
+        {/* ── MAIN SCROLLABLE CONTENT (Clean duplicate header removed) ── */}
         <main className="main-container">
-          <header className="site-hero">
-            <h1>Lens of Max</h1>
-            <p>The beauty of my camera&apos;s wink</p>
-          </header>
-
           <section className="gallery-section">
             <div className="gallery-header">
               <p className="counter">{filtered.length} / {totalMain} moments</p>
