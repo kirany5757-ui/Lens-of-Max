@@ -169,18 +169,18 @@ export default function Home() {
           color: #7a7770;
         }
 
-        /* ── FIXED LEFT VERTICAL BRAND (Friend's Flex-Span Architecture) ── */
+        /* ── FIXED LEFT VERTICAL BRAND (Friend's Unrotated Vertical Stack) ── */
         .vertical-brand {
           position: fixed;
           left: 28px;
           top: 50%;
-          width: 82vh;
-          transform: translateY(-50%) rotate(-90deg);
-          transform-origin: left center;
-          z-index: 40;
+          transform: translateY(-50%);
+          height: 78vh;
           display: flex;
-          justify-content: space-between;
+          flex-direction: column;
           align-items: center;
+          justify-content: space-between;
+          z-index: 40;
           font-family: 'Inconsolata', monospace;
           font-size: 13px;
           font-weight: 700;
@@ -193,9 +193,6 @@ export default function Home() {
           transition: opacity 0.8s ease 0.9s;
         }
         .vertical-brand.visible { opacity: 1; }
-        .vertical-brand span { display: inline-block; }
-        .vertical-brand .brand-space { min-width: 0.6em; }
-        
         @media (max-width: 900px) {
           .vertical-brand { display: none; }
         }
@@ -407,11 +404,11 @@ export default function Home() {
       )}
 
       <div className={`page ${loaded ? "visible" : ""}`}>
-        {/* ── FIXED LEFT VERTICAL BRAND (Friend's Mapped Span Flex Layout) ── */}
+        {/* ── FIXED LEFT VERTICAL BRAND (Friend's Unrotated Stack) ── */}
         <div className={`vertical-brand ${!introVisible ? "visible" : ""}`}>
           {brandText.split("").map((char, i) =>
             char === " " ? (
-              <span key={i} className="brand-space" />
+              <span key={i} style={{ height: "0.6em" }} />
             ) : (
               <span key={i}>{char}</span>
             )
