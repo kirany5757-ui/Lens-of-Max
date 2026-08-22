@@ -425,7 +425,6 @@ export default function Home() {
         </div>
 
         <nav className="vertical-nav">
-          <span className="nav-mark" aria-hidden="true"></span>
           <button onClick={() => setNavOpen(true)}>NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}</button>
           <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
         </nav>
