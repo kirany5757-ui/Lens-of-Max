@@ -28,6 +28,7 @@ const photosWithAspect: Photo[] = photos.map((p, i) => ({
 
 const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
 const totalMain = photosWithAspect.filter((p) => p.isMain).length;
+const brandText = "LENS OF MAX";
 
 function useNumCols(): number {
   const [cols, setCols] = useState(3);
@@ -168,46 +169,41 @@ export default function Home() {
           color: #7a7770;
         }
 
-        /* ── FIXED LEFT VERTICAL BRAND ── */
+        /* ── FIXED LEFT VERTICAL BRAND (Friend's Flex-Span Architecture) ── */
         .vertical-brand {
           position: fixed;
           left: 28px;
-          top: 0;
-          bottom: 0;
-          height: 100vh;
+          top: 50%;
+          width: 82vh;
+          transform: translateY(-50%) rotate(-90deg);
+          transform-origin: left center;
           z-index: 40;
           display: flex;
-          flex-direction: column;
-          align-items: center;
           justify-content: space-between;
-          padding: 60px 0;
-          writing-mode: vertical-rl;
-          transform: rotate(180deg);
+          align-items: center;
           font-family: 'Inconsolata', monospace;
           font-size: 13px;
           font-weight: 700;
-          letter-spacing: 0.8em;
           color: transparent;
           -webkit-text-stroke: 0.6px rgba(232, 228, 220, 0.85);
+          text-stroke: 0.6px rgba(232, 228, 220, 0.85);
           text-transform: uppercase;
           pointer-events: none;
-          white-space: nowrap;
           opacity: 0;
           transition: opacity 0.8s ease 0.9s;
         }
         .vertical-brand.visible { opacity: 1; }
+        .vertical-brand span { display: inline-block; }
+        .vertical-brand .brand-space { min-width: 0.6em; }
+        
         @media (max-width: 900px) {
           .vertical-brand { display: none; }
         }
 
         /* ── HIDDEN DOVE EASTER EGG ── */
         .hidden-dove {
-          position: absolute;
-          bottom: 4px;
-          right: 4px;
-          font-size: 1px;
+          font-size: 1px !important;
           opacity: 0.4;
-          line-height: 1;
           user-select: none;
         }
 
@@ -227,21 +223,6 @@ export default function Home() {
           font-weight: 700;
           letter-spacing: 0.35em;
           text-transform: uppercase;
-        }
-        .nav-mark {
-          width: 22px;
-          height: 22px;
-          border: 1px solid rgba(232,228,220,0.5);
-          border-radius: 50%;
-          position: relative;
-        }
-        .nav-mark::before {
-          content: "";
-          position: absolute;
-          top: 50%; left: 50%;
-          width: 1px; height: 22px;
-          background: rgba(232,228,220,0.5);
-          transform: translate(-50%, -50%) rotate(35deg);
         }
         .vertical-nav button {
           background: transparent;
@@ -417,6 +398,7 @@ export default function Home() {
         ::-webkit-scrollbar-thumb { background: #222; }
       `}</style>
 
+      {/* ── ONE-TIME SIGNATURE INTRO OVERLAY ── */}
       {introMounted && (
         <div className={`signature-intro ${!introVisible ? "fade-out" : ""}`}>
           <h1>Lens of Max</h1>
@@ -425,16 +407,25 @@ export default function Home() {
       )}
 
       <div className={`page ${loaded ? "visible" : ""}`}>
+        {/* ── FIXED LEFT VERTICAL BRAND (Friend's Mapped Span Flex Layout) ── */}
         <div className={`vertical-brand ${!introVisible ? "visible" : ""}`}>
-          LENS OF MAX
+          {brandText.split("").map((char, i) =>
+            char === " " ? (
+              <span key={i} className="brand-space" />
+            ) : (
+              <span key={i}>{char}</span>
+            )
+          )}
           <span className="hidden-dove">🕊️</span>
         </div>
 
+        {/* ── FIXED RIGHT VERTICAL NAV ── */}
         <nav className="vertical-nav">
           <button onClick={() => setNavOpen(true)}>NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}</button>
           <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
         </nav>
 
+        {/* ── MAIN SCROLLABLE CONTENT ── */}
         <main className="main-container">
           <section className="gallery-section">
             <div className="gallery-header">
@@ -485,6 +476,7 @@ export default function Home() {
         </main>
       </div>
 
+      {/* ── NAV OVERLAY DRAWER ── */}
       {navOpen && (
         <div className="nav-drawer" onClick={() => setNavOpen(false)}>
           <div className="nav-drawer-content" onClick={(e) => e.stopPropagation()}>
@@ -513,10 +505,12 @@ export default function Home() {
         </div>
       )}
 
+      {/* ── CUSTOM CAMERA CURSOR ── */}
       <div ref={cursorRef} className={`camera-cursor ${cursor.visible ? "" : "hidden"}`}>
         <span className="camera-cursor-icon">📷</span>
       </div>
 
+      {/* ── MODAL VIEWER ── */}
       {selectedPhoto && (
         <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
           <button 
