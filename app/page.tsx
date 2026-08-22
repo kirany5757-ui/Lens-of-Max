@@ -28,7 +28,6 @@ const photosWithAspect: Photo[] = photos.map((p, i) => ({
 
 const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
 const totalMain = photosWithAspect.filter((p) => p.isMain).length;
-const brandText = "LENS OF MAX";
 
 function useNumCols(): number {
   const [cols, setCols] = useState(3);
@@ -51,7 +50,8 @@ export default function Home() {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [navOpen, setNavOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  
+  const [mounted, setMounted] = useState(false);
+
   const [introVisible, setIntroVisible] = useState(true);
   const [introMounted, setIntroMounted] = useState(true);
 
@@ -59,12 +59,16 @@ export default function Home() {
   const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
   const numCols = useNumCols();
 
-  useEffect(() => { 
-    setTimeout(() => setLoaded(true), 100); 
+  useEffect(() => {
+    setMounted(true);
+    setTimeout(() => setLoaded(true), 100);
 
     const fadeTimer = setTimeout(() => setIntroVisible(false), 1600);
     const unmountTimer = setTimeout(() => setIntroMounted(false), 2200);
-    return () => { clearTimeout(fadeTimer); clearTimeout(unmountTimer); };
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(unmountTimer);
+    };
   }, []);
 
   const getRelatedPhotos = useCallback((current: Photo): Photo[] => {
@@ -87,7 +91,10 @@ export default function Home() {
     if (arr.length >= 100) batchSize = 10;
     else {
       for (let b = 7; b >= 4; b--) {
-        if (arr.length % b === 0) { batchSize = b; break; }
+        if (arr.length % b === 0) {
+          batchSize = b;
+          break;
+        }
       }
     }
     const batched = [];
@@ -97,7 +104,13 @@ export default function Home() {
     return batched;
   }, []);
 
-  const [shuffledPhotos, setShuffledPhotos] = useState<Photo[]>(() => shuffleEngine(photosWithAspect));
+  const [shuffledPhotos, setShuffledPhotos] = useState<Photo[]>(photosWithAspect);
+
+  useEffect(() => {
+    if (mounted) {
+      setShuffledPhotos(shuffleEngine(photosWithAspect));
+    }
+  }, [mounted, shuffleEngine]);
 
   const handleRefresh = () => {
     setShuffledPhotos(shuffleEngine(photosWithAspect));
@@ -105,8 +118,11 @@ export default function Home() {
 
   const filtered = shuffledPhotos.filter((photo) => {
     if (!photo.isMain) return false;
-    const matchSearch = search === "" || photo.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
-    const matchTags = activeTags.length === 0 || activeTags.every((t) => photo.tags.includes(t));
+    const matchSearch =
+      search === "" ||
+      photo.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
+    const matchTags =
+      activeTags.length === 0 || activeTags.every((t) => photo.tags.includes(t));
     return matchSearch && matchTags;
   });
 
@@ -169,30 +185,27 @@ export default function Home() {
           color: #7a7770;
         }
 
-        /* ── FIXED LEFT VERTICAL BRAND (Friend's Unrotated Vertical Stack) ── */
+        /* ── FIXED LEFT VERTICAL BRAND (refined serif signature) ── */
         .vertical-brand {
           position: fixed;
-          left: 28px;
-          top: 50%;
-          transform: translateY(-50%);
-          height: 78vh;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: space-between;
+          left: 76px;
+          bottom: 100px;
+          transform: rotate(-90deg);
+          transform-origin: left bottom;
           z-index: 40;
-          font-family: 'Inconsolata', monospace;
-          font-size: 40px;
-          font-weight: 700;
-          color: transparent;
-          -webkit-text-stroke: 0.6px rgba(232, 228, 220, 0.85);
-          text-stroke: 0.6px rgba(232, 228, 220, 0.85);
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 44px;
+          font-weight: 400;
+          letter-spacing: 0.3em;
+          color: rgba(232, 228, 220, 0.8);
           text-transform: uppercase;
+          white-space: nowrap;
           pointer-events: none;
           opacity: 0;
           transition: opacity 0.8s ease 0.9s;
         }
         .vertical-brand.visible { opacity: 1; }
+
         @media (max-width: 900px) {
           .vertical-brand { display: none; }
         }
@@ -216,7 +229,7 @@ export default function Home() {
           align-items: center;
           gap: 24px;
           font-family: 'Inconsolata', monospace;
-          font-size: 30px;
+          font-size: 13px;
           font-weight: 700;
           letter-spacing: 0.35em;
           text-transform: uppercase;
@@ -226,7 +239,7 @@ export default function Home() {
           border: none;
           color: rgba(232, 228, 220, 0.6);
           font-family: 'Inconsolata', monospace;
-          font-size: 30px;
+          font-size: 13px;
           font-weight: 700;
           letter-spacing: 0.35em;
           cursor: pointer;
@@ -246,9 +259,9 @@ export default function Home() {
 
         /* ── MAIN CONTAINER ── */
         .main-container {
-          max-width: 1300px;
+          max-width: 1330px;
           margin: 0 auto;
-          padding: 140px 100px 120px;
+          padding: 120px 24px 80px;
         }
         @media (max-width: 900px) {
           .main-container { padding: 120px 24px 80px; }
@@ -404,21 +417,17 @@ export default function Home() {
       )}
 
       <div className={`page ${loaded ? "visible" : ""}`}>
-        {/* ── FIXED LEFT VERTICAL BRAND (Friend's Unrotated Stack) ── */}
+        {/* ── FIXED LEFT VERTICAL BRAND ── */}
         <div className={`vertical-brand ${!introVisible ? "visible" : ""}`}>
-          {brandText.split("").map((char, i) =>
-            char === " " ? (
-              <span key={i} style={{ height: "0.6em" }} />
-            ) : (
-              <span key={i}>{char}</span>
-            )
-          )}
+          Lens of Max
           <span className="hidden-dove">🕊️</span>
         </div>
 
         {/* ── FIXED RIGHT VERTICAL NAV ── */}
         <nav className="vertical-nav">
-          <button onClick={() => setNavOpen(true)}>NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}</button>
+          <button onClick={() => setNavOpen(true)}>
+            NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}
+          </button>
           <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
         </nav>
 
@@ -452,11 +461,11 @@ export default function Home() {
                       src={photo.image}
                       alt={photo.story}
                       width={1000}
-                      height={800} 
+                      height={800}
                       quality={100}
-                      style={{ width: "100%", height: "auto", display: "block" }} 
+                      style={{ width: "100%", height: "auto", display: "block" }}
                     />
-                    
+
                     <div className="card-overlay">
                       <p className="card-story">{photo.story}</p>
                       <div className="card-tags">
@@ -510,8 +519,8 @@ export default function Home() {
       {/* ── MODAL VIEWER ── */}
       {selectedPhoto && (
         <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
-          <button 
-            className="modal-float-btn modal-prev-btn" 
+          <button
+            className="modal-float-btn modal-prev-btn"
             onClick={(e) => {
               e.stopPropagation();
               const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
@@ -522,8 +531,8 @@ export default function Home() {
             ‹
           </button>
 
-          <button 
-            className="modal-float-btn modal-next-btn" 
+          <button
+            className="modal-float-btn modal-next-btn"
             onClick={(e) => {
               e.stopPropagation();
               const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
@@ -551,7 +560,7 @@ export default function Home() {
               onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
               onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
             />
-            
+
             <div className="modal-info">
               <div>
                 <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
@@ -597,7 +606,7 @@ export default function Home() {
                   </div>
                 )}
               </div>
-              
+
               <button className="modal-close" onClick={() => setSelectedPhoto(null)}>close ✕</button>
             </div>
           </div>
