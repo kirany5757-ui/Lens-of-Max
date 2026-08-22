@@ -182,7 +182,7 @@ export default function Home() {
           justify-content: space-between;
           z-index: 40;
           font-family: 'Inconsolata', monospace;
-          font-size: 20px;
+          font-size: 30px;
           font-weight: 700;
           color: transparent;
           -webkit-text-stroke: 0.6px rgba(232, 228, 220, 0.85);
@@ -216,7 +216,7 @@ export default function Home() {
           align-items: center;
           gap: 24px;
           font-family: 'Inconsolata', monospace;
-          font-size: 13px;
+          font-size: 30px;
           font-weight: 700;
           letter-spacing: 0.35em;
           text-transform: uppercase;
@@ -226,7 +226,7 @@ export default function Home() {
           border: none;
           color: rgba(232, 228, 220, 0.6);
           font-family: 'Inconsolata', monospace;
-          font-size: 13px;
+          font-size: 30px;
           font-weight: 700;
           letter-spacing: 0.35em;
           cursor: pointer;
