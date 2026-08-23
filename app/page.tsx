@@ -206,7 +206,7 @@ export default function Home() {
         }
         .vertical-brand.visible { opacity: 1; }
 
-        /* ── SPLIT LEFT ACCENT LINES (FRAMING BRAND TEXT) ── */
+        /* ── SPLIT LEFT ACCENT LINES (Target framing for 'LENS OF MAX') ── */
         .accent-line-left-bottom, .accent-line-left-top {
           position: fixed;
           left: 70px;
@@ -221,11 +221,11 @@ export default function Home() {
 
         .accent-line-left-bottom {
           bottom: 0;
-          height: 100px;
+          height: 180px; /* Extends up to cleanly meet the bottom of the brand text */
         }
         .accent-line-left-top {
           top: 0;
-          height: calc(100vh - 620px);
+          height: calc(100vh - 540px); /* Starts right where the top of the brand text ends */
         }
 
         /* ── RIGHT ACCENT LINE ── */
