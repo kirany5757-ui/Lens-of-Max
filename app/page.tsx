@@ -256,13 +256,23 @@ export default function Home() {
           z-index: 40;
           display: flex;
           align-items: center;
-          gap: 20px;
+          gap: 24px;
           font-family: 'Inconsolata', monospace;
           font-size: 13px;
           font-weight: 700;
           letter-spacing: 0.35em;
           text-transform: uppercase;
         }
+
+        .hidden-dove {
+          position: absolute;
+          font-size: 1px;
+          line-height: 1;
+          opacity: 0.35;
+          user-select: none;
+          pointer-events: none;
+        }
+
         .vertical-nav button {
           background: transparent;
           border: none;
@@ -457,12 +467,12 @@ export default function Home() {
           Lens of Max
         </div>
 
-        {/* ── FIXED RIGHT VERTICAL NAV (NAV | Dove | ALL) ── */}
-        <nav className="vertical-nav">
+        {/* ── FIXED RIGHT VERTICAL NAV (With Absolute Hidden Dove) ── */}
+        <nav className="vertical-nav" style={{ position: "relative" }}>
           <button onClick={() => setNavOpen(true)}>
             NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}
           </button>
-          <span style={{ fontSize: "11px", opacity: 0.8, userSelect: "none" }}>🕊️</span>
+          <span className="hidden-dove">🕊️</span>
           <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
         </nav>
 
