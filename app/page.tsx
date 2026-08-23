@@ -206,10 +206,6 @@ export default function Home() {
         }
         .vertical-brand.visible { opacity: 1; }
 
-        @media (max-width: 1024px) {
-          .vertical-brand { display: none; }
-        }
-
         /* ── FIXED RIGHT VERTICAL NAV ── */
         .vertical-nav {
           position: fixed;
@@ -242,7 +238,8 @@ export default function Home() {
           color: #e8e4dc;
         }
         
-        @media (max-width: 1024px) {
+        @media (max-width: 900px) {
+          .vertical-brand { display: none; }
           .vertical-nav {
             position: fixed;
             top: 0;
@@ -264,7 +261,7 @@ export default function Home() {
           margin: 0 auto;
           padding: 120px 90px 120px;
         }
-        @media (max-width: 1024px) {
+        @media (max-width: 900px) {
           .main-container { padding: 100px 24px 80px; }
         }
 
