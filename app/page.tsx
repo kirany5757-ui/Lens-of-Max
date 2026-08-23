@@ -243,7 +243,7 @@ export default function Home() {
         .accent-line-bottom-right {
           bottom: 0;
           right: 40px;
-          height: 320px;
+          height: 420px;
         }
 
         /* ── FIXED RIGHT VERTICAL NAV ── */
