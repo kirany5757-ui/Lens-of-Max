@@ -208,20 +208,24 @@ export default function Home() {
 
         /* ── VERTICAL ACCENT LINES ── */
         .accent-line {
-          position: fixed;
-          top: 0;
-          width: 1px;
-          height: 620px;
-          background: linear-gradient(to bottom, rgba(232,228,220,0.5), transparent);
-          z-index: 39;
-          pointer-events: none;
-          opacity: 0;
-          transition: opacity 0.8s ease 0.9s;
-        }
-        .accent-line.visible { opacity: 1; }
+  position: fixed;
+  top: 0;
+  width: 1px;
+  height: 200px; /* much shorter — was 620px */
+  background: linear-gradient(to bottom, rgba(232,228,220,0.6), rgba(232,228,220,0));
+  z-index: 39;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s ease 0.9s;
+}
+.accent-line.visible { opacity: 1; }
 
-        .accent-line-left { left: 70px; }
-        .accent-line-right { right: 32px; }
+.accent-line-left { left: 36px; }
+.accent-line-right { right: 32px; }
+
+@media (max-width: 900px) {
+  .accent-line { display: none; }
+}
 
         /* ── FIXED RIGHT VERTICAL NAV ── */
         .vertical-nav {
