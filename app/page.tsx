@@ -27,7 +27,6 @@ const photosWithAspect: Photo[] = photos.map((p, i) => ({
 }));
 
 const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
-const totalMain = photosWithAspect.filter((p) => p.isMain).length;
 
 function useNumCols(): number {
   const [cols, setCols] = useState(3);
@@ -185,7 +184,7 @@ export default function Home() {
           color: #7a7770;
         }
 
-        /* ── FIXED LEFT VERTICAL BRAND (Interactive Shuffle Trigger) ── */
+        /* ── FIXED LEFT VERTICAL BRAND (Click to Shuffle) ── */
         .vertical-brand {
           position: fixed;
           left: 70px;
@@ -297,14 +296,14 @@ export default function Home() {
           }
         }
 
-        /* ── MAIN CONTAINER (Reduced top padding to remove dead space) ── */
+        /* ── MAIN CONTAINER (Tight top padding) ── */
         .main-container {
           max-width: 1440px;
           margin: 0 auto;
-          padding: 90px 46px 120px;
+          padding: 60px 46px 120px;
         }
         @media (max-width: 900px) {
-          .main-container { padding: 80px 24px 80px; }
+          .main-container { padding: 50px 24px 80px; }
         }
 
         /* ── NAV DRAWER OVERLAY ── */
@@ -339,13 +338,6 @@ export default function Home() {
         .nav-tag-pill.active { border-color: #e8e4dc; background: #e8e4dc; color: #080807; }
 
         /* ── GALLERY GRID ── */
-        .gallery-header {
-          display: flex; align-items: center; justify-content: space-between;
-          margin-bottom: 30px; padding-bottom: 16px;
-          border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-        .counter { font-size: 10px; letter-spacing: 0.25em; color: #555; text-transform: uppercase; }
-
         .card {
           cursor: none;
           position: relative;
@@ -456,13 +448,13 @@ export default function Home() {
         <div className={`accent-line-top-right ${!introVisible ? "visible" : ""}`} />
         <div className={`accent-line-bottom-right ${!introVisible ? "visible" : ""}`} />
 
-        {/* ── FIXED LEFT VERTICAL BRAND (Click to Shuffle) ── */}
+        {/* ── FIXED LEFT VERTICAL BRAND (Click to Shuffle + Dove) ── */}
         <div 
           className={`vertical-brand ${!introVisible ? "visible" : ""}`}
           onClick={handleRefresh}
           title="Click to reshuffle moments"
         >
-          Lens of Max
+          Lens of Max <span style={{ fontSize: "28px", marginLeft: "12px", verticalAlign: "middle", display: "inline-block" }}>🕊️</span>
         </div>
 
         {/* ── FIXED RIGHT VERTICAL NAV ── */}
@@ -476,10 +468,6 @@ export default function Home() {
         {/* ── MAIN SCROLLABLE CONTENT ── */}
         <main className="main-container">
           <section className="gallery-section">
-            <div className="gallery-header">
-              <p className="counter">{filtered.length} / {totalMain} moments</p>
-            </div>
-
             {filtered.length === 0 ? (
               <div className="empty">No moments found</div>
             ) : (
