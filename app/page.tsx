@@ -297,7 +297,8 @@ export default function Home() {
           color: #e8e4dc;
         }
         
-        @media (max-width: 900px) {
+        /* ── RESPONSIVE BREAKPOINT ALIGNED TO 1100px ── */
+        @media (max-width: 1100px) {
           .vertical-brand, .accent-line-top-left, .accent-line-bottom-left,
           .accent-line-top-right, .accent-line-bottom-right, .hidden-dove { display: none; }
           .vertical-nav {
@@ -312,18 +313,21 @@ export default function Home() {
             justify-content: flex-end;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             z-index: 80;
-            opacity: 1; /* keep mobile nav visible immediately */
+            opacity: 1;
+          }
+          .vertical-nav button {
+            letter-spacing: 0.15em;
           }
         }
 
-        /* ── MAIN CONTAINER (Tight top padding) ── */
+        /* ── MAIN CONTAINER (Real mobile top clearance) ── */
         .main-container {
           max-width: 1440px;
           margin: 0 auto;
           padding: 60px 46px 120px;
         }
-        @media (max-width: 900px) {
-          .main-container { padding: 50px 24px 80px; }
+        @media (max-width: 1100px) {
+          .main-container { padding: 90px 24px 80px; }
         }
 
         /* ── NAV DRAWER OVERLAY ── */
@@ -396,7 +400,7 @@ export default function Home() {
         .card-tag { font-size: 9px; letter-spacing: 0.15em; color: #888; text-transform: uppercase; }
         .card-tag::before { content: "#"; }
 
-        /* ── CUSTOM CAMERA CURSOR ── */
+        /* ── CUSTOM CAMERA CURSOR & TOUCH HARDENING ── */
         .camera-cursor {
           position: fixed; top: 0; left: 0;
           width: 28px; height: 28px;
@@ -407,6 +411,10 @@ export default function Home() {
         }
         .camera-cursor.hidden { opacity: 0; }
         .camera-cursor-icon { font-size: 12px; color: rgba(232,228,220,0.7); user-select: none; }
+
+        @media (hover: none) and (pointer: coarse) {
+          .camera-cursor { display: none !important; }
+        }
 
         /* ── MODAL VIEWER ── */
         .modal-backdrop {
