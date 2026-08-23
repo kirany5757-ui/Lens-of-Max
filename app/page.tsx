@@ -210,33 +210,33 @@ export default function Home() {
         .accent-line {
           position: fixed;
           top: 0;
-          width: 1px;
-          height: 200px;
-          background: linear-gradient(to bottom, rgba(232,228,220,0.6), rgba(232,228,220,0));
+          width: 1.5px; /* Slightly increased thickness */
+          height: 140px; /* Shorter line length for the left side */
+          background: linear-gradient(to bottom, rgba(232,228,220,0.7), rgba(232,228,220,0));
           z-index: 39;
           pointer-events: none;
           opacity: 0;
           transition: opacity 0.8s ease 0.9s;
         }
         .accent-line.visible { opacity: 1; }
-        .accent-line-left { left: 36px; }
-        .accent-line-right { right: 32px; }
+        .accent-line-left { left: 70px; }
+        .accent-line-right { right: 32px; height: 380px; } /* Increased length for the right side */
 
         /* ── VERTICAL ACCENT LINES (BOTTOM) ── */
         .accent-line-bottom {
           position: fixed;
           bottom: 0;
-          width: 1px;
-          height: 200px;
-          background: linear-gradient(to top, rgba(232,228,220,0.6), rgba(232,228,220,0));
+          width: 1.5px; /* Slightly increased thickness */
+          height: 140px;
+          background: linear-gradient(to top, rgba(232,228,220,0.7), rgba(232,228,220,0));
           z-index: 39;
           pointer-events: none;
           opacity: 0;
           transition: opacity 0.8s ease 0.9s;
         }
         .accent-line-bottom.visible { opacity: 1; }
-        .accent-line-bottom-left { left: 36px; }
-        .accent-line-bottom-right { right: 32px; }
+        .accent-line-bottom-left { left: 70px; }
+        .accent-line-bottom-right { right: 32px; height: 380px; } /* Extended bottom right line as well */
 
         /* ── FIXED RIGHT VERTICAL NAV ── */
         .vertical-nav {
