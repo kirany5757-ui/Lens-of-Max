@@ -225,7 +225,7 @@ export default function Home() {
         /* Left side framing around "LENS OF MAX" */
         .accent-line-top-left {
           top: 0;
-          left: 70px;
+          left: 40px;
           height: calc(100vh - 540px);
         }
         .accent-line-bottom-left {
