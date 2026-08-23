@@ -262,7 +262,10 @@ export default function Home() {
           font-weight: 700;
           letter-spacing: 0.35em;
           text-transform: uppercase;
+          opacity: 0;
+          transition: opacity 0.8s ease 0.9s;
         }
+        .vertical-nav.visible { opacity: 1; }
 
         .hidden-dove {
           position: fixed;
@@ -270,12 +273,14 @@ export default function Home() {
           top: calc(50% + 2px);
           font-size: 1px;
           line-height: 1;
-          opacity: 0.12;
+          opacity: 0;
           z-index: 41;
           user-select: none;
           pointer-events: none;
           filter: blur(0.5px);
+          transition: opacity 0.8s ease 0.9s;
         }
+        .hidden-dove.visible { opacity: 0.12; }
 
         .vertical-nav button {
           background: transparent;
@@ -307,6 +312,7 @@ export default function Home() {
             justify-content: flex-end;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             z-index: 80;
+            opacity: 1; /* keep mobile nav visible immediately */
           }
         }
 
@@ -471,14 +477,14 @@ export default function Home() {
           Lens of Max
         </div>
 
-        {/* ── FIXED RIGHT VERTICAL NAV & SIBLING DOVE ── */}
-        <nav className="vertical-nav">
+        {/* ── FIXED RIGHT VERTICAL NAV & SIBLING DOVE (Synchronized Fade) ── */}
+        <nav className={`vertical-nav ${!introVisible ? "visible" : ""}`}>
           <button onClick={() => setNavOpen(true)}>
             NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}
           </button>
           <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
         </nav>
-        <span className="hidden-dove">🕊️</span>
+        <span className={`hidden-dove ${!introVisible ? "visible" : ""}`}>🕊️</span>
 
         {/* ── MAIN SCROLLABLE CONTENT ── */}
         <main className="main-container">
