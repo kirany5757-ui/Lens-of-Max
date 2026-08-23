@@ -250,7 +250,7 @@ export default function Home() {
         }
         @media (max-width: 900px) {
           .vertical-nav {
-            position: absolute;
+            position: fixed; /* Fixed so it doesn't scroll away on mobile */
             top: 24px;
             right: 24px;
             transform: none;
@@ -259,9 +259,9 @@ export default function Home() {
 
         /* ── MAIN CONTAINER ── */
         .main-container {
-          max-width: 1230px;
+          max-width: 1500px;
           margin: 0 auto;
-          padding: 120px 24px 80px;
+          padding: 120px 90px 80px;
         }
         @media (max-width: 900px) {
           .main-container { padding: 120px 24px 80px; }
