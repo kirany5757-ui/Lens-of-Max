@@ -206,34 +206,11 @@ export default function Home() {
         }
         .vertical-brand.visible { opacity: 1; }
 
-        /* ── SPLIT LEFT ACCENT LINES (Target framing for 'LENS OF MAX') ── */
-        .accent-line-left-bottom, .accent-line-left-top {
-          position: fixed;
-          left: 70px;
-          width: 2px;
-          background: rgba(232, 228, 220, 0.5);
-          z-index: 39;
-          pointer-events: none;
-          opacity: 0;
-          transition: opacity 0.8s ease 0.9s;
-        }
-        .accent-line-left-bottom.visible, .accent-line-left-top.visible { opacity: 1; }
-
-        .accent-line-left-bottom {
-          bottom: 0;
-          height: 180px; /* Extends up to cleanly meet the bottom of the brand text */
-        }
-        .accent-line-left-top {
-          top: 0;
-          height: calc(100vh - 540px); /* Starts right where the top of the brand text ends */
-        }
-
-        /* ── RIGHT ACCENT LINE ── */
-        .accent-line-right {
+        /* ── FULL HEIGHT ACCENT LINES ── */
+        .accent-line-left, .accent-line-right {
           position: fixed;
           top: 0;
-          right: 32px;
-          width: 2px;
+          width: 1px;
           height: 100vh;
           background: linear-gradient(
             to bottom,
@@ -247,7 +224,9 @@ export default function Home() {
           opacity: 0;
           transition: opacity 0.8s ease 0.9s;
         }
-        .accent-line-right.visible { opacity: 1; }
+        .accent-line-left.visible, .accent-line-right.visible { opacity: 1; }
+        .accent-line-left { left: 70px; }
+        .accent-line-right { right: 32px; }
 
         /* ── FIXED RIGHT VERTICAL NAV ── */
         .vertical-nav {
@@ -282,7 +261,7 @@ export default function Home() {
         }
         
         @media (max-width: 900px) {
-          .vertical-brand, .accent-line-left-bottom, .accent-line-left-top, .accent-line-right { display: none; }
+          .vertical-brand, .accent-line-left, .accent-line-right { display: none; }
           .vertical-nav {
             position: fixed;
             top: 0;
@@ -298,7 +277,7 @@ export default function Home() {
           }
         }
 
-        /* ── MAIN CONTAINER (1500px wide grid with balanced padding) ── */
+        /* ── MAIN CONTAINER ── */
         .main-container {
           max-width: 1500px;
           margin: 0 auto;
@@ -458,9 +437,8 @@ export default function Home() {
       )}
 
       <div className={`page ${loaded ? "visible" : ""}`}>
-        {/* ── SPLIT LEFT ACCENT LINES & RIGHT LINE ── */}
-        <div className={`accent-line-left-bottom ${!introVisible ? "visible" : ""}`} />
-        <div className={`accent-line-left-top ${!introVisible ? "visible" : ""}`} />
+        {/* ── FULL HEIGHT ACCENT LINES ── */}
+        <div className={`accent-line-left ${!introVisible ? "visible" : ""}`} />
         <div className={`accent-line-right ${!introVisible ? "visible" : ""}`} />
 
         {/* ── FIXED LEFT VERTICAL BRAND ── */}
