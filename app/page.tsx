@@ -210,7 +210,7 @@ export default function Home() {
         .accent-line-top-left, .accent-line-bottom-left,
         .accent-line-top-right, .accent-line-bottom-right {
           position: fixed;
-          width: 2px;
+          width: 5px;
           background: rgba(232, 228, 220, 0.6);
           z-index: 39;
           pointer-events: none;
