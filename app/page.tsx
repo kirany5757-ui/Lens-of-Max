@@ -206,38 +206,46 @@ export default function Home() {
         }
         .vertical-brand.visible { opacity: 1; }
 
-        /* ── VERTICAL ACCENT LINES (TOP) ── */
-        .accent-line {
+        /* ── FIXED LEFT VERTICAL BRAND ── */
+        .vertical-brand {
           position: fixed;
-          top: 0;
-          width: 3px; /* Slightly increased thickness */
-          height: 140px; /* Shorter line length for the left side */
-          background: linear-gradient(to bottom, rgba(232,228,220,0.7), rgba(232,228,220,0));
+          left: 70px;
+          bottom: 120px;
+          transform: rotate(-90deg);
+          transform-origin: left bottom;
+          z-index: 40;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 44px;
+          font-weight: 400;
+          letter-spacing: 0.3em;
+          color: rgba(232, 228, 220, 0.8);
+          text-transform: uppercase;
+          white-space: nowrap;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.8s ease 0.9s;
+        }
+        .vertical-brand.visible { opacity: 1; }
+
+        /* ── SYMMETRIC ARCHITECTURAL ACCENT LINES ── */
+        .accent-line, .accent-line-bottom {
+          position: fixed;
+          width: 1px;
+          height: 160px;
+          background: linear-gradient(to bottom, rgba(232,228,220,0.5), transparent);
           z-index: 39;
           pointer-events: none;
           opacity: 0;
           transition: opacity 0.8s ease 0.9s;
         }
-        .accent-line.visible { opacity: 1; }
-        .accent-line-left { left: 60px; }
-        .accent-line-right { right: 32px; height: 380px; } /* Increased length for the right side */
+        .accent-line { top: 0; }
+        .accent-line-bottom { bottom: 0; background: linear-gradient(to top, rgba(232,228,220,0.5), transparent); }
 
-        /* ── VERTICAL ACCENT LINES (BOTTOM) ── */
-        .accent-line-bottom {
-          position: fixed;
-          bottom: 0;
-          width: 3px; /* Slightly increased thickness */
-          height: 140px;
-          background: linear-gradient(to top, rgba(232,228,220,0.7), rgba(232,228,220,0));
-          z-index: 39;
-          pointer-events: none;
-          opacity: 0;
-          transition: opacity 0.8s ease 0.9s;
-        }
-        .accent-line-bottom.visible { opacity: 1; }
-        .accent-line-bottom-left { left: 60px; }
-        .accent-line-bottom-right { right: 32px; height: 380px; } /* Extended bottom right line as well */
+        .accent-line.visible, .accent-line-bottom.visible { opacity: 1; }
 
+        .accent-line-left, .accent-line-bottom-left { left: 70px; }
+        .accent-line-right, .accent-line-bottom-right { right: 32px; }
+        
         /* ── FIXED RIGHT VERTICAL NAV ── */
         .vertical-nav {
           position: fixed;
