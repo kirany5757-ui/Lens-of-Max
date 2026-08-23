@@ -206,11 +206,34 @@ export default function Home() {
         }
         .vertical-brand.visible { opacity: 1; }
 
-        /* ── CONTINUOUS FULL-HEIGHT VIEWPORT ACCENT LINES ── */
-        .accent-line-left, .accent-line-right {
+        /* ── SPLIT LEFT ACCENT LINES (FRAMING BRAND TEXT) ── */
+        .accent-line-left-bottom, .accent-line-left-top {
+          position: fixed;
+          left: 70px;
+          width: 2px;
+          background: rgba(232, 228, 220, 0.5);
+          z-index: 39;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.8s ease 0.9s;
+        }
+        .accent-line-left-bottom.visible, .accent-line-left-top.visible { opacity: 1; }
+
+        .accent-line-left-bottom {
+          bottom: 0;
+          height: 100px;
+        }
+        .accent-line-left-top {
+          top: 0;
+          height: calc(100vh - 620px);
+        }
+
+        /* ── RIGHT ACCENT LINE ── */
+        .accent-line-right {
           position: fixed;
           top: 0;
-          width: 1px;
+          right: 32px;
+          width: 2px;
           height: 100vh;
           background: linear-gradient(
             to bottom,
@@ -224,10 +247,7 @@ export default function Home() {
           opacity: 0;
           transition: opacity 0.8s ease 0.9s;
         }
-        .accent-line-left.visible, .accent-line-right.visible { opacity: 1; }
-
-        .accent-line-left { left: 70px; }
-        .accent-line-right { right: 32px; }
+        .accent-line-right.visible { opacity: 1; }
 
         /* ── FIXED RIGHT VERTICAL NAV ── */
         .vertical-nav {
@@ -262,7 +282,7 @@ export default function Home() {
         }
         
         @media (max-width: 900px) {
-          .vertical-brand, .accent-line-left, .accent-line-right { display: none; }
+          .vertical-brand, .accent-line-left-bottom, .accent-line-left-top, .accent-line-right { display: none; }
           .vertical-nav {
             position: fixed;
             top: 0;
@@ -438,8 +458,9 @@ export default function Home() {
       )}
 
       <div className={`page ${loaded ? "visible" : ""}`}>
-        {/* ── FULL-HEIGHT VIEWPORT ACCENT LINES ── */}
-        <div className={`accent-line-left ${!introVisible ? "visible" : ""}`} />
+        {/* ── SPLIT LEFT ACCENT LINES & RIGHT LINE ── */}
+        <div className={`accent-line-left-bottom ${!introVisible ? "visible" : ""}`} />
+        <div className={`accent-line-left-top ${!introVisible ? "visible" : ""}`} />
         <div className={`accent-line-right ${!introVisible ? "visible" : ""}`} />
 
         {/* ── FIXED LEFT VERTICAL BRAND ── */}
