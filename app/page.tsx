@@ -188,7 +188,7 @@ export default function Home() {
         /* ── FIXED LEFT VERTICAL BRAND ── */
         .vertical-brand {
           position: fixed;
-          left: 70px;
+          left: 36px;
           bottom: 120px;
           transform: rotate(-90deg);
           transform-origin: left bottom;
@@ -206,26 +206,37 @@ export default function Home() {
         }
         .vertical-brand.visible { opacity: 1; }
 
-        /* ── VERTICAL ACCENT LINES ── */
+        /* ── VERTICAL ACCENT LINES (TOP) ── */
         .accent-line {
-  position: fixed;
-  top: 0;
-  width: 1px;
-  height: 200px; /* much shorter — was 620px */
-  background: linear-gradient(to bottom, rgba(232,228,220,0.6), rgba(232,228,220,0));
-  z-index: 39;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.8s ease 0.9s;
-}
-.accent-line.visible { opacity: 1; }
+          position: fixed;
+          top: 0;
+          width: 1px;
+          height: 200px;
+          background: linear-gradient(to bottom, rgba(232,228,220,0.6), rgba(232,228,220,0));
+          z-index: 39;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.8s ease 0.9s;
+        }
+        .accent-line.visible { opacity: 1; }
+        .accent-line-left { left: 36px; }
+        .accent-line-right { right: 32px; }
 
-.accent-line-left { left: 36px; }
-.accent-line-right { right: 32px; }
-
-@media (max-width: 900px) {
-  .accent-line { display: none; }
-}
+        /* ── VERTICAL ACCENT LINES (BOTTOM) ── */
+        .accent-line-bottom {
+          position: fixed;
+          bottom: 0;
+          width: 1px;
+          height: 200px;
+          background: linear-gradient(to top, rgba(232,228,220,0.6), rgba(232,228,220,0));
+          z-index: 39;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.8s ease 0.9s;
+        }
+        .accent-line-bottom.visible { opacity: 1; }
+        .accent-line-bottom-left { left: 36px; }
+        .accent-line-bottom-right { right: 32px; }
 
         /* ── FIXED RIGHT VERTICAL NAV ── */
         .vertical-nav {
@@ -260,7 +271,7 @@ export default function Home() {
         }
         
         @media (max-width: 900px) {
-          .vertical-brand, .accent-line { display: none; }
+          .vertical-brand, .accent-line, .accent-line-bottom { display: none; }
           .vertical-nav {
             position: fixed;
             top: 0;
@@ -436,9 +447,13 @@ export default function Home() {
       )}
 
       <div className={`page ${loaded ? "visible" : ""}`}>
-        {/* ── VERTICAL ACCENT LINES ── */}
+        {/* ── VERTICAL ACCENT LINES (TOP) ── */}
         <div className={`accent-line accent-line-left ${!introVisible ? "visible" : ""}`} />
         <div className={`accent-line accent-line-right ${!introVisible ? "visible" : ""}`} />
+
+        {/* ── VERTICAL ACCENT LINES (BOTTOM) ── */}
+        <div className={`accent-line-bottom accent-line-bottom-left ${!introVisible ? "visible" : ""}`} />
+        <div className={`accent-line-bottom accent-line-bottom-right ${!introVisible ? "visible" : ""}`} />
 
         {/* ── FIXED LEFT VERTICAL BRAND ── */}
         <div className={`vertical-brand ${!introVisible ? "visible" : ""}`}>
@@ -523,7 +538,6 @@ export default function Home() {
                 <button
                   key={tag}
                   className={`nav-tag-pill ${activeTags.includes(tag) ? "active" : ""}`}
-                  onClick={() => { handleTagClick(tag); setNavOpen(false); }}
                 >
                   #{tag}
                 </button>
