@@ -185,11 +185,11 @@ export default function Home() {
           color: #7a7770;
         }
 
-        /* ── FIXED LEFT VERTICAL BRAND ── */
+        /* ── FIXED LEFT VERTICAL BRAND (40px margin) ── */
         .vertical-brand {
           position: fixed;
-          left: 70px;
-          bottom: 120px;
+          left: 40px;
+          bottom: 105px;
           transform: rotate(-90deg);
           transform-origin: left bottom;
           z-index: 40;
@@ -206,7 +206,7 @@ export default function Home() {
         }
         .vertical-brand.visible { opacity: 1; }
 
-        /* ── FULL HEIGHT ACCENT LINES ── */
+        /* ── FULL HEIGHT ACCENT LINES (40px alignment) ── */
         .accent-line-left, .accent-line-right {
           position: fixed;
           top: 0;
@@ -225,13 +225,13 @@ export default function Home() {
           transition: opacity 0.8s ease 0.9s;
         }
         .accent-line-left.visible, .accent-line-right.visible { opacity: 1; }
-        .accent-line-left { left: 70px; }
-        .accent-line-right { right: 32px; }
+        .accent-line-left { left: 40px; }
+        .accent-line-right { right: 40px; }
 
-        /* ── FIXED RIGHT VERTICAL NAV ── */
+        /* ── FIXED RIGHT VERTICAL NAV (40px margin) ── */
         .vertical-nav {
           position: fixed;
-          right: 32px;
+          right: 40px;
           top: 50%;
           transform: translateY(-50%) rotate(90deg);
           transform-origin: right center;
@@ -277,11 +277,11 @@ export default function Home() {
           }
         }
 
-        /* ── MAIN CONTAINER ── */
+        /* ── MAIN CONTAINER (1440px max-width with 46px side padding) ── */
         .main-container {
-          max-width: 1500px;
+          max-width: 1440px;
           margin: 0 auto;
-          padding: 120px 90px 120px;
+          padding: 150px 46px 120px;
         }
         @media (max-width: 900px) {
           .main-container { padding: 100px 24px 80px; }
