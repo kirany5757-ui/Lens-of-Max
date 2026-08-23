@@ -189,7 +189,7 @@ export default function Home() {
         .vertical-brand {
           position: fixed;
           left: 70px;
-          bottom: 120px; /* Nudged up from 80px for ideal breathing room */
+          bottom: 120px;
           transform: rotate(-90deg);
           transform-origin: left bottom;
           z-index: 40;
@@ -205,6 +205,23 @@ export default function Home() {
           transition: opacity 0.8s ease 0.9s;
         }
         .vertical-brand.visible { opacity: 1; }
+
+        /* ── VERTICAL ACCENT LINES ── */
+        .accent-line {
+          position: fixed;
+          top: 0;
+          width: 1px;
+          height: 620px;
+          background: linear-gradient(to bottom, rgba(232,228,220,0.5), transparent);
+          z-index: 39;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.8s ease 0.9s;
+        }
+        .accent-line.visible { opacity: 1; }
+
+        .accent-line-left { left: 70px; }
+        .accent-line-right { right: 32px; }
 
         /* ── FIXED RIGHT VERTICAL NAV ── */
         .vertical-nav {
@@ -239,7 +256,7 @@ export default function Home() {
         }
         
         @media (max-width: 900px) {
-          .vertical-brand { display: none; }
+          .vertical-brand, .accent-line { display: none; }
           .vertical-nav {
             position: fixed;
             top: 0;
@@ -415,6 +432,10 @@ export default function Home() {
       )}
 
       <div className={`page ${loaded ? "visible" : ""}`}>
+        {/* ── VERTICAL ACCENT LINES ── */}
+        <div className={`accent-line accent-line-left ${!introVisible ? "visible" : ""}`} />
+        <div className={`accent-line accent-line-right ${!introVisible ? "visible" : ""}`} />
+
         {/* ── FIXED LEFT VERTICAL BRAND ── */}
         <div className={`vertical-brand ${!introVisible ? "visible" : ""}`}>
           Lens of Max
