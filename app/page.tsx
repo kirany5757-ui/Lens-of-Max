@@ -238,12 +238,12 @@ export default function Home() {
         .accent-line-top-right {
           top: 0;
           right: 40px;
-          height: calc(100vh - 460px);
+          height: calc(100vh - 600px);
         }
         .accent-line-bottom-right {
           bottom: 0;
           right: 40px;
-          height: 220px;
+          height: 320px;
         }
 
         /* ── FIXED RIGHT VERTICAL NAV ── */
