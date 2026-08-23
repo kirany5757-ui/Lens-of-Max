@@ -230,7 +230,7 @@ export default function Home() {
         }
         .accent-line-bottom-left {
           bottom: 0;
-          left: 70px;
+          left: 40px;
           height: 180px;
         }
 
