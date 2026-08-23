@@ -265,10 +265,13 @@ export default function Home() {
         }
 
         .hidden-dove {
-          position: absolute;
+          position: fixed;
+          right: 38px;
+          top: calc(50% + 2px);
           font-size: 1px;
           line-height: 1;
           opacity: 0.35;
+          z-index: 41;
           user-select: none;
           pointer-events: none;
         }
@@ -290,7 +293,7 @@ export default function Home() {
         
         @media (max-width: 900px) {
           .vertical-brand, .accent-line-top-left, .accent-line-bottom-left,
-          .accent-line-top-right, .accent-line-bottom-right { display: none; }
+          .accent-line-top-right, .accent-line-bottom-right, .hidden-dove { display: none; }
           .vertical-nav {
             position: fixed;
             top: 0;
@@ -467,14 +470,14 @@ export default function Home() {
           Lens of Max
         </div>
 
-        {/* ── FIXED RIGHT VERTICAL NAV (With Absolute Hidden Dove) ── */}
-        <nav className="vertical-nav" style={{ position: "relative" }}>
+        {/* ── FIXED RIGHT VERTICAL NAV & SIBLING DOVE ── */}
+        <nav className="vertical-nav">
           <button onClick={() => setNavOpen(true)}>
             NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}
           </button>
-          <span className="hidden-dove">🕊️</span>
           <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
         </nav>
+        <span className="hidden-dove">🕊️</span>
 
         {/* ── MAIN SCROLLABLE CONTENT ── */}
         <main className="main-container">
