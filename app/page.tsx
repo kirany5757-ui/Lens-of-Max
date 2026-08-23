@@ -185,11 +185,11 @@ export default function Home() {
           color: #7a7770;
         }
 
-        /* ── FIXED LEFT VERTICAL BRAND (refined serif signature) ── */
+        /* ── FIXED LEFT VERTICAL BRAND ── */
         .vertical-brand {
           position: fixed;
-          left: 76px;
-          bottom: 100px;
+          left: 36px;
+          bottom: 80px;
           transform: rotate(-90deg);
           transform-origin: left bottom;
           z-index: 40;
@@ -206,15 +206,8 @@ export default function Home() {
         }
         .vertical-brand.visible { opacity: 1; }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
           .vertical-brand { display: none; }
-        }
-
-        /* ── HIDDEN DOVE EASTER EGG ── */
-        .hidden-dove {
-          font-size: 1px !important;
-          opacity: 0.4;
-          user-select: none;
         }
 
         /* ── FIXED RIGHT VERTICAL NAV ── */
@@ -248,23 +241,31 @@ export default function Home() {
         .vertical-nav button:hover, .vertical-nav button.active {
           color: #e8e4dc;
         }
-        @media (max-width: 900px) {
+        
+        @media (max-width: 1024px) {
           .vertical-nav {
-            position: fixed; /* Fixed so it doesn't scroll away on mobile */
-            top: 24px;
-            right: 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             transform: none;
+            background: rgba(8, 8, 7, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 16px 24px;
+            justify-content: flex-end;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            z-index: 80;
           }
         }
 
-        /* ── MAIN CONTAINER ── */
+        /* ── MAIN CONTAINER (1500px wide grid with balanced padding) ── */
         .main-container {
           max-width: 1500px;
           margin: 0 auto;
-          padding: 120px 90px 80px;
+          padding: 120px 90px 120px;
         }
-        @media (max-width: 900px) {
-          .main-container { padding: 120px 24px 80px; }
+        @media (max-width: 1024px) {
+          .main-container { padding: 100px 24px 80px; }
         }
 
         /* ── NAV DRAWER OVERLAY ── */
@@ -420,7 +421,6 @@ export default function Home() {
         {/* ── FIXED LEFT VERTICAL BRAND ── */}
         <div className={`vertical-brand ${!introVisible ? "visible" : ""}`}>
           Lens of Max
-          <span className="hidden-dove">🕊️</span>
         </div>
 
         {/* ── FIXED RIGHT VERTICAL NAV ── */}
