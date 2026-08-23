@@ -185,7 +185,7 @@ export default function Home() {
           color: #7a7770;
         }
 
-        /* ── FIXED LEFT VERTICAL BRAND ── */
+        /* ── FIXED LEFT VERTICAL BRAND (Interactive Shuffle Trigger) ── */
         .vertical-brand {
           position: fixed;
           left: 70px;
@@ -200,10 +200,11 @@ export default function Home() {
           color: rgba(232, 228, 220, 0.8);
           text-transform: uppercase;
           white-space: nowrap;
-          pointer-events: none;
+          cursor: pointer;
           opacity: 0;
-          transition: opacity 0.8s ease 0.9s;
+          transition: opacity 0.8s ease 0.9s, color 0.2s ease;
         }
+        .vertical-brand:hover { color: #fff; }
         .vertical-brand.visible { opacity: 1; }
 
         /* ── ARCHITECTURAL CORNER TAPE / SPLIT ACCENT LINES ── */
@@ -296,14 +297,14 @@ export default function Home() {
           }
         }
 
-        /* ── MAIN CONTAINER ── */
+        /* ── MAIN CONTAINER (Reduced top padding to remove dead space) ── */
         .main-container {
           max-width: 1440px;
           margin: 0 auto;
-          padding: 150px 46px 120px;
+          padding: 90px 46px 120px;
         }
         @media (max-width: 900px) {
-          .main-container { padding: 100px 24px 80px; }
+          .main-container { padding: 80px 24px 80px; }
         }
 
         /* ── NAV DRAWER OVERLAY ── */
@@ -344,13 +345,6 @@ export default function Home() {
           border-bottom: 1px solid rgba(255,255,255,0.06);
         }
         .counter { font-size: 10px; letter-spacing: 0.25em; color: #555; text-transform: uppercase; }
-        .refresh-btn {
-          background: transparent; border: 1px solid rgba(255,255,255,0.12); color: #777;
-          width: 26px; height: 26px; border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          cursor: pointer; transition: all 0.3s ease; font-size: 12px;
-        }
-        .refresh-btn:hover { border-color: #e8e4dc; color: #e8e4dc; transform: rotate(180deg); }
 
         .card {
           cursor: none;
@@ -462,8 +456,12 @@ export default function Home() {
         <div className={`accent-line-top-right ${!introVisible ? "visible" : ""}`} />
         <div className={`accent-line-bottom-right ${!introVisible ? "visible" : ""}`} />
 
-        {/* ── FIXED LEFT VERTICAL BRAND ── */}
-        <div className={`vertical-brand ${!introVisible ? "visible" : ""}`}>
+        {/* ── FIXED LEFT VERTICAL BRAND (Click to Shuffle) ── */}
+        <div 
+          className={`vertical-brand ${!introVisible ? "visible" : ""}`}
+          onClick={handleRefresh}
+          title="Click to reshuffle moments"
+        >
           Lens of Max
         </div>
 
@@ -480,7 +478,6 @@ export default function Home() {
           <section className="gallery-section">
             <div className="gallery-header">
               <p className="counter">{filtered.length} / {totalMain} moments</p>
-              <button className="refresh-btn" onClick={handleRefresh} title="Reshuffle Grid">↻</button>
             </div>
 
             {filtered.length === 0 ? (
