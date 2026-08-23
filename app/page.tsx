@@ -206,46 +206,29 @@ export default function Home() {
         }
         .vertical-brand.visible { opacity: 1; }
 
-        /* ── FIXED LEFT VERTICAL BRAND ── */
-        .vertical-brand {
+        /* ── CONTINUOUS FULL-HEIGHT VIEWPORT ACCENT LINES ── */
+        .accent-line-left, .accent-line-right {
           position: fixed;
-          left: 70px;
-          bottom: 120px;
-          transform: rotate(-90deg);
-          transform-origin: left bottom;
-          z-index: 40;
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 44px;
-          font-weight: 400;
-          letter-spacing: 0.3em;
-          color: rgba(232, 228, 220, 0.8);
-          text-transform: uppercase;
-          white-space: nowrap;
-          pointer-events: none;
-          opacity: 0;
-          transition: opacity 0.8s ease 0.9s;
-        }
-        .vertical-brand.visible { opacity: 1; }
-
-        /* ── SYMMETRIC ARCHITECTURAL ACCENT LINES ── */
-        .accent-line, .accent-line-bottom {
-          position: fixed;
+          top: 0;
           width: 1px;
-          height: 160px;
-          background: linear-gradient(to bottom, rgba(232,228,220,0.5), transparent);
+          height: 100vh;
+          background: linear-gradient(
+            to bottom,
+            transparent 0%,
+            rgba(232,228,220,0.5) 8%,
+            rgba(232,228,220,0.5) 92%,
+            transparent 100%
+          );
           z-index: 39;
           pointer-events: none;
           opacity: 0;
           transition: opacity 0.8s ease 0.9s;
         }
-        .accent-line { top: 0; }
-        .accent-line-bottom { bottom: 0; background: linear-gradient(to top, rgba(232,228,220,0.5), transparent); }
+        .accent-line-left.visible, .accent-line-right.visible { opacity: 1; }
 
-        .accent-line.visible, .accent-line-bottom.visible { opacity: 1; }
+        .accent-line-left { left: 70px; }
+        .accent-line-right { right: 32px; }
 
-        .accent-line-left, .accent-line-bottom-left { left: 70px; }
-        .accent-line-right, .accent-line-bottom-right { right: 32px; }
-        
         /* ── FIXED RIGHT VERTICAL NAV ── */
         .vertical-nav {
           position: fixed;
@@ -279,7 +262,7 @@ export default function Home() {
         }
         
         @media (max-width: 900px) {
-          .vertical-brand, .accent-line, .accent-line-bottom { display: none; }
+          .vertical-brand, .accent-line-left, .accent-line-right { display: none; }
           .vertical-nav {
             position: fixed;
             top: 0;
@@ -455,13 +438,9 @@ export default function Home() {
       )}
 
       <div className={`page ${loaded ? "visible" : ""}`}>
-        {/* ── VERTICAL ACCENT LINES (TOP) ── */}
-        <div className={`accent-line accent-line-left ${!introVisible ? "visible" : ""}`} />
-        <div className={`accent-line accent-line-right ${!introVisible ? "visible" : ""}`} />
-
-        {/* ── VERTICAL ACCENT LINES (BOTTOM) ── */}
-        <div className={`accent-line-bottom accent-line-bottom-left ${!introVisible ? "visible" : ""}`} />
-        <div className={`accent-line-bottom accent-line-bottom-right ${!introVisible ? "visible" : ""}`} />
+        {/* ── FULL-HEIGHT VIEWPORT ACCENT LINES ── */}
+        <div className={`accent-line-left ${!introVisible ? "visible" : ""}`} />
+        <div className={`accent-line-right ${!introVisible ? "visible" : ""}`} />
 
         {/* ── FIXED LEFT VERTICAL BRAND ── */}
         <div className={`vertical-brand ${!introVisible ? "visible" : ""}`}>
@@ -546,6 +525,7 @@ export default function Home() {
                 <button
                   key={tag}
                   className={`nav-tag-pill ${activeTags.includes(tag) ? "active" : ""}`}
+                  onClick={() => { handleTagClick(tag); setNavOpen(false); }}
                 >
                   #{tag}
                 </button>
