@@ -188,7 +188,7 @@ export default function Home() {
         /* ── FIXED LEFT VERTICAL BRAND ── */
         .vertical-brand {
           position: fixed;
-          left: 40px;
+          left: 70px;
           bottom: 105px;
           transform: rotate(-90deg);
           transform-origin: left bottom;
@@ -225,12 +225,12 @@ export default function Home() {
         /* Left side framing around "LENS OF MAX" */
         .accent-line-top-left {
           top: 0;
-          left: 40px;
+          left: 70px;
           height: calc(100vh - 540px);
         }
         .accent-line-bottom-left {
           bottom: 0;
-          left: 40px;
+          left: 70px;
           height: 180px;
         }
 
