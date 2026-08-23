@@ -188,7 +188,7 @@ export default function Home() {
         /* ── FIXED LEFT VERTICAL BRAND ── */
         .vertical-brand {
           position: fixed;
-          left: 36px;
+          left: 50px;
           bottom: 120px; /* Nudged up from 80px for ideal breathing room */
           transform: rotate(-90deg);
           transform-origin: left bottom;
