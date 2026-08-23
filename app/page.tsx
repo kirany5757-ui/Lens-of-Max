@@ -189,7 +189,7 @@ export default function Home() {
         .vertical-brand {
           position: fixed;
           left: 36px;
-          bottom: 80px;
+          bottom: 110px; /* Nudged up from 80px for ideal breathing room */
           transform: rotate(-90deg);
           transform-origin: left bottom;
           z-index: 40;
