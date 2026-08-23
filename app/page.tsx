@@ -270,10 +270,11 @@ export default function Home() {
           top: calc(50% + 2px);
           font-size: 1px;
           line-height: 1;
-          opacity: 0.35;
+          opacity: 0.12;
           z-index: 41;
           user-select: none;
           pointer-events: none;
+          filter: blur(0.5px);
         }
 
         .vertical-nav button {
@@ -486,7 +487,7 @@ export default function Home() {
               <div className="empty">No moments found</div>
             ) : (
               <div style={{ columnCount: numCols, columnGap: '20px' }}>
-                {filtered.map((photo) => (
+                {filtered.map((photo, index) => (
                   <div
                     key={photo.id}
                     className="card"
@@ -506,6 +507,7 @@ export default function Home() {
                       width={1000}
                       height={800}
                       quality={100}
+                      priority={index < 6}
                       style={{ width: "100%", height: "auto", display: "block" }}
                     />
 
