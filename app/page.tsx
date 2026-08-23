@@ -231,7 +231,7 @@ export default function Home() {
         .accent-line-bottom-left {
           bottom: 0;
           left: 36px;
-          height: 100px;
+          height: 90px;
         }
 
         /* Right side framing around "NAV / ALL" */
