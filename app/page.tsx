@@ -256,7 +256,7 @@ export default function Home() {
           z-index: 40;
           display: flex;
           align-items: center;
-          gap: 24px;
+          gap: 20px;
           font-family: 'Inconsolata', monospace;
           font-size: 13px;
           font-weight: 700;
@@ -448,20 +448,21 @@ export default function Home() {
         <div className={`accent-line-top-right ${!introVisible ? "visible" : ""}`} />
         <div className={`accent-line-bottom-right ${!introVisible ? "visible" : ""}`} />
 
-        {/* ── FIXED LEFT VERTICAL BRAND (Click to Shuffle + Dove) ── */}
+        {/* ── FIXED LEFT VERTICAL BRAND (Click to Shuffle) ── */}
         <div 
           className={`vertical-brand ${!introVisible ? "visible" : ""}`}
           onClick={handleRefresh}
           title="Click to reshuffle moments"
         >
-          Lens of Max <span style={{ fontSize: "28px", marginLeft: "12px", verticalAlign: "middle", display: "inline-block" }}>🕊️</span>
+          Lens of Max
         </div>
 
-        {/* ── FIXED RIGHT VERTICAL NAV ── */}
+        {/* ── FIXED RIGHT VERTICAL NAV (NAV | Dove | ALL) ── */}
         <nav className="vertical-nav">
           <button onClick={() => setNavOpen(true)}>
             NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}
           </button>
+          <span style={{ fontSize: "11px", opacity: 0.8, userSelect: "none" }}>🕊️</span>
           <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
         </nav>
 
