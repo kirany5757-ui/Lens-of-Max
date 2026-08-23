@@ -185,7 +185,7 @@ export default function Home() {
           color: #7a7770;
         }
 
-        /* ── FIXED LEFT VERTICAL BRAND (40px margin) ── */
+        /* ── FIXED LEFT VERTICAL BRAND ── */
         .vertical-brand {
           position: fixed;
           left: 40px;
@@ -206,29 +206,47 @@ export default function Home() {
         }
         .vertical-brand.visible { opacity: 1; }
 
-        /* ── FULL HEIGHT ACCENT LINES (40px alignment) ── */
-        .accent-line-left, .accent-line-right {
+        /* ── ARCHITECTURAL CORNER TAPE / SPLIT ACCENT LINES ── */
+        .accent-line-top-left, .accent-line-bottom-left,
+        .accent-line-top-right, .accent-line-bottom-right {
           position: fixed;
-          top: 0;
-          width: 1px;
-          height: 100vh;
-          background: linear-gradient(
-            to bottom,
-            transparent 0%,
-            rgba(232,228,220,0.5) 8%,
-            rgba(232,228,220,0.5) 92%,
-            transparent 100%
-          );
+          width: 2px;
+          background: rgba(232, 228, 220, 0.6);
           z-index: 39;
           pointer-events: none;
           opacity: 0;
           transition: opacity 0.8s ease 0.9s;
         }
-        .accent-line-left.visible, .accent-line-right.visible { opacity: 1; }
-        .accent-line-left { left: 40px; }
-        .accent-line-right { right: 40px; }
+        .accent-line-top-left.visible, .accent-line-bottom-left.visible,
+        .accent-line-top-right.visible, .accent-line-bottom-right.visible {
+          opacity: 1;
+        }
 
-        /* ── FIXED RIGHT VERTICAL NAV (40px margin) ── */
+        /* Left side framing around "LENS OF MAX" */
+        .accent-line-top-left {
+          top: 0;
+          left: 40px;
+          height: calc(100vh - 540px);
+        }
+        .accent-line-bottom-left {
+          bottom: 0;
+          left: 40px;
+          height: 180px;
+        }
+
+        /* Right side framing around "NAV / ALL" */
+        .accent-line-top-right {
+          top: 0;
+          right: 40px;
+          height: calc(100vh - 460px);
+        }
+        .accent-line-bottom-right {
+          bottom: 0;
+          right: 40px;
+          height: 220px;
+        }
+
+        /* ── FIXED RIGHT VERTICAL NAV ── */
         .vertical-nav {
           position: fixed;
           right: 40px;
@@ -261,7 +279,8 @@ export default function Home() {
         }
         
         @media (max-width: 900px) {
-          .vertical-brand, .accent-line-left, .accent-line-right { display: none; }
+          .vertical-brand, .accent-line-top-left, .accent-line-bottom-left,
+          .accent-line-top-right, .accent-line-bottom-right { display: none; }
           .vertical-nav {
             position: fixed;
             top: 0;
@@ -277,7 +296,7 @@ export default function Home() {
           }
         }
 
-        /* ── MAIN CONTAINER (1440px max-width with 46px side padding) ── */
+        /* ── MAIN CONTAINER ── */
         .main-container {
           max-width: 1440px;
           margin: 0 auto;
@@ -437,9 +456,11 @@ export default function Home() {
       )}
 
       <div className={`page ${loaded ? "visible" : ""}`}>
-        {/* ── FULL HEIGHT ACCENT LINES ── */}
-        <div className={`accent-line-left ${!introVisible ? "visible" : ""}`} />
-        <div className={`accent-line-right ${!introVisible ? "visible" : ""}`} />
+        {/* ── SPLIT ACCENT LINES FRAMING BOTH SIDES ── */}
+        <div className={`accent-line-top-left ${!introVisible ? "visible" : ""}`} />
+        <div className={`accent-line-bottom-left ${!introVisible ? "visible" : ""}`} />
+        <div className={`accent-line-top-right ${!introVisible ? "visible" : ""}`} />
+        <div className={`accent-line-bottom-right ${!introVisible ? "visible" : ""}`} />
 
         {/* ── FIXED LEFT VERTICAL BRAND ── */}
         <div className={`vertical-brand ${!introVisible ? "visible" : ""}`}>
