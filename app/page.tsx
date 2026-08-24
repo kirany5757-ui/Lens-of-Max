@@ -271,7 +271,7 @@ export default function Home() {
           position: fixed;
           right: 38px;
           top: calc(50% + 2px);
-          font-size: 3px;
+          font-size: 1px;
           line-height: 1;
           opacity: 0;
           z-index: 41;
