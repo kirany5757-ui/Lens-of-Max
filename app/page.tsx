@@ -299,21 +299,44 @@ export default function Home() {
         
         /* ── RESPONSIVE BREAKPOINT ALIGNED TO 1100px ── */
         @media (max-width: 1100px) {
-          .vertical-brand, .accent-line-top-left, .accent-line-bottom-left,
+          .accent-line-top-left, .accent-line-bottom-left,
           .accent-line-top-right, .accent-line-bottom-right, .hidden-dove { display: none; }
+          
+          /* Transform desktop vertical brand into mobile top masthead */
+          .vertical-brand {
+            position: static;
+            transform: none;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            color: #e8e4dc;
+            white-space: nowrap;
+            cursor: pointer;
+            opacity: 1;
+          }
+
           .vertical-nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             transform: none;
-            background: rgba(8, 8, 7, 0.9);
+            background: rgba(8, 8, 7, 0.95);
             backdrop-filter: blur(10px);
-            padding: 16px 24px;
-            justify-content: flex-end;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             z-index: 80;
             opacity: 1;
+            gap: 16px;
+          }
+          .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 18px;
           }
           .vertical-nav button {
             letter-spacing: 0.15em;
@@ -476,7 +499,7 @@ export default function Home() {
         <div className={`accent-line-top-right ${!introVisible ? "visible" : ""}`} />
         <div className={`accent-line-bottom-right ${!introVisible ? "visible" : ""}`} />
 
-        {/* ── FIXED LEFT VERTICAL BRAND (Click to Shuffle) ── */}
+        {/* ── FIXED LEFT VERTICAL BRAND (Desktop Only) ── */}
         <div 
           className={`vertical-brand ${!introVisible ? "visible" : ""}`}
           onClick={handleRefresh}
@@ -485,12 +508,21 @@ export default function Home() {
           Lens of Max
         </div>
 
-        {/* ── FIXED RIGHT VERTICAL NAV & SIBLING DOVE (Synchronized Fade) ── */}
+        {/* ── TOP NAV / MOBILE HEADER (Includes Lens of Max on mobile) ── */}
         <nav className={`vertical-nav ${!introVisible ? "visible" : ""}`}>
-          <button onClick={() => setNavOpen(true)}>
-            NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}
-          </button>
-          <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
+          <div 
+            className="vertical-brand"
+            onClick={handleRefresh}
+            title="Click to reshuffle moments"
+          >
+            Lens of Max
+          </div>
+          <div className="nav-buttons">
+            <button onClick={() => setNavOpen(true)}>
+              NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}
+            </button>
+            <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
+          </div>
         </nav>
         <span className={`hidden-dove ${!introVisible ? "visible" : ""}`}>🕊️</span>
 
