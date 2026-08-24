@@ -27,7 +27,6 @@ const photosWithAspect: Photo[] = photos.map((p, i) => ({
 }));
 
 const allTags = [...new Set(photos.flatMap((p) => p.tags))].sort();
-const totalMain = photosWithAspect.filter((p) => p.isMain).length;
 
 function useNumCols(): number {
   const [cols, setCols] = useState(3);
@@ -185,11 +184,11 @@ export default function Home() {
           color: #7a7770;
         }
 
-        /* ── FIXED LEFT VERTICAL BRAND ── */
+        /* ── FIXED LEFT VERTICAL BRAND (Click to Shuffle) ── */
         .vertical-brand {
           position: fixed;
           left: 70px;
-          bottom: 120px;
+          bottom: 105px;
           transform: rotate(-90deg);
           transform-origin: left bottom;
           z-index: 40;
@@ -200,38 +199,57 @@ export default function Home() {
           color: rgba(232, 228, 220, 0.8);
           text-transform: uppercase;
           white-space: nowrap;
-          pointer-events: none;
+          cursor: pointer;
           opacity: 0;
-          transition: opacity 0.8s ease 0.9s;
+          transition: opacity 0.8s ease 0.9s, color 0.2s ease;
         }
+        .vertical-brand:hover { color: #fff; }
         .vertical-brand.visible { opacity: 1; }
 
-        /* ── FULL HEIGHT ACCENT LINES ── */
-        .accent-line-left, .accent-line-right {
+        /* ── ARCHITECTURAL CORNER TAPE / SPLIT ACCENT LINES ── */
+        .accent-line-top-left, .accent-line-bottom-left,
+        .accent-line-top-right, .accent-line-bottom-right {
           position: fixed;
-          top: 0;
-          width: 1px;
-          height: 100vh;
-          background: linear-gradient(
-            to bottom,
-            transparent 0%,
-            rgba(232,228,220,0.5) 8%,
-            rgba(232,228,220,0.5) 92%,
-            transparent 100%
-          );
+          width: 5px;
+          background: rgba(232, 228, 220, 0.6);
           z-index: 39;
           pointer-events: none;
           opacity: 0;
           transition: opacity 0.8s ease 0.9s;
         }
-        .accent-line-left.visible, .accent-line-right.visible { opacity: 1; }
-        .accent-line-left { left: 70px; }
-        .accent-line-right { right: 32px; }
+        .accent-line-top-left.visible, .accent-line-bottom-left.visible,
+        .accent-line-top-right.visible, .accent-line-bottom-right.visible {
+          opacity: 1;
+        }
+
+        /* Left side framing around "LENS OF MAX" */
+        .accent-line-top-left {
+          top: 0;
+          left: 36px;
+          height: calc(100vh - 540px);
+        }
+        .accent-line-bottom-left {
+          bottom: 0;
+          left: 36px;
+          height: 90px;
+        }
+
+        /* Right side framing around "NAV / ALL" */
+        .accent-line-top-right {
+          top: 0;
+          right: 40px;
+          height: calc(100vh - 600px);
+        }
+        .accent-line-bottom-right {
+          bottom: 0;
+          right: 40px;
+          height: 480px;
+        }
 
         /* ── FIXED RIGHT VERTICAL NAV ── */
         .vertical-nav {
           position: fixed;
-          right: 32px;
+          right: 40px;
           top: 50%;
           transform: translateY(-50%) rotate(90deg);
           transform-origin: right center;
@@ -244,7 +262,31 @@ export default function Home() {
           font-weight: 700;
           letter-spacing: 0.35em;
           text-transform: uppercase;
+          opacity: 0;
+          transition: opacity 0.8s ease 0.9s;
         }
+        .vertical-nav.visible { opacity: 1; }
+
+        .hidden-dove {
+          position: fixed;
+          right: 38px;
+          top: calc(50% + 2px);
+          font-size: 1px;
+          line-height: 1;
+          opacity: 0;
+          z-index: 41;
+          user-select: none;
+          pointer-events: none;
+          transition: opacity 0.8s ease 0.9s;
+        }
+        .hidden-dove.visible { opacity: 0.2; }
+
+        .nav-buttons {
+          display: flex;
+          align-items: center;
+          gap: 24px;
+        }
+
         .vertical-nav button {
           background: transparent;
           border: none;
@@ -260,16 +302,27 @@ export default function Home() {
           color: #e8e4dc;
         }
 
-        /* ── HIDDEN DOVE EASTER EGG (DESKTOP) ── */
-        .hidden-dove {
-          font-size: 1px;
-          opacity: 0.2;
-          user-select: none;
-          pointer-events: none;
-        }
-
-        /* ── MOBILE DOVE OVERRIDE (Screens <= 1100px) ── */
+        /* Hide mobile elements by default on desktop */
+        .nav-brand { display: none; }
+        .mobile-dove { display: none; }
+        
+        /* ── RESPONSIVE BREAKPOINT ALIGNED TO 1100px ── */
         @media (max-width: 1100px) {
+          .vertical-brand { display: none; }
+          .accent-line-top-left, .accent-line-bottom-left,
+          .accent-line-top-right, .accent-line-bottom-right, .hidden-dove { display: none; }
+          
+          .nav-brand {
+            display: block;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            color: #e8e4dc;
+            white-space: nowrap;
+            cursor: pointer;
+          }
+
           .mobile-dove {
             display: inline-block;
             font-size: 2px;
@@ -277,33 +330,42 @@ export default function Home() {
             user-select: none;
             pointer-events: none;
           }
-        }
-        
-        @media (max-width: 900px) {
-          .vertical-brand, .accent-line-left, .accent-line-right { display: none; }
+
           .vertical-nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             transform: none;
-            background: rgba(8, 8, 7, 0.9);
+            background: rgba(8, 8, 7, 0.95);
             backdrop-filter: blur(10px);
-            padding: 16px 24px;
-            justify-content: flex-end;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             z-index: 80;
+            opacity: 1;
+            gap: 16px;
+          }
+          .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+          }
+          .vertical-nav button {
+            letter-spacing: 0.15em;
           }
         }
 
-        /* ── MAIN CONTAINER ── */
+        /* ── MAIN CONTAINER (Real mobile top clearance) ── */
         .main-container {
-          max-width: 1500px;
+          max-width: 1440px;
           margin: 0 auto;
-          padding: 120px 90px 120px;
+          padding: 60px 46px 120px;
         }
-        @media (max-width: 900px) {
-          .main-container { padding: 100px 24px 80px; }
+        @media (max-width: 1100px) {
+          .main-container { padding: 90px 24px 80px; }
         }
 
         /* ── NAV DRAWER OVERLAY ── */
@@ -338,20 +400,6 @@ export default function Home() {
         .nav-tag-pill.active { border-color: #e8e4dc; background: #e8e4dc; color: #080807; }
 
         /* ── GALLERY GRID ── */
-        .gallery-header {
-          display: flex; align-items: center; justify-content: space-between;
-          margin-bottom: 30px; padding-bottom: 16px;
-          border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-        .counter { font-size: 10px; letter-spacing: 0.25em; color: #555; text-transform: uppercase; }
-        .refresh-btn {
-          background: transparent; border: 1px solid rgba(255,255,255,0.12); color: #777;
-          width: 26px; height: 26px; border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          cursor: pointer; transition: all 0.3s ease; font-size: 12px;
-        }
-        .refresh-btn:hover { border-color: #e8e4dc; color: #e8e4dc; transform: rotate(180deg); }
-
         .card {
           cursor: none;
           position: relative;
@@ -390,7 +438,7 @@ export default function Home() {
         .card-tag { font-size: 9px; letter-spacing: 0.15em; color: #888; text-transform: uppercase; }
         .card-tag::before { content: "#"; }
 
-        /* ── CUSTOM CAMERA CURSOR ── */
+        /* ── CUSTOM CAMERA CURSOR & TOUCH HARDENING ── */
         .camera-cursor {
           position: fixed; top: 0; left: 0;
           width: 28px; height: 28px;
@@ -401,6 +449,10 @@ export default function Home() {
         }
         .camera-cursor.hidden { opacity: 0; }
         .camera-cursor-icon { font-size: 12px; color: rgba(232,228,220,0.7); user-select: none; }
+
+        @media (hover: none) and (pointer: coarse) {
+          .camera-cursor { display: none !important; }
+        }
 
         /* ── MODAL VIEWER ── */
         .modal-backdrop {
@@ -456,36 +508,48 @@ export default function Home() {
       )}
 
       <div className={`page ${loaded ? "visible" : ""}`}>
-        {/* ── FULL HEIGHT ACCENT LINES ── */}
-        <div className={`accent-line-left ${!introVisible ? "visible" : ""}`} />
-        <div className={`accent-line-right ${!introVisible ? "visible" : ""}`} />
+        {/* ── SPLIT ACCENT LINES FRAMING BOTH SIDES ── */}
+        <div className={`accent-line-top-left ${!introVisible ? "visible" : ""}`} />
+        <div className={`accent-line-bottom-left ${!introVisible ? "visible" : ""}`} />
+        <div className={`accent-line-top-right ${!introVisible ? "visible" : ""}`} />
+        <div className={`accent-line-bottom-right ${!introVisible ? "visible" : ""}`} />
 
-        {/* ── FIXED LEFT VERTICAL BRAND ── */}
-        <div className={`vertical-brand ${!introVisible ? "visible" : ""}`}>
+        {/* ── FIXED LEFT VERTICAL BRAND (Desktop Only) ── */}
+        <div 
+          className={`vertical-brand ${!introVisible ? "visible" : ""}`}
+          onClick={handleRefresh}
+          title="Click to reshuffle moments"
+        >
           Lens of Max
         </div>
 
-        {/* ── FIXED RIGHT VERTICAL NAV ── */}
-        <nav className="vertical-nav">
-          <button onClick={() => setNavOpen(true)}>
-            NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}
-          </button>
-          <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
+        {/* ── FIXED RIGHT VERTICAL NAV & SIBLING DOVE (Synchronized Fade) ── */}
+        <nav className={`vertical-nav ${!introVisible ? "visible" : ""}`}>
+          <div 
+            className="nav-brand"
+            onClick={handleRefresh}
+            title="Click to reshuffle moments"
+          >
+            Lens of Max
+          </div>
+          <div className="nav-buttons">
+            <button onClick={() => setNavOpen(true)}>
+              NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}
+            </button>
+            <span className="mobile-dove">🕊️</span>
+            <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
+          </div>
         </nav>
+        <span className={`hidden-dove ${!introVisible ? "visible" : ""}`}>🕊️</span>
 
         {/* ── MAIN SCROLLABLE CONTENT ── */}
         <main className="main-container">
           <section className="gallery-section">
-            <div className="gallery-header">
-              <p className="counter">{filtered.length} / {totalMain} moments</p>
-              <button className="refresh-btn" onClick={handleRefresh} title="Reshuffle Grid">↻</button>
-            </div>
-
             {filtered.length === 0 ? (
               <div className="empty">No moments found</div>
             ) : (
               <div style={{ columnCount: numCols, columnGap: '20px' }}>
-                {filtered.map((photo) => (
+                {filtered.map((photo, index) => (
                   <div
                     key={photo.id}
                     className="card"
@@ -505,6 +569,7 @@ export default function Home() {
                       width={1000}
                       height={800}
                       quality={100}
+                      priority={index < 6}
                       style={{ width: "100%", height: "auto", display: "block" }}
                     />
 
