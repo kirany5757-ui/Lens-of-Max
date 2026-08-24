@@ -271,16 +271,21 @@ export default function Home() {
           position: fixed;
           right: 38px;
           top: calc(50% + 2px);
-          font-size: 1px;
+          font-size: 3px;
           line-height: 1;
           opacity: 0;
           z-index: 41;
           user-select: none;
           pointer-events: none;
-          filter: blur(0.5px);
           transition: opacity 0.8s ease 0.9s;
         }
-        .hidden-dove.visible { opacity: 0.12; }
+        .hidden-dove.visible { opacity: 0.2; }
+
+        .nav-buttons {
+          display: flex;
+          align-items: center;
+          gap: 24px;
+        }
 
         .vertical-nav button {
           background: transparent;
@@ -299,13 +304,12 @@ export default function Home() {
         
         /* ── RESPONSIVE BREAKPOINT ALIGNED TO 1100px ── */
         @media (max-width: 1100px) {
+          .vertical-brand { display: none; }
           .accent-line-top-left, .accent-line-bottom-left,
           .accent-line-top-right, .accent-line-bottom-right, .hidden-dove { display: none; }
           
-          /* Transform desktop vertical brand into mobile top masthead */
-          .vertical-brand {
-            position: static;
-            transform: none;
+          .nav-brand {
+            display: block;
             font-family: 'Cormorant Garamond', serif;
             font-size: 22px;
             font-weight: 300;
@@ -313,7 +317,6 @@ export default function Home() {
             color: #e8e4dc;
             white-space: nowrap;
             cursor: pointer;
-            opacity: 1;
           }
 
           .vertical-nav {
@@ -336,12 +339,15 @@ export default function Home() {
           .nav-buttons {
             display: flex;
             align-items: center;
-            gap: 24px; /* Restored spacing between NAV and ALL */
+            gap: 24px;
           }
           .vertical-nav button {
             letter-spacing: 0.15em;
           }
         }
+
+        /* Hide mobile nav-brand on desktop */
+        .nav-brand { display: none; }
 
         /* ── MAIN CONTAINER (Real mobile top clearance) ── */
         .main-container {
@@ -511,7 +517,7 @@ export default function Home() {
         {/* ── FIXED RIGHT VERTICAL NAV & SIBLING DOVE (Synchronized Fade) ── */}
         <nav className={`vertical-nav ${!introVisible ? "visible" : ""}`}>
           <div 
-            className="vertical-brand"
+            className="nav-brand"
             onClick={handleRefresh}
             title="Click to reshuffle moments"
           >
@@ -651,7 +657,7 @@ export default function Home() {
               onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
               onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
             />
-            
+
             <div className="modal-info">
               <div>
                 <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
