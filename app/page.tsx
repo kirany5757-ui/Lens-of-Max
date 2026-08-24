@@ -302,8 +302,9 @@ export default function Home() {
           color: #e8e4dc;
         }
 
-        /* Hide mobile nav-brand by default on desktop (must be BEFORE the media query) */
+        /* Hide mobile elements by default on desktop */
         .nav-brand { display: none; }
+        .mobile-dove { display: none; }
         
         /* ── RESPONSIVE BREAKPOINT ALIGNED TO 1100px ── */
         @media (max-width: 1100px) {
@@ -320,6 +321,14 @@ export default function Home() {
             color: #e8e4dc;
             white-space: nowrap;
             cursor: pointer;
+          }
+
+          .mobile-dove {
+            display: inline-block;
+            font-size: 10px;
+            opacity: 0.3;
+            user-select: none;
+            pointer-events: none;
           }
 
           .vertical-nav {
@@ -342,7 +351,7 @@ export default function Home() {
           .nav-buttons {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 16px;
           }
           .vertical-nav button {
             letter-spacing: 0.15em;
@@ -527,6 +536,7 @@ export default function Home() {
             <button onClick={() => setNavOpen(true)}>
               NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}
             </button>
+            <span className="mobile-dove">🕊️</span>
             <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
           </div>
         </nav>
