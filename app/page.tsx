@@ -336,7 +336,7 @@ export default function Home() {
           .nav-buttons {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 24px; /* Restored spacing between NAV and ALL */
           }
           .vertical-nav button {
             letter-spacing: 0.15em;
@@ -508,7 +508,7 @@ export default function Home() {
           Lens of Max
         </div>
 
-        {/* ── TOP NAV / MOBILE HEADER (Includes Lens of Max on mobile) ── */}
+        {/* ── FIXED RIGHT VERTICAL NAV & SIBLING DOVE (Synchronized Fade) ── */}
         <nav className={`vertical-nav ${!introVisible ? "visible" : ""}`}>
           <div 
             className="vertical-brand"
@@ -651,7 +651,7 @@ export default function Home() {
               onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
               onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
             />
-
+            
             <div className="modal-info">
               <div>
                 <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
