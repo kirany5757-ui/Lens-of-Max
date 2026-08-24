@@ -301,6 +301,9 @@ export default function Home() {
         .vertical-nav button:hover, .vertical-nav button.active {
           color: #e8e4dc;
         }
+
+        /* Hide mobile nav-brand by default on desktop (must be BEFORE the media query) */
+        .nav-brand { display: none; }
         
         /* ── RESPONSIVE BREAKPOINT ALIGNED TO 1100px ── */
         @media (max-width: 1100px) {
@@ -345,9 +348,6 @@ export default function Home() {
             letter-spacing: 0.15em;
           }
         }
-
-        /* Hide mobile nav-brand on desktop */
-        .nav-brand { display: none; }
 
         /* ── MAIN CONTAINER (Real mobile top clearance) ── */
         .main-container {
