@@ -112,6 +112,7 @@ export default function Home() {
   }, [mounted, shuffleEngine]);
 
   const handleRefresh = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     setShuffledPhotos(shuffleEngine(photosWithAspect));
   };
 
@@ -133,6 +134,30 @@ export default function Home() {
     }
     setSearch("");
   };
+
+  // Keyboard Navigation for Modal
+  useEffect(() => {
+    if (!selectedPhoto) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedPhoto(null);
+      if (e.key === "ArrowRight") {
+        const i = filtered.findIndex(p => p.id === selectedPhoto.id);
+        setSelectedPhoto(filtered[(i + 1) % filtered.length]);
+      }
+      if (e.key === "ArrowLeft") {
+        const i = filtered.findIndex(p => p.id === selectedPhoto.id);
+        setSelectedPhoto(filtered[(i - 1 + filtered.length) % filtered.length]);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selectedPhoto, filtered]);
+
+  // Body Scroll Lock when Modal is Open
+  useEffect(() => {
+    document.body.style.overflow = selectedPhoto ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [selectedPhoto]);
 
   return (
     <>
@@ -222,29 +247,10 @@ export default function Home() {
           opacity: 1;
         }
 
-        /* Left side framing around "LENS OF MAX" */
-        .accent-line-top-left {
-          top: 0;
-          left: 36px;
-          height: calc(100vh - 540px);
-        }
-        .accent-line-bottom-left {
-          bottom: 0;
-          left: 36px;
-          height: 90px;
-        }
-
-        /* Right side framing around "NAV / ALL" */
-        .accent-line-top-right {
-          top: 0;
-          right: 40px;
-          height: calc(100vh - 600px);
-        }
-        .accent-line-bottom-right {
-          bottom: 0;
-          right: 40px;
-          height: 480px;
-        }
+        .accent-line-top-left { top: 0; left: 36px; height: calc(100vh - 540px); }
+        .accent-line-bottom-left { bottom: 0; left: 36px; height: 90px; }
+        .accent-line-top-right { top: 0; right: 40px; height: calc(100vh - 600px); }
+        .accent-line-bottom-right { bottom: 0; right: 40px; height: 480px; }
 
         /* ── FIXED RIGHT VERTICAL NAV ── */
         .vertical-nav {
@@ -302,7 +308,6 @@ export default function Home() {
           color: #e8e4dc;
         }
 
-        /* Hide mobile elements by default on desktop */
         .nav-brand { display: none; }
         .mobile-dove { display: none; }
         
@@ -358,7 +363,7 @@ export default function Home() {
           }
         }
 
-        /* ── MAIN CONTAINER (Real mobile top clearance) ── */
+        /* ── MAIN CONTAINER ── */
         .main-container {
           max-width: 1440px;
           margin: 0 auto;
@@ -409,12 +414,16 @@ export default function Home() {
           margin-bottom: 20px;
           break-inside: avoid;
         }
+        .card:focus-visible {
+          outline: 2px solid rgba(232, 228, 220, 0.6);
+          outline-offset: 2px;
+        }
         .card img {
           width: 100%; display: block; object-fit: cover;
           filter: grayscale(15%) brightness(0.9);
           transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s ease;
         }
-        .card:hover img { transform: scale(1.04); filter: grayscale(0%) brightness(1.02); }
+        .card:hover img, .card:focus-visible img { transform: scale(1.04); filter: grayscale(0%) brightness(1.02); }
         .card-overlay {
           position: absolute; inset: 0;
           background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
@@ -422,19 +431,19 @@ export default function Home() {
           display: flex; flex-direction: column; justify-content: flex-end;
           padding: 20px 16px 14px;
         }
-        .card:hover .card-overlay { opacity: 1; }
+        .card:hover .card-overlay, .card:focus-visible .card-overlay { opacity: 1; }
         .card-story {
           font-family: 'Cormorant Garamond', serif;
           font-style: italic; font-size: 14px;
           color: #e8e4dc; line-height: 1.45; margin-bottom: 4px;
           transform: translateY(6px); transition: transform 0.35s ease;
         }
-        .card:hover .card-story { transform: translateY(0); }
+        .card:hover .card-story, .card:focus-visible .card-story { transform: translateY(0); }
         .card-tags {
           display: flex; gap: 6px; flex-wrap: wrap;
           transform: translateY(6px); transition: transform 0.35s ease 0.05s;
         }
-        .card:hover .card-tags { transform: translateY(0); }
+        .card:hover .card-tags, .card:focus-visible .card-tags { transform: translateY(0); }
         .card-tag { font-size: 9px; letter-spacing: 0.15em; color: #888; text-transform: uppercase; }
         .card-tag::before { content: "#"; }
 
@@ -484,7 +493,7 @@ export default function Home() {
         .related-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
         .related-strip::-webkit-scrollbar { display: none; }
         .related-thumb { width: 80px; height: 110px; object-fit: cover; flex-shrink: 0; cursor: pointer; border-radius: 2px; filter: brightness(0.8) grayscale(20%); transition: filter 0.2s ease, transform 0.2s ease; border: 1px solid transparent; }
-        .related-thumb:hover { filter: brightness(1) grayscale(0%); transform: scale(1.03); border-color: #666; }
+        .related-thumb:hover, .related-thumb:focus-visible { filter: brightness(1) grayscale(0%); transform: scale(1.03); border-color: #666; outline: none; }
         .modal-close { background: transparent; border: none; color: #666; font-family: 'Inconsolata', monospace; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; cursor: pointer; text-align: left; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); transition: color 0.2s; }
         .modal-close:hover { color: #e8e4dc; }
 
@@ -553,7 +562,11 @@ export default function Home() {
                   <div
                     key={photo.id}
                     className="card"
+                    tabIndex={0}
                     onClick={() => setSelectedPhoto(photo)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') setSelectedPhoto(photo);
+                    }}
                     onMouseMove={(e) => {
                       if (cursorRef.current) {
                         cursorRef.current.style.transform =
@@ -570,6 +583,7 @@ export default function Home() {
                       height={800}
                       quality={100}
                       priority={index < 6}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1100px) 50vw, 33vw"
                       style={{ width: "100%", height: "auto", display: "block" }}
                     />
 
@@ -595,7 +609,7 @@ export default function Home() {
           <div className="nav-drawer-content" onClick={(e) => e.stopPropagation()}>
             <div className="nav-drawer-header">
               <span className="nav-drawer-title">Filter by Tags</span>
-              <button className="nav-drawer-close" onClick={() => setNavOpen(false)}>CLOSE ✕</button>
+              <button className="nav-drawer-close" aria-label="Close filters" onClick={() => setNavOpen(false)}>CLOSE ✕</button>
             </div>
             <div className="nav-tags-grid">
               <button
@@ -628,6 +642,7 @@ export default function Home() {
         <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
           <button
             className="modal-float-btn modal-prev-btn"
+            aria-label="Previous photo"
             onClick={(e) => {
               e.stopPropagation();
               const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
@@ -640,6 +655,7 @@ export default function Home() {
 
           <button
             className="modal-float-btn modal-next-btn"
+            aria-label="Next photo"
             onClick={(e) => {
               e.stopPropagation();
               const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
@@ -658,6 +674,7 @@ export default function Home() {
               width={1200}
               height={800}
               quality={100}
+              sizes="(max-width: 768px) 100vw, 70vw"
               onMouseMove={(e) => {
                 if (cursorRef.current) {
                   cursorRef.current.style.transform =
@@ -692,13 +709,19 @@ export default function Home() {
                     <p className="related-label">same moment, different frame</p>
                     <div className="related-strip">
                       {getRelatedPhotos(selectedPhoto).map((photo) => (
-                        <img
+                        <Image
                           key={photo.id}
                           src={photo.image}
                           alt={photo.story}
+                          width={80}
+                          height={110}
                           className="related-thumb"
+                          tabIndex={0}
                           style={{ cursor: 'none' }}
                           onClick={() => setSelectedPhoto(photo)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') setSelectedPhoto(photo);
+                          }}
                           onMouseMove={(e) => {
                             if (cursorRef.current) {
                               cursorRef.current.style.transform =
@@ -714,7 +737,7 @@ export default function Home() {
                 )}
               </div>
 
-              <button className="modal-close" onClick={() => setSelectedPhoto(null)}>close ✕</button>
+              <button className="modal-close" aria-label="Close modal" onClick={() => setSelectedPhoto(null)}>close ✕</button>
             </div>
           </div>
         </div>
