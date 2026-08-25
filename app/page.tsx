@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { photos } from "./photosData";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 type Photo = {
   id: number;
@@ -47,6 +48,22 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  // 1. Check if the user prefers reduced motion
+  const shouldReduceMotion = useReducedMotion();
+
+  // 2. Define the staggered grid animation rules
+  const gridContainer = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const gridItem = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } }
+  };
   const [navOpen, setNavOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -557,14 +574,22 @@ export default function Home() {
             {filtered.length === 0 ? (
               <div className="empty">No moments found</div>
             ) : (
-              <div style={{ columnCount: numCols, columnGap: '20px' }}>
+              <motion.div 
+  style={{ columnCount: numCols, columnGap: '20px' }}
+  variants={gridContainer}
+  initial="hidden"
+  animate="show"
+>
                 {filtered.map((photo, index) => (
-                  <div
-                    key={photo.id}
-                    className="card"
-                    tabIndex={0}
-                    onClick={() => setSelectedPhoto(photo)}
-                    onKeyDown={(e) => {
+<motion.div
+        key={photo.id}
+        className="card"
+        variants={gridItem}
+        layout
+        whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
+        whileFocus={shouldReduceMotion ? {} : { scale: 1.02 }}
+        tabIndex={0}
+        onClick={() => setSelectedPhoto(photo)}                    onKeyDown={(e) => {
                       if (e.key === 'Enter') setSelectedPhoto(photo);
                     }}
                     onMouseMove={(e) => {
@@ -595,9 +620,9 @@ export default function Home() {
                         ))}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             )}
           </section>
         </main>
@@ -637,10 +662,17 @@ export default function Home() {
         <span className="camera-cursor-icon">📷</span>
       </div>
 
-      {/* ── MODAL VIEWER ── */}
-      {selectedPhoto && (
-        <div className="modal-backdrop" onClick={() => setSelectedPhoto(null)}>
-          <button
+{/* --- MODAL VIEWER --- */}
+<AnimatePresence>
+  {selectedPhoto && (
+    <motion.div 
+      className="modal-backdrop" 
+      onClick={() => setSelectedPhoto(null)}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+                <button
             className="modal-float-btn modal-prev-btn"
             aria-label="Previous photo"
             onClick={(e) => {
@@ -653,7 +685,7 @@ export default function Home() {
             ‹
           </button>
 
-          <button
+<button
             className="modal-float-btn modal-next-btn"
             aria-label="Next photo"
             onClick={(e) => {
@@ -666,25 +698,41 @@ export default function Home() {
             ›
           </button>
 
+          {/* --- THE MAIN MODAL CONTENT --- */}
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <Image
-              className="modal-main-img"
-              src={selectedPhoto.image}
-              alt={selectedPhoto.story}
-              width={1200}
-              height={800}
-              quality={100}
-              sizes="(max-width: 768px) 100vw, 70vw"
-              onMouseMove={(e) => {
-                if (cursorRef.current) {
-                  cursorRef.current.style.transform =
-                    `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
-                }
-              }}
-              onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
-              onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
-            />
+            
+            {/* 1. The Sliding Image Wrapper */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={selectedPhoto.id}
+                initial={shouldReduceMotion ? { opacity: 0 } : { x: 40, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={shouldReduceMotion ? { opacity: 0 } : { x: -40, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                {/* Your untouched Next.js Image with Cursor Tracking */}
+                <Image
+                  className="modal-main-img"
+                  src={selectedPhoto.image}
+                  alt={selectedPhoto.story}
+                  width={1200}
+                  height={800}
+                  quality={100}
+                  sizes="(max-width: 768px) 100vw, 70vw"
+                  onMouseMove={(e) => {
+                    if (cursorRef.current) {
+                      cursorRef.current.style.transform =
+                        `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
+                    }
+                  }}
+                  onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
+                  onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
+                />
+              </motion.div>
+            </AnimatePresence>
 
+            {/* 2. The Photo Info & Tags */}
             <div className="modal-info">
               <div>
                 <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
@@ -704,6 +752,7 @@ export default function Home() {
                   ))}
                 </div>
 
+                {/* 3. Related Photos Strip */}
                 {getRelatedPhotos(selectedPhoto).length > 0 && (
                   <div>
                     <p className="related-label">same moment, different frame</p>
@@ -740,8 +789,9 @@ export default function Home() {
               <button className="modal-close" aria-label="Close modal" onClick={() => setSelectedPhoto(null)}>close ✕</button>
             </div>
           </div>
-        </div>
-      )}
-    </>
+       </motion.div>
+    )}
+  </AnimatePresence>
+  </>
   );
 }
