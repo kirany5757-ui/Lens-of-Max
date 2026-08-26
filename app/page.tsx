@@ -47,6 +47,7 @@ function useNumCols(): number {
 export default function Home() {
   const [search, setSearch] = useState("");
   const [activeTags, setActiveTags] = useState<string[]>([]);
+  const [filterMode, setFilterMode] = useState<"OR" | "AND">("OR");
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   // 1. Check if the user prefers reduced motion
   const shouldReduceMotion = useReducedMotion();
@@ -133,15 +134,20 @@ export default function Home() {
     setShuffledPhotos(shuffleEngine(photosWithAspect));
   };
 
-  const filtered = shuffledPhotos.filter((photo) => {
-    if (!photo.isMain) return false;
-    const matchSearch =
-      search === "" ||
-      photo.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
-    const matchTags =
-      activeTags.length === 0 || activeTags.every((t) => photo.tags.includes(t));
-    return matchSearch && matchTags;
-  });
+const filtered = shuffledPhotos.filter(photo => {
+  if (!photo.isMain) return false;
+  
+  const matchSearch = search === "" || 
+    photo.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
+    
+  const matchTags = activeTags.length === 0 || (
+    filterMode === "OR" 
+      ? activeTags.some((t) => photo.tags.includes(t))
+      : activeTags.every((t) => photo.tags.includes(t))
+  );
+  
+  return matchSearch && matchTags;
+});
 
   const handleTagClick = (tag: string) => {
     if (activeTags.includes(tag)) {
@@ -305,10 +311,15 @@ export default function Home() {
         .hidden-dove.visible { opacity: 0.2; }
 
         .nav-buttons {
-          display: flex;
-          align-items: center;
-          gap: 24px;
-        }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background: #080807; /* Matches your site's dark background */
+  padding: 20px 0; /* Gives the text room to breathe and masks the line */
+  position: relative;
+  z-index: 10; /* Forces it to sit on top of the accent line */
+}
 
         .vertical-nav button {
           background: transparent;
@@ -486,7 +497,6 @@ export default function Home() {
           background: rgba(5,5,4,0.98);
           display: flex; align-items: center; justify-content: center;
           padding: 32px; z-index: 100;
-          animation: fadeIn 0.25s ease;
         }
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
         .modal {
@@ -647,7 +657,15 @@ export default function Home() {
                 <button
                   key={tag}
                   className={`nav-tag-pill ${activeTags.includes(tag) ? "active" : ""}`}
-                  onClick={() => { handleTagClick(tag); setNavOpen(false); }}
+                  onClick={(e) => { 
+  if (e.metaKey || e.ctrlKey) {
+    setFilterMode("AND");
+  } else {
+    setFilterMode("OR");
+  }
+  handleTagClick(tag); 
+  setNavOpen(false); 
+}}
                 >
                   #{tag}
                 </button>
