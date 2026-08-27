@@ -49,6 +49,10 @@ export default function Home() {
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [filterMode, setFilterMode] = useState<"OR" | "AND">("OR");
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  
+  // 1. The direction state for the slider
+  const [direction, setDirection] = useState(1);
+
   // 1. Check if the user prefers reduced motion
   const shouldReduceMotion = useReducedMotion();
 
@@ -65,6 +69,7 @@ export default function Home() {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
     show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } }
   };
+
   const [navOpen, setNavOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -148,6 +153,23 @@ const filtered = shuffledPhotos.filter(photo => {
   
   return matchSearch && matchTags;
 });
+
+// 2. The swipe navigation handlers
+  const goNext = (e?: React.MouseEvent | React.TouchEvent | KeyboardEvent) => {
+    if (e && 'stopPropagation' in e) e.stopPropagation();
+    if (!selectedPhoto) return;
+    const i = filtered.findIndex(p => p.id === selectedPhoto.id);
+    setDirection(1);
+    setSelectedPhoto(filtered[(i + 1) % filtered.length]);
+  };
+
+  const goPrev = (e?: React.MouseEvent | React.TouchEvent | KeyboardEvent) => {
+    if (e && 'stopPropagation' in e) e.stopPropagation();
+    if (!selectedPhoto) return;
+    const i = filtered.findIndex(p => p.id === selectedPhoto.id);
+    setDirection(-1);
+    setSelectedPhoto(filtered[(i - 1 + filtered.length) % filtered.length]);
+  };
 
   const handleTagClick = (tag: string) => {
     if (activeTags.includes(tag)) {
@@ -320,7 +342,7 @@ const filtered = shuffledPhotos.filter(photo => {
   align-items: center;
   gap: 30px; /* Adjust this number to make the gap bigger or smaller */
 }
-  
+
         .vertical-nav button {
           background: transparent;
           border: none;
@@ -693,25 +715,14 @@ const filtered = shuffledPhotos.filter(photo => {
                 <button
             className="modal-float-btn modal-prev-btn"
             aria-label="Previous photo"
-            onClick={(e) => {
-              e.stopPropagation();
-              const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
-              const prevIndex = currentIndex === 0 ? filtered.length - 1 : currentIndex - 1;
-              setSelectedPhoto(filtered[prevIndex]);
-            }}
-          >
+onClick={goPrev}          >
             ‹
           </button>
 
 <button
             className="modal-float-btn modal-next-btn"
             aria-label="Next photo"
-            onClick={(e) => {
-              e.stopPropagation();
-              const currentIndex = filtered.findIndex(p => p.id === selectedPhoto.id);
-              const nextIndex = currentIndex === filtered.length - 1 ? 0 : currentIndex + 1;
-              setSelectedPhoto(filtered[nextIndex]);
-            }}
+            onClick={goNext}
           >
             ›
           </button>
@@ -719,38 +730,62 @@ const filtered = shuffledPhotos.filter(photo => {
           {/* --- THE MAIN MODAL CONTENT --- */}
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             
-            {/* 1. The Sliding Image Wrapper */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={selectedPhoto.id}
-                initial={shouldReduceMotion ? { opacity: 0 } : { x: 40, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={shouldReduceMotion ? { opacity: 0 } : { x: -40, opacity: 0 }}
-                transition={{ duration: 0.25, ease: "easeInOut" }}
-                style={{ display: "flex", justifyContent: "center" }}
-              >
-                {/* Your untouched Next.js Image with Cursor Tracking */}
-                <Image
-                  className="modal-main-img"
-                  src={selectedPhoto.image}
-                  alt={selectedPhoto.story}
-                  width={1200}
-                  height={800}
-                  quality={100}
-                  sizes="(max-width: 768px) 100vw, 70vw"
-                  onMouseMove={(e) => {
-                    if (cursorRef.current) {
-                      cursorRef.current.style.transform =
-                        `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
-                    }
-                  }}
-                  onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
-                  onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
-                />
-              </motion.div>
-            </AnimatePresence>
-
-            {/* 2. The Photo Info & Tags */}
+{/* 1. The Sliding Image Wrapper */}
+    <AnimatePresence mode="wait" custom={direction}>
+<motion.div
+        key={selectedPhoto.id}
+        custom={direction}
+        variants={{
+          enter: (dir: number) => ({
+            x: shouldReduceMotion ? 0 : (dir > 0 ? 60 : -60),
+            opacity: 0
+          }),
+          center: { x: 0, opacity: 1 },
+          exit: (dir: number) => ({
+            x: shouldReduceMotion ? 0 : (dir > 0 ? -60 : 60),
+            opacity: 0
+          })
+        }}
+        initial="enter"
+        animate="center"
+        exit="exit"
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+        
+        // The swipe physics        
+      
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.2}
+        onDragEnd={(e, info) => {
+          if (info.offset.x < -80) goNext();
+          else if (info.offset.x > 80) goPrev();
+        }}
+        
+        style={{ display: "flex", justifyContent: "center", touchAction: "pan-y", cursor: "grab" }}
+      >
+        {/* Your untouched Next.js Image with Cursor Tracking */}
+        <Image 
+          className="modal-main-img"
+          src={selectedPhoto.image}
+          alt={selectedPhoto.story}
+          width={1200}
+          height={800}
+          quality={100}
+          sizes="(max-width: 768px) 100vw, 70vw"
+          draggable={false} // Prevents default browser image ghost-dragging
+          onMouseMove={(e) => {
+            if (cursorRef.current) {
+              cursorRef.current.style.transform = 
+                `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
+            }
+          }}
+          onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
+          onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
+        />
+      </motion.div>
+    </AnimatePresence>
+    
+                {/* 2. The Photo Info & Tags */}
             <div className="modal-info">
               <div>
                 <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
