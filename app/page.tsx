@@ -311,13 +311,16 @@ const filtered = shuffledPhotos.filter(photo => {
         .hidden-dove.visible { opacity: 0.2; }
 
 .nav-buttons {
-  background: #080807; /* Matches your site's dark background */
-  padding: 20px 0; /* Gives the text room to breathe and masks the line */
+  background: #080807; 
+  padding: 20px 0; 
   position: relative;
-  z-index: 10; /* Forces it to sit on top of the accent line */
-  text-align: center;
-}  
-
+  z-index: 10; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px; /* Adjust this number to make the gap bigger or smaller */
+}
+  
         .vertical-nav button {
           background: transparent;
           border: none;
