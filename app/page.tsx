@@ -648,7 +648,7 @@ const filtered = shuffledPhotos.filter(photo => {
           style={{ transformOrigin: "bottom" }}
           className="accent-line-bottom-right" 
         />
-        
+
         {/* ── FIXED LEFT VERTICAL BRAND (Desktop Only) ── */}
         <div 
           className={`vertical-brand ${!introVisible ? "visible" : ""}`}
@@ -668,9 +668,24 @@ const filtered = shuffledPhotos.filter(photo => {
             Lens of Max
           </div>
           <div className="nav-buttons">
-            <button onClick={() => setNavOpen(true)}>
-              NAV
-            </button>
+            <motion.button 
+              onClick={() => setNavOpen(!navOpen)}
+              layout
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={navOpen ? "close" : "nav"}
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 4 }}
+                  transition={{ duration: 0.2 }}
+                  style={{ display: "inline-block" }}
+                >
+                  {navOpen ? "CLOSE" : "NAV"}
+                </motion.span>
+              </AnimatePresence>
+            </motion.button>
             <span className="mobile-dove">🕊️</span>
             <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
           </div>
