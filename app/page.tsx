@@ -567,7 +567,7 @@ const filtered = shuffledPhotos.filter(photo => {
           </div>
           <div className="nav-buttons">
             <button onClick={() => setNavOpen(true)}>
-              NAV {activeTags.length > 0 ? `(${activeTags.length})` : ""}
+              NAV
             </button>
             <span className="mobile-dove">🕊️</span>
             <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
