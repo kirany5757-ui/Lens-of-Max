@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { photos } from "./photosData";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-
+import { gridContainer, getGridItem, getModalSlideVariants, modalTransition } from "./animations";
 type Photo = {
   id: number;
   image: string;
@@ -55,20 +55,6 @@ export default function Home() {
 
   // 1. Check if the user prefers reduced motion
   const shouldReduceMotion = useReducedMotion();
-
-  // 2. Define the staggered grid animation rules
-  const gridContainer = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const gridItem = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 30 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } }
-  };
 
   const [navOpen, setNavOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -616,7 +602,7 @@ const filtered = shuffledPhotos.filter(photo => {
 <motion.div
         key={photo.id}
         className="card"
-        variants={gridItem}
+        variants={getModalSlideVariants(!!shouldReduceMotion)}
         layout
         whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
         whileFocus={shouldReduceMotion ? {} : { scale: 1.02 }}
