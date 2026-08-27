@@ -543,7 +543,7 @@ const filtered = shuffledPhotos.filter(photo => {
         ::-webkit-scrollbar-thumb { background: #222; }
       `}</style>
 
-      {/* --- CINEMATIC LINE-REVEAL INTRO --- */}
+      {/* --- CINEMATIC LINE-REVEAL & TEXT INTRO --- */}
       {introMounted && (
         <motion.div
           initial={{ opacity: 1 }}
@@ -558,22 +558,42 @@ const filtered = shuffledPhotos.filter(photo => {
             zIndex: 9999,
             backgroundColor: "#080807",
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
             pointerEvents: introVisible ? "auto" : "none",
           }}
         >
+          {/* The expanding line that acts as the anchor */}
           <motion.div
             initial={{ scaleX: 0, opacity: 1 }}
             animate={{ scaleX: introVisible ? 1 : 0, opacity: introVisible ? 1 : 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
             style={{
-              width: "120px",
+              width: "160px",
               height: "2px",
               backgroundColor: "#e8e4dc",
               transformOrigin: "center",
+              marginBottom: "20px",
             }}
           />
+
+          {/* "Lens of Max" revealing right as the line opens */}
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: introVisible ? 1 : 0, y: introVisible ? 0 : -10 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "clamp(32px, 5vw, 64px)",
+              fontWeight: 300,
+              letterSpacing: "0.2em",
+              color: "#e8e4dc",
+              textTransform: "uppercase",
+            }}
+          >
+            Lens of Max
+          </motion.h1>
         </motion.div>
       )}
 
