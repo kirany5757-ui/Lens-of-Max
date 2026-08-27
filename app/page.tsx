@@ -67,15 +67,13 @@ export default function Home() {
   const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
   const numCols = useNumCols();
 
-  useEffect(() => {
+useEffect(() => {
     setMounted(true);
     setTimeout(() => setLoaded(true), 100);
 
     const fadeTimer = setTimeout(() => setIntroVisible(false), 1600);
-    const unmountTimer = setTimeout(() => setIntroMounted(false), 2200);
     return () => {
       clearTimeout(fadeTimer);
-      clearTimeout(unmountTimer);
     };
   }, []);
 
@@ -125,7 +123,16 @@ export default function Home() {
     setShuffledPhotos(shuffleEngine(photosWithAspect));
   };
 
-const filtered = shuffledPhotos.filter(photo => {
+  const handleTagClick = (tag: string) => {
+    if (activeTags.includes(tag)) {
+      setActiveTags(activeTags.filter((t) => t !== tag));
+    } else {
+      setActiveTags([...activeTags, tag]);
+    }
+    setSearch("");
+  };
+
+  const filtered = shuffledPhotos.filter(photo => {
   if (!photo.isMain) return false;
   
   const matchSearch = search === "" || 
@@ -141,48 +148,33 @@ const filtered = shuffledPhotos.filter(photo => {
 });
 
 // 2. The swipe navigation handlers
-  const goNext = (e?: React.MouseEvent | React.TouchEvent | KeyboardEvent) => {
+  const goNext = useCallback((e?: React.MouseEvent | React.TouchEvent | KeyboardEvent) => {
     if (e && 'stopPropagation' in e) e.stopPropagation();
     if (!selectedPhoto) return;
     const i = filtered.findIndex(p => p.id === selectedPhoto.id);
     setDirection(1);
     setSelectedPhoto(filtered[(i + 1) % filtered.length]);
-  };
+  }, [selectedPhoto, filtered]);
 
-  const goPrev = (e?: React.MouseEvent | React.TouchEvent | KeyboardEvent) => {
+  const goPrev = useCallback((e?: React.MouseEvent | React.TouchEvent | KeyboardEvent) => {
     if (e && 'stopPropagation' in e) e.stopPropagation();
     if (!selectedPhoto) return;
     const i = filtered.findIndex(p => p.id === selectedPhoto.id);
     setDirection(-1);
     setSelectedPhoto(filtered[(i - 1 + filtered.length) % filtered.length]);
-  };
+  }, [selectedPhoto, filtered]);
 
-  const handleTagClick = (tag: string) => {
-    if (activeTags.includes(tag)) {
-      setActiveTags(activeTags.filter((t) => t !== tag));
-    } else {
-      setActiveTags([...activeTags, tag]);
-    }
-    setSearch("");
-  };
-
-  // Keyboard Navigation for Modal
+// Keyboard Navigation for Modal
   useEffect(() => {
     if (!selectedPhoto) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSelectedPhoto(null);
-      if (e.key === "ArrowRight") {
-        const i = filtered.findIndex(p => p.id === selectedPhoto.id);
-        setSelectedPhoto(filtered[(i + 1) % filtered.length]);
-      }
-      if (e.key === "ArrowLeft") {
-        const i = filtered.findIndex(p => p.id === selectedPhoto.id);
-        setSelectedPhoto(filtered[(i - 1 + filtered.length) % filtered.length]);
-      }
+      if (e.key === "ArrowRight") goNext();
+      if (e.key === "ArrowLeft") goPrev();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [selectedPhoto, filtered]);
+  }, [selectedPhoto, goNext, goPrev]);
 
   // Body Scroll Lock when Modal is Open
   useEffect(() => {
@@ -270,9 +262,8 @@ const filtered = shuffledPhotos.filter(photo => {
           background: rgba(232, 228, 220, 0.6);
           z-index: 39;
           pointer-events: none;
-          opacity: 0;
-          transition: opacity 0.8s ease 0.9s;
         }
+          
         .accent-line-top-left.visible, .accent-line-bottom-left.visible,
         .accent-line-top-right.visible, .accent-line-bottom-right.visible {
           opacity: 1;
@@ -669,23 +660,23 @@ const filtered = shuffledPhotos.filter(photo => {
           </div>
           <div className="nav-buttons">
             <motion.button 
-              onClick={() => setNavOpen(!navOpen)}
-              layout
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.span
-                  key={navOpen ? "close" : "nav"}
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 4 }}
-                  transition={{ duration: 0.2 }}
-                  style={{ display: "inline-block" }}
-                >
-                  {navOpen ? "CLOSE" : "NAV"}
-                </motion.span>
-              </AnimatePresence>
-            </motion.button>
+  onClick={() => setNavOpen(!navOpen)}
+  layout
+  transition={{ duration: 0.3, ease: "easeInOut" }}
+>
+  <AnimatePresence mode="wait" initial={false}>
+    <motion.span
+      key={navOpen ? "close" : "nav"}
+      initial={{ opacity: 0, y: -4 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 4 }}
+      transition={{ duration: 0.2 }}
+      style={{ display: "inline-block" }}
+    >
+      {navOpen ? "CLOSE" : `NAV${activeTags.length > 0 ? ` (${activeTags.length})` : ""}`}
+    </motion.span>
+  </AnimatePresence>
+</motion.button>
             <span className="mobile-dove">🕊️</span>
             <button onClick={() => { setActiveTags([]); setSearch(""); }}>ALL</button>
           </div>
