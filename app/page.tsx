@@ -959,11 +959,15 @@ onClick={goPrev}          >
                 )}
               </div>
 
-              <button className="modal-close" aria-label="Close modal" onClick={() => setSelectedPhoto(null)}>close ✕</button>
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "14px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                <span style={{ fontSize: "9px", letterSpacing: "0.2em", color: "#555", textTransform: "uppercase" }}>
+                  ← → navigate &bull; esc close
+                </span>
+                <button className="modal-close" aria-label="Close modal" onClick={() => setSelectedPhoto(null)} style={{ borderTop: "none", paddingTop: 0 }}>close ✕</button>
+              </div>
             </div>
           </div>
-       </motion.div>
-    )}
+        </motion.div>    )}
   </AnimatePresence>
   </>
   );
