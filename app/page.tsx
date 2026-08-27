@@ -543,7 +543,7 @@ const filtered = shuffledPhotos.filter(photo => {
         ::-webkit-scrollbar-thumb { background: #222; }
       `}</style>
 
-      {/* --- CINEMATIC LINE-REVEAL & TEXT INTRO --- */}
+      {/* --- CINEMATIC SIGNATURE EXPAND INTRO --- */}
       {introMounted && (
         <motion.div
           initial={{ opacity: 1 }}
@@ -562,41 +562,62 @@ const filtered = shuffledPhotos.filter(photo => {
             alignItems: "center",
             justifyContent: "center",
             pointerEvents: introVisible ? "auto" : "none",
+            textAlign: "center",
           }}
         >
-          {/* The expanding line that acts as the anchor */}
+          {/* The expanding center line anchor */}
           <motion.div
             initial={{ scaleX: 0, opacity: 1 }}
             animate={{ scaleX: introVisible ? 1 : 0, opacity: introVisible ? 1 : 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
             style={{
-              width: "160px",
-              height: "2px",
-              backgroundColor: "#e8e4dc",
+              width: "140px",
+              height: "1px",
+              backgroundColor: "rgba(232, 228, 220, 0.4)",
               transformOrigin: "center",
-              marginBottom: "20px",
+              marginBottom: "16px",
             }}
           />
 
-          {/* "Lens of Max" revealing right as the line opens */}
+          {/* "Lens of Max" expanding and fading in */}
           <motion.h1
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: introVisible ? 1 : 0, y: introVisible ? 0 : -10 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
+            initial={{ scale: 0.92, opacity: 0, y: 10 }}
+            animate={{ 
+              scale: introVisible ? 1 : 1.03, 
+              opacity: introVisible ? 1 : 0, 
+              y: introVisible ? 0 : -10 
+            }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
             style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "clamp(32px, 5vw, 64px)",
+              fontSize: "clamp(48px, 8vw, 96px)",
               fontWeight: 300,
-              letterSpacing: "0.2em",
+              letterSpacing: "0.05em",
               color: "#e8e4dc",
-              textTransform: "uppercase",
+              lineHeight: 1,
+              marginBottom: "12px",
             }}
           >
             Lens of Max
           </motion.h1>
+
+          {/* Tagline: "The beauty of my camera's wink" */}
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: introVisible ? 1 : 0, y: introVisible ? 0 : -8 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.45 }}
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic",
+              fontSize: "17px",
+              color: "#7a7770",
+            }}
+          >
+            The beauty of my camera&apos;s wink
+          </motion.p>
         </motion.div>
       )}
-
+      
       <div className={`page ${loaded ? "visible" : ""}`}>
         {/* ── SPLIT ACCENT LINES FRAMING BOTH SIDES ── */}
         <div className={`accent-line-top-left ${!introVisible ? "visible" : ""}`} />
