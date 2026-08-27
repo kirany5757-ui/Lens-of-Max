@@ -543,7 +543,7 @@ const filtered = shuffledPhotos.filter(photo => {
         ::-webkit-scrollbar-thumb { background: #222; }
       `}</style>
 
-      {/* --- CINEMATIC SIGNATURE EXPAND INTRO --- */}
+{/* --- CINEMATIC SIGNATURE EXPAND INTRO --- */}
       {introMounted && (
         <motion.div
           initial={{ opacity: 1 }}
@@ -617,14 +617,38 @@ const filtered = shuffledPhotos.filter(photo => {
           </motion.p>
         </motion.div>
       )}
-      
-      <div className={`page ${loaded ? "visible" : ""}`}>
-        {/* ── SPLIT ACCENT LINES FRAMING BOTH SIDES ── */}
-        <div className={`accent-line-top-left ${!introVisible ? "visible" : ""}`} />
-        <div className={`accent-line-bottom-left ${!introVisible ? "visible" : ""}`} />
-        <div className={`accent-line-top-right ${!introVisible ? "visible" : ""}`} />
-        <div className={`accent-line-bottom-right ${!introVisible ? "visible" : ""}`} />
 
+      <div className={`page ${loaded ? "visible" : ""}`}>
+       {/* ── SPLIT ACCENT LINES FRAMING BOTH SIDES ── */}
+        <motion.div 
+          initial={{ scaleY: 0, opacity: 0 }}
+          animate={{ scaleY: introVisible ? 0 : 1, opacity: introVisible ? 0 : 0.6 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          style={{ transformOrigin: "top" }}
+          className="accent-line-top-left" 
+        />
+        <motion.div 
+          initial={{ scaleY: 0, opacity: 0 }}
+          animate={{ scaleY: introVisible ? 0 : 1, opacity: introVisible ? 0 : 0.6 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+          style={{ transformOrigin: "bottom" }}
+          className="accent-line-bottom-left" 
+        />
+        <motion.div 
+          initial={{ scaleY: 0, opacity: 0 }}
+          animate={{ scaleY: introVisible ? 0 : 1, opacity: introVisible ? 0 : 0.6 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          style={{ transformOrigin: "top" }}
+          className="accent-line-top-right" 
+        />
+        <motion.div 
+          initial={{ scaleY: 0, opacity: 0 }}
+          animate={{ scaleY: introVisible ? 0 : 1, opacity: introVisible ? 0 : 0.6 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+          style={{ transformOrigin: "bottom" }}
+          className="accent-line-bottom-right" 
+        />
+        
         {/* ── FIXED LEFT VERTICAL BRAND (Desktop Only) ── */}
         <div 
           className={`vertical-brand ${!introVisible ? "visible" : ""}`}
