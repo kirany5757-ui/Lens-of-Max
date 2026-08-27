@@ -543,12 +543,38 @@ const filtered = shuffledPhotos.filter(photo => {
         ::-webkit-scrollbar-thumb { background: #222; }
       `}</style>
 
-      {/* ── ONE-TIME SIGNATURE INTRO OVERLAY ── */}
+      {/* --- CINEMATIC LINE-REVEAL INTRO --- */}
       {introMounted && (
-        <div className={`signature-intro ${!introVisible ? "fade-out" : ""}`}>
-          <h1>Lens of Max</h1>
-          <p>The beauty of my camera&apos;s wink</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 1 }}
+          animate={{ opacity: introVisible ? 1 : 0 }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+          onAnimationComplete={() => {
+            if (!introVisible) setIntroMounted(false);
+          }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            backgroundColor: "#080807",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            pointerEvents: introVisible ? "auto" : "none",
+          }}
+        >
+          <motion.div
+            initial={{ scaleX: 0, opacity: 1 }}
+            animate={{ scaleX: introVisible ? 1 : 0, opacity: introVisible ? 1 : 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            style={{
+              width: "120px",
+              height: "2px",
+              backgroundColor: "#e8e4dc",
+              transformOrigin: "center",
+            }}
+          />
+        </motion.div>
       )}
 
       <div className={`page ${loaded ? "visible" : ""}`}>
@@ -602,7 +628,7 @@ const filtered = shuffledPhotos.filter(photo => {
 <motion.div
         key={photo.id}
         className="card"
-        variants={getModalSlideVariants(!!shouldReduceMotion)}
+        variants={getGridItem(!!shouldReduceMotion)}
         layout
         whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
         whileFocus={shouldReduceMotion ? {} : { scale: 1.02 }}
@@ -646,7 +672,7 @@ const filtered = shuffledPhotos.filter(photo => {
         </main>
       </div>
 
-      {/* ── NAV OVERLAY DRAWER ── */}
+{/* ── NAV OVERLAY DRAWER ── */}
       {navOpen && (
         <div className="nav-drawer" onClick={() => setNavOpen(false)}>
           <div className="nav-drawer-content" onClick={(e) => e.stopPropagation()}>
@@ -654,31 +680,59 @@ const filtered = shuffledPhotos.filter(photo => {
               <span className="nav-drawer-title">Filter by Tags</span>
               <button className="nav-drawer-close" aria-label="Close filters" onClick={() => setNavOpen(false)}>CLOSE ✕</button>
             </div>
-            <div className="nav-tags-grid">
-              <button
+
+            {/* Staggered container */}
+            <motion.div 
+              className="nav-tags-grid"
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.03, delayChildren: 0.05 }
+                }
+              }}
+            >
+              {/* "All Moments" pill */}
+              <motion.button
+                variants={{
+                  hidden: { opacity: 0, y: 12 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.3 } }
+                }}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
                 className={`nav-tag-pill ${activeTags.length === 0 ? "active" : ""}`}
                 onClick={() => { setActiveTags([]); setNavOpen(false); }}
               >
                 All Moments
-              </button>
+              </motion.button>
+
+              {/* Tag pills */}
               {allTags.map((tag) => (
-                <button
+                <motion.button
                   key={tag}
+                  variants={{
+                    hidden: { opacity: 0, y: 12 },
+                    show: { opacity: 1, y: 0, transition: { duration: 0.3 } }
+                  }}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                   className={`nav-tag-pill ${activeTags.includes(tag) ? "active" : ""}`}
                   onClick={(e) => { 
-  if (e.metaKey || e.ctrlKey) {
-    setFilterMode("AND");
-  } else {
-    setFilterMode("OR");
-  }
-  handleTagClick(tag); 
-  setNavOpen(false); 
-}}
+                    if (e.metaKey || e.ctrlKey) {
+                      setFilterMode("AND");
+                    } else {
+                      setFilterMode("OR");
+                    }
+                    handleTagClick(tag); 
+                    setNavOpen(false); 
+                  }}
                 >
                   #{tag}
-                </button>
+                </motion.button>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
       )}
