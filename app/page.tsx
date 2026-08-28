@@ -259,14 +259,9 @@ useEffect(() => {
         .accent-line-top-right, .accent-line-bottom-right {
           position: fixed;
           width: 5px;
-          background: rgba(232, 228, 220, 0.6);
+          background: rgba(232, 228, 220, 0.85); 
           z-index: 39;
           pointer-events: none;
-        }
-          
-        .accent-line-top-left.visible, .accent-line-bottom-left.visible,
-        .accent-line-top-right.visible, .accent-line-bottom-right.visible {
-          opacity: 1;
         }
 
         .accent-line-top-left { top: 0; left: 36px; height: calc(100vh - 540px); }
@@ -840,118 +835,106 @@ useEffect(() => {
       </button>
 
       {/* --- THE MAIN MODAL CONTENT --- */}
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        
-        {/* 1. The Sliding Image Wrapper using your imported variants */}
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.div
-            key={selectedPhoto.id}
-            custom={direction}
-            variants={getModalSlideVariants(!!shouldReduceMotion)}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={modalTransition}
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
             
-            // The swipe physics        
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.2}
-            onDragEnd={(e, info) => {
-              if (info.offset.x < -80) goNext();
-              else if (info.offset.x > 80) goPrev();
-            }}
-            style={{ display: "flex", justifyContent: "center", touchAction: "pan-y", cursor: "grab" }}
-          >
-            {/* The actual Next.js Image with Cursor Tracking */}
-            <Image 
-              className="modal-main-img"
-              src={selectedPhoto.image}
-              alt={selectedPhoto.story}
-              width={1200}
-              height={800}
-              quality={100}
-              sizes="(max-width: 768px) 100vw, 70vw"
-              draggable={false} // Prevents default browser image ghost-dragging
-              onMouseMove={(e) => {
-                if (cursorRef.current) {
-                  cursorRef.current.style.transform = 
-                    `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
-                }
-              }}
-              onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
-              onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
-            />
-          </motion.div>
-        </AnimatePresence>
-        
-        {/* 2. The Photo Info & Tags */}
-        <div className="modal-info">
-          <div>
-            <p className="modal-num">No. {String(selectedPhoto.id).padStart(2, "0")}</p>
-            <p className="modal-story" style={{ marginTop: '16px' }}>{selectedPhoto.story}</p>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div className="modal-tags">
-              {selectedPhoto.tags.map((tag) => (
-                <button
-                  key={tag}
-                  className="modal-tag-btn"
-                  onClick={() => { setActiveTags([tag]); setSearch(""); setSelectedPhoto(null); }}
-                >
-                  #{tag}
-                </button>
-              ))}
-            </div>
-
-            {/* 3. Related Photos Strip */}
-            {getRelatedPhotos(selectedPhoto).length > 0 && (
+            {/* 1. The Sliding Image Wrapper */}
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={selectedPhoto.id}
+                custom={direction}
+                variants={getModalSlideVariants(!!shouldReduceMotion)}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={modalTransition}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={(e, info) => {
+                  if (info.offset.x < -80) goNext();
+                  else if (info.offset.x > 80) goPrev();
+                }}
+                style={{ display: "flex", justifyContent: "center", touchAction: "pan-y", cursor: "grab", width: "100%" }}
+              >
+                <Image 
+                  className="modal-main-img"
+                  src={selectedPhoto.image}
+                  alt={selectedPhoto.story}
+                  width={1400}
+                  height={950}
+                  quality={100}
+                  sizes="(max-width: 768px) 100vw, 75vw"
+                  draggable={false}
+                  onMouseMove={(e) => {
+                    if (cursorRef.current) {
+                      cursorRef.current.style.transform = 
+                        `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
+                    }
+                  }}
+                  onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
+                  onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
+                />
+              </motion.div>
+            </AnimatePresence>
+    
+            {/* 2. The Photo Info & Tags (Cleaned up & spacious) */}
+            <div className="modal-info">
               <div>
-                <p className="related-label">same moment, different frame</p>
-                <div className="related-strip">
-                  {getRelatedPhotos(selectedPhoto).map((photo) => (
-                    <Image
-                      key={photo.id}
-                      src={photo.image}
-                      alt={photo.story}
-                      width={80}
-                      height={110}
-                      className="related-thumb"
-                      tabIndex={0}
-                      style={{ cursor: 'none' }}
-                      onClick={() => setSelectedPhoto(photo)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') setSelectedPhoto(photo);
-                      }}
-                      onMouseMove={(e) => {
-                        if (cursorRef.current) {
-                          cursorRef.current.style.transform =
-                            `translate(${e.clientX - 14}px, ${e.clientY - 14}px)`;
-                        }
-                      }}
-                      onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
-                      onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
-                    />
+                <p className="modal-story">{selectedPhoto.story}</p>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div className="modal-tags">
+                  {selectedPhoto.tags.map((tag) => (
+                    <button
+                      key={tag}
+                      className="modal-tag-btn"
+                      onClick={() => { setActiveTags([tag]); setSearch(""); setSelectedPhoto(null); }}
+                    >
+                      #{tag}
+                    </button>
                   ))}
                 </div>
+
+                {/* 3. Related Photos Strip */}
+                {getRelatedPhotos(selectedPhoto).length > 0 && (
+                  <div>
+                    <p className="related-label">same moment, different frame</p>
+                    <div className="related-strip">
+                      {getRelatedPhotos(selectedPhoto).map((photo) => (
+                        <Image
+                          key={photo.id}
+                          src={photo.image}
+                          alt={photo.story}
+                          width={80}
+                          height={110}
+                          className="related-thumb"
+                          tabIndex={0}
+                          style={{ cursor: 'none' }}
+                          onClick={() => setSelectedPhoto(photo)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') setSelectedPhoto(photo);
+                          }}
+                          onMouseMove={(e) => {
+                            if (cursorRef.current) {
+                              cursorRef.current.style.transform =
+                                `translate(${e.clientX - 14}px, ${e.clientY - 14}px)`;
+                            }
+                          }}
+                          onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
+                          onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+            <button className="modal-close" aria-label="Close modal" onClick={() => setSelectedPhoto(null)}>close ✕</button>
+            </div>
           </div>
-
-          {/* 4. Keyboard Navigation HUD & Close Button */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "14px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-            <span style={{ fontSize: "9px", letterSpacing: "0.2em", color: "#555", textTransform: "uppercase" }}>
-              ← → navigate &bull; esc close
-            </span>
-            <button className="modal-close" aria-label="Close modal" onClick={() => setSelectedPhoto(null)} style={{ borderTop: "none", paddingTop: 0 }}>close ✕</button>
-          </div>
-        </div>
-
-      </div>
-    </motion.div>
-  )}
-</AnimatePresence>
-    </>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </>
   );
 }
