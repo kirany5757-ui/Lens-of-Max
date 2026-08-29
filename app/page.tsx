@@ -703,17 +703,15 @@ useEffect(() => {
                       if (e.key === 'Enter') setSelectedPhoto(photo);
                     }}
                     onMouseMove={(e) => {
-                      if (cursorRef.current) {
-                        cursorRef.current.style.transform =
-                          `translate(${e.clientX - 14}px, ${e.clientY - 14}px)`;
-                      }
+                      cursorX.set(e.clientX - 14);
+                      cursorY.set(e.clientY - 14);
                     }}
-                    onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
-                    onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
+                    onMouseEnter={() => setCursorVisible(true)}
+                    onMouseLeave={() => setCursorVisible(false)}
                   >
                     <Image
                       src={photo.image}
-                      alt={photo.story}
+                      alt={photo.story || `${photo.group} - ${photo.tags.join(', ')}` || "Lens of Max Photography"}
                       width={1000}
                       height={800}
                       quality={100}
@@ -862,20 +860,18 @@ useEffect(() => {
                 <Image 
                   className="modal-main-img"
                   src={selectedPhoto.image}
-                  alt={selectedPhoto.story}
+                  alt={selectedPhoto.story || `${selectedPhoto.group} - ${selectedPhoto.tags.join(', ')}` || "Lens of Max Photography"}
                   width={1400}
                   height={950}
                   quality={100}
                   sizes="(max-width: 768px) 100vw, 75vw"
                   draggable={false}
                   onMouseMove={(e) => {
-                    if (cursorRef.current) {
-                      cursorRef.current.style.transform = 
-                        `translate(${e.clientX - 17}px, ${e.clientY - 17}px)`;
-                    }
+                    cursorX.set(e.clientX - 17);
+                    cursorY.set(e.clientY - 17);
                   }}
-                  onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
-                  onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
+                  onMouseEnter={() => setCursorVisible(true)}
+                  onMouseLeave={() => setCursorVisible(false)}
                 />
               </motion.div>
             </AnimatePresence>
@@ -908,7 +904,7 @@ useEffect(() => {
                         <Image
                           key={photo.id}
                           src={photo.image}
-                          alt={photo.story}
+                          alt={photo.story || `Related photo: ${photo.group}`}
                           width={80}
                           height={110}
                           className="related-thumb"
@@ -919,13 +915,11 @@ useEffect(() => {
                             if (e.key === 'Enter') setSelectedPhoto(photo);
                           }}
                           onMouseMove={(e) => {
-                            if (cursorRef.current) {
-                              cursorRef.current.style.transform =
-                                `translate(${e.clientX - 14}px, ${e.clientY - 14}px)`;
-                            }
+                            cursorX.set(e.clientX - 14);
+                            cursorY.set(e.clientY - 14);
                           }}
-                          onMouseEnter={(e) => setCursor({ x: e.clientX, y: e.clientY, visible: true })}
-                          onMouseLeave={() => setCursor((prev) => ({ ...prev, visible: false }))}
+                          onMouseEnter={() => setCursorVisible(true)}
+                          onMouseLeave={() => setCursorVisible(false)}
                         />
                       ))}
                     </div>
