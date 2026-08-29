@@ -2,67 +2,55 @@ const fs = require('fs');
 const path = require('path');
 
 const photosDir = path.join(__dirname, 'public', 'Photos');
-const dataFile = path.join(__dirname, 'app', 'photosData.ts');
+const dataFile = path.join(__dirname, 'app', 'photosData.json');
 
-let fileContent = fs.readFileSync(dataFile, 'utf-8');
+// Read existing JSON data
+let existingPhotos = [];
+try {
+  const fileContent = fs.readFileSync(dataFile, 'utf-8');
+  existingPhotos = JSON.parse(fileContent);
+} catch (error) {
+  console.log("Could not read existing JSON or it was empty. Starting fresh.");
+}
 
 // 1. Get all actual image filenames currently sitting in public/Photos
 const physicalFiles = fs.readdirSync(photosDir).filter(file => 
   file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png')
 );
 
-let updatedContent = fileContent;
+let entriesToRemove = 0;
+let newEntries = 0;
 
-// 2. Remove deleted entries from the file content
-const entryRegex = /\{\s*id:\s*\d+,\s*image:\s*"([^"]+)",[\s\S]*?\}/g;
-let match;
-let entriesToRemove = [];
-
-while ((match = entryRegex.exec(fileContent)) !== null) {
-  const fullBlock = match[0];
-  const imagePath = match[1]; 
-  const fileName = path.basename(imagePath);
-  
-  if (!physicalFiles.includes(fileName)) {
-    entriesToRemove.push(fullBlock);
-  }
-}
-
-entriesToRemove.forEach(block => {
-  updatedContent = updatedContent.replace(block, '');
+// 2. Remove deleted entries from the array
+const originalCount = existingPhotos.length;
+existingPhotos = existingPhotos.filter(photo => {
+  const fileName = path.basename(photo.image);
+  return physicalFiles.includes(fileName);
 });
-updatedContent = updatedContent.replace(/,\s*,/g, ',');
+entriesToRemove = originalCount - existingPhotos.length;
 
-// 3. Handle adding any NEW files (inserting at the top)
-let highestId = 0;
-const idRegex = /id:\s*(\d+)/g;
-let idMatch;
-while ((idMatch = idRegex.exec(updatedContent)) !== null) {
-  const currentId = parseInt(idMatch[1]);
-  if (currentId > highestId) highestId = currentId;
-}
-
-let newEntries = [];
+// 3. Handle adding any NEW files
+let highestId = existingPhotos.reduce((max, photo) => Math.max(max, photo.id), 0);
+const existingImagePaths = existingPhotos.map(p => p.image);
 
 physicalFiles.forEach(file => {
   const imagePath = `/Photos/${file}`;
   
-  // If it's not already in the code file, it's new!
-  if (!updatedContent.includes(imagePath)) {
+  // If it's not already in the array, it's new!
+  if (!existingImagePaths.includes(imagePath)) {
     highestId++;
+    newEntries++;
     
     let isMainImage = true;
     let groupName = "";
-    let tagsString = '["Auto-Imported"]';
+    let tags = ["Auto-Imported"];
     
     // The upgraded regex that allows different1, different2, etc.
     const nameMatch = file.match(/^(?:\[(.*?)\]_)?(.*)_(hero|different\d*|true|false)\.(jpg|jpeg|png)$/i);
     
     if (nameMatch) {
       if (nameMatch[1]) {
-        const rawTags = nameMatch[1].split('_');
-        const formattedTags = rawTags.map(tag => `"${tag}"`).join(', ');
-        tagsString = `[${formattedTags}]`;
+        tags = nameMatch[1].split('_');
       }
       groupName = nameMatch[2].replace(/_/g, ' ');
       const suffix = nameMatch[3].toLowerCase();
@@ -71,24 +59,22 @@ physicalFiles.forEach(file => {
       isMainImage = file.toLowerCase().includes('hero') || file.toLowerCase().includes('main');
     }
     
-    const newEntry = `  { id: ${highestId}, image: "${imagePath}", story: "", tags: ${tagsString}, group: "${groupName}", isMain: ${isMainImage} }`;
-    newEntries.push(newEntry);
+    // Unshift adds new photos to the top (beginning) of the array
+    existingPhotos.unshift({
+      id: highestId,
+      image: imagePath,
+      story: "",
+      tags: tags,
+      group: groupName,
+      isMain: isMainImage
+    });
   }
 });
 
-// 4. Inject new entries at the top and save
-if (newEntries.length > 0 || entriesToRemove.length > 0) {
-  if (newEntries.length > 0) {
-    const startPos = updatedContent.indexOf('[');
-    const before = updatedContent.slice(0, startPos + 1);
-    const after = updatedContent.slice(startPos + 1);
-    
-    const separator = after.trim().startsWith(']') ? '' : ',\n';
-    updatedContent = `${before}\n${newEntries.join(',\n')}${separator}${after}`;
-  }
-  
-  fs.writeFileSync(dataFile, updatedContent);
-  console.log(`Sync complete! Added ${newEntries.length} new photos, removed ${entriesToRemove.length} deleted photos.`);
+// 4. Save the updated array back to JSON
+if (newEntries > 0 || entriesToRemove > 0) {
+  fs.writeFileSync(dataFile, JSON.stringify(existingPhotos, null, 2));
+  console.log(`Sync complete! Added ${newEntries} new photos, removed ${entriesToRemove} deleted photos.`);
 } else {
   console.log('Sync complete. Everything is already up to date!');
 }

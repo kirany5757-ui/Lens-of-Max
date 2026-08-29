@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { photos } from "./photosData";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion, useSpring } from "framer-motion";
 import { gridContainer, getGridItem, getModalSlideVariants, modalTransition } from "./animations";
 type Photo = {
   id: number;
@@ -63,8 +63,9 @@ export default function Home() {
   const [introVisible, setIntroVisible] = useState(true);
   const [introMounted, setIntroMounted] = useState(true);
 
-  const cursorRef = useRef<HTMLDivElement | null>(null);
-  const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
+  const cursorX = useSpring(0, { stiffness: 300, damping: 25 });
+  const cursorY = useSpring(0, { stiffness: 300, damping: 25 });
+  const [cursorVisible, setCursorVisible] = useState(false);
   const numCols = useNumCols();
 
 useEffect(() => {
@@ -695,7 +696,6 @@ useEffect(() => {
         key={photo.id}
         className="card"
         variants={getGridItem(!!shouldReduceMotion)}
-        layout
         whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
         whileFocus={shouldReduceMotion ? {} : { scale: 1.02 }}
         tabIndex={0}
@@ -804,9 +804,12 @@ useEffect(() => {
       )}
 
       {/* ── CUSTOM CAMERA CURSOR ── */}
-      <div ref={cursorRef} className={`camera-cursor ${cursor.visible ? "" : "hidden"}`}>
+      <motion.div 
+        className={`camera-cursor ${cursorVisible ? "" : "hidden"}`}
+        style={{ x: cursorX, y: cursorY }}
+      >
         <span className="camera-cursor-icon">📷</span>
-      </div>
+      </motion.div>
 
 {/* --- MODAL VIEWER --- */}
 <AnimatePresence>
@@ -838,7 +841,7 @@ useEffect(() => {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             
             {/* 1. The Sliding Image Wrapper */}
-            <AnimatePresence mode="wait" custom={direction}>
+            <AnimatePresence custom={direction}>
               <motion.div
                 key={selectedPhoto.id}
                 custom={direction}
