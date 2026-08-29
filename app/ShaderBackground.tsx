@@ -34,11 +34,11 @@ const fragmentShaderSource = `
           p = newp;
       }
       
-      // Base color: #080807 (very dark warm grey)
-      vec3 baseCol = vec3(0.031, 0.031, 0.027);
+      // Base color: much more visible warm grey
+      vec3 baseCol = vec3(0.06, 0.05, 0.04);
       
-      // Highlight color: slightly brighter warm grey
-      vec3 highCol = vec3(0.08, 0.075, 0.07);
+      // Highlight color: bright warm grey so the waves pop out
+      vec3 highCol = vec3(0.20, 0.18, 0.16);
       
       // Mix based on the wave pattern
       float wave = cos(p.x + p.y + 1.0) * 0.5 + 0.5;
