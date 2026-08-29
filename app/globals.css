@@ -22,7 +22,12 @@ body {
 }
 
 /* ── PAGE FADE-IN ── */
-.page { opacity: 0; transition: opacity 0.8s ease; }
+.page { 
+  opacity: 0; 
+  transition: opacity 0.8s ease; 
+  position: relative; 
+  z-index: 1; 
+}
 .page.visible { opacity: 1; }
 
 /* ── FIXED LEFT VERTICAL BRAND (Click to Shuffle) ── */
@@ -97,7 +102,6 @@ body {
 .hidden-dove.visible { opacity: 0.2; }
 
 .nav-buttons {
-  background: var(--bg);
   padding: 20px 0;
   position: relative;
   z-index: 10;
