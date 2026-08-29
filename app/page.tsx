@@ -5,6 +5,7 @@ import Image from "next/image";
 import { photos } from "./photosData";
 import { motion, AnimatePresence, useReducedMotion, useSpring } from "framer-motion";
 import { gridContainer, getGridItem, getModalSlideVariants, modalTransition } from "./animations";
+import ShaderBackground from "./ShaderBackground";
 
 type Photo = {
   id: number;
@@ -171,6 +172,7 @@ export default function Home() {
 
   return (
     <>
+      <ShaderBackground />
       {/* ── CINEMATIC INTRO ── */}
       {introMounted && (
         <motion.div
